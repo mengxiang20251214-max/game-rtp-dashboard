@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite 不支持 Prisma 原生 enum，使用 String 存储，
+// 由应用层（src/types + game-utils）约束取值：
+//   category: "SLOT" | "TABLE" | "LIVE"
+//   status:   "NORMAL" | "WARNING" | "CRITICAL"
+model Game {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  category    String   @default("SLOT")
+  image       String?
+  rtp         Float    @default(0)
+  targetRtp   Float    @default(96.5)
+  status      String   @default("NORMAL")
+  playerCount Int      @default(0)
+  totalBets   Float    @default(0)
+  totalWins   Float    @default(0)
+  trend       String   @default("[]") // JSON 编码的 number[]，由 parseTrend 解析
+  rank        Int      @default(0)
+  isActive    Boolean  @default(true)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([rank])
+}

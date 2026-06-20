@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"node: $?\")",
+      "Bash(pnpm -v)",
+      "Bash(npm -v)",
+      "Bash(ping -c1 -t2 registry.npmjs.org)",
+      "Bash(corepack enable *)",
+      "Bash(corepack prepare *)",
+      "Bash(npm i *)",
+      "Bash(export COREPACK_HOME=\"$HOME/.cache/corepack\")",
+      "Bash(corepack pnpm@latest -v)",
+      "Bash(mkdir -p /Users/macbookpro/.local/bin)",
+      "Bash(cat)",
+      "Bash(chmod +x /Users/macbookpro/.local/bin/pnpm)",
+      "Bash(/Users/macbookpro/.local/bin/pnpm -v)",
+      "Bash(/Users/macbookpro/.local/bin/pnpm install *)",
+      "Bash(/Users/macbookpro/.local/bin/pnpm exec *)",
+      "Bash(./node_modules/.bin/prisma db *)",
+      "Bash(./node_modules/.bin/tsx prisma/seed.ts)",
+      "Bash(./node_modules/.bin/prisma generate *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(echo \"TSC_EXIT_$?\")",
+      "Bash(./node_modules/.bin/next dev *)",
+      "Bash(tee /tmp/rtp-dev.log)"
+    ]
+  }
+}
