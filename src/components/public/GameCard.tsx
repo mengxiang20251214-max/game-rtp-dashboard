@@ -12,6 +12,9 @@ import {
   formatRtp,
   sparklinePoints,
   BLUR_DATA_URL,
+  getUserStatus,
+  getHotBadge,
+  getHighRtpBadge,
 } from "@/lib/game-utils";
 import RTPProgress from "./RTPProgress";
 import StatBadge from "./StatBadge";
@@ -24,11 +27,14 @@ const cardVariants = {
 export default function GameCard({ game }: { game: Game }) {
   const [imgError, setImgError] = useState(false);
   const tCat = useTranslations("category");
-  const tStatus = useTranslations("status");
   const tStats = useTranslations("stats");
   const tCommon = useTranslations("common");
   const color = rtpColor(game.status);
   const points = sparklinePoints(game.trend, 100, 28);
+  // 面向玩家的友好状态与徽章（前台固定印尼语）
+  const userStatus = getUserStatus(game.rtp, game.targetRtp);
+  const hotBadge = getHotBadge(game.playerCount);
+  const highRtpBadge = getHighRtpBadge(game.rtp);
 
   return (
     <motion.article
@@ -65,16 +71,11 @@ export default function GameCard({ game }: { game: Game }) {
           {tCat(game.category)}
         </span>
 
-        {/* 状态指示 */}
+        {/* 用户友好状态徽章 */}
         <span
-          className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-medium backdrop-blur"
-          style={{ color }}
+          className={`absolute right-3 top-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium backdrop-blur ${userStatus.bg} ${userStatus.color}`}
         >
-          <span
-            className="h-1.5 w-1.5 rounded-full animate-pulse-glow"
-            style={{ background: color, boxShadow: `0 0 6px ${color}` }}
-          />
-          {tStatus(game.status)}
+          {userStatus.icon} {userStatus.label}
         </span>
 
         {/* 排名 */}
@@ -104,6 +105,22 @@ export default function GameCard({ game }: { game: Game }) {
             </svg>
           )}
         </div>
+
+        {/* 热门 / 高返还 标识 */}
+        {(hotBadge || highRtpBadge) && (
+          <div className="flex flex-wrap gap-2">
+            {hotBadge && (
+              <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-400">
+                {hotBadge.icon} {hotBadge.label}
+              </span>
+            )}
+            {highRtpBadge && (
+              <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-400">
+                {highRtpBadge.icon} {highRtpBadge.label}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* RTP 进度条 */}
         <RTPProgress rtp={game.rtp} targetRtp={game.targetRtp} status={game.status} />

@@ -4,6 +4,8 @@ const config: Config = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    // getUserStatus/getHotBadge 在此返回 Tailwind 类名，需纳入扫描
+    "./src/lib/**/*.{js,ts}",
   ],
   theme: {
     extend: {

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 interface HeaderProps {
   onRefresh?: () => void;
@@ -46,8 +45,6 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
               {t("lastUpdated", { time: lastUpdated })}
             </span>
           )}
-
-          <LocaleSwitcher />
 
           {onRefresh && (
             <button

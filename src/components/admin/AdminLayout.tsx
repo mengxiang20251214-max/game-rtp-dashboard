@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 const NAV = [
   { href: "/admin", key: "overview", exact: true },
@@ -14,6 +15,7 @@ const NAV = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations("admin");
+  const tLocale = useTranslations("locale");
 
   // 登录页不套用后台布局
   if (pathname === "/admin/login") {
@@ -34,6 +36,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="font-display text-sm font-bold text-content-primary">
             {t("layout.brand")}
           </span>
+        </div>
+
+        {/* 后台语言切换（中文 / 印尼语 / 英语） */}
+        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-3">
+          <span className="text-[11px] text-content-secondary">{tLocale("label")}</span>
+          <LocaleSwitcher />
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">

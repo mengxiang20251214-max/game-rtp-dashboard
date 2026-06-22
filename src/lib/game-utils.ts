@@ -44,12 +44,50 @@ export const STATUS_LABELS: Record<Status, string> = {
   CRITICAL: "异常",
 };
 
-/** 根据当前 RTP 与目标 RTP 的偏差推导状态 */
+/** 根据当前 RTP 与目标 RTP 的偏差推导状态（内部/后台使用） */
 export function deriveStatus(rtp: number, targetRtp: number): Status {
   const diff = rtp - targetRtp;
   if (diff <= -2) return "CRITICAL";
   if (diff <= -1) return "WARNING";
   return "NORMAL";
+}
+
+// ─────────────────────────────────────────────
+//  面向用户的友好状态与徽章（前台展示，固定印尼语）
+// ─────────────────────────────────────────────
+
+export interface UserStatus {
+  label: string;
+  color: string;
+  bg: string;
+  icon: string;
+}
+
+/** 面向玩家的友好状态（印尼语） */
+export function getUserStatus(rtp: number, targetRtp: number): UserStatus {
+  const diff = rtp - targetRtp;
+  if (diff >= -0.5) {
+    return { label: "Sangat Baik", color: "text-green-400", bg: "bg-green-500/20", icon: "🟢" };
+  } else if (diff >= -1.5) {
+    return { label: "Baik", color: "text-yellow-400", bg: "bg-yellow-500/20", icon: "🟡" };
+  } else {
+    return { label: "Normal", color: "text-orange-400", bg: "bg-orange-500/20", icon: "🟠" };
+  }
+}
+
+/** 热门标识（按玩家数） */
+export function getHotBadge(
+  playerCount: number
+): { icon: string; label: string } | null {
+  if (playerCount > 10000) return { icon: "🔥", label: "Populer" };
+  if (playerCount > 5000) return { icon: "📈", label: "Tren" };
+  return null;
+}
+
+/** 高返还标识（按 RTP） */
+export function getHighRtpBadge(rtp: number): { icon: string; label: string } | null {
+  if (rtp > 98) return { icon: "⭐", label: "RTP Tinggi" };
+  return null;
 }
 
 /** RTP 进度条/文字颜色（基于状态） */
