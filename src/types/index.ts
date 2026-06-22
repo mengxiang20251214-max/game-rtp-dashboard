@@ -2,7 +2,7 @@
 //  共享类型定义
 // ─────────────────────────────────────────────
 
-export type Category = "SLOT" | "TABLE" | "LIVE";
+export type Category = "SLOT" | "TABLE" | "LIVE" | "POKER" | "CASUAL";
 export type Status = "NORMAL" | "WARNING" | "CRITICAL";
 
 export interface Game {

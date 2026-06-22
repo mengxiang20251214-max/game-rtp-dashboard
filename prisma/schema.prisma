@@ -9,7 +9,7 @@ datasource db {
 
 // category/status 以 String 存储（沿用 SQLite 时期的约定，PostgreSQL 同样兼容），
 // 由应用层（src/types + game-utils）约束取值：
-//   category: "SLOT" | "TABLE" | "LIVE"
+//   category: "SLOT" | "TABLE" | "LIVE" | "POKER" | "CASUAL"
 //   status:   "NORMAL" | "WARNING" | "CRITICAL"
 model Game {
   id          String   @id @default(cuid())

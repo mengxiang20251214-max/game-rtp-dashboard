@@ -27,7 +27,9 @@
     "ALL": "Semua",
     "SLOT": "Slot",
     "TABLE": "Meja",
-    "LIVE": "Langsung"
+    "LIVE": "Langsung",
+    "POKER": "Poker",
+    "CASUAL": "Kasual"
   },
   "status": {
     "NORMAL": "Normal",

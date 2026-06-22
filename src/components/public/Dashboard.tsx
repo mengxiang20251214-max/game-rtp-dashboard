@@ -22,6 +22,8 @@ export default function Dashboard({ initialGames }: { initialGames: Game[] }) {
       SLOT: 0,
       TABLE: 0,
       LIVE: 0,
+      POKER: 0,
+      CASUAL: 0,
     };
     for (const g of games) c[g.category]++;
     return c;

@@ -27,7 +27,9 @@
     "ALL": "全部",
     "SLOT": "老虎机",
     "TABLE": "桌游",
-    "LIVE": "真人"
+    "LIVE": "真人",
+    "POKER": "棋牌",
+    "CASUAL": "休闲"
   },
   "status": {
     "NORMAL": "正常",

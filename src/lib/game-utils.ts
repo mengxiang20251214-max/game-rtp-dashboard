@@ -13,6 +13,8 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   SLOT: "老虎机",
   TABLE: "桌游",
   LIVE: "真人",
+  POKER: "棋牌",
+  CASUAL: "休闲",
 };
 
 export const CATEGORY_OPTIONS: { value: Category | "ALL"; label: string }[] = [
@@ -20,6 +22,8 @@ export const CATEGORY_OPTIONS: { value: Category | "ALL"; label: string }[] = [
   { value: "SLOT", label: "老虎机" },
   { value: "TABLE", label: "桌游" },
   { value: "LIVE", label: "真人" },
+  { value: "POKER", label: "棋牌" },
+  { value: "CASUAL", label: "休闲" },
 ];
 
 // 仅取值（标签由 i18n 翻译）
@@ -28,9 +32,11 @@ export const CATEGORY_FILTER_VALUES: (Category | "ALL")[] = [
   "SLOT",
   "TABLE",
   "LIVE",
+  "POKER",
+  "CASUAL",
 ];
 
-export const CATEGORY_VALUES: Category[] = ["SLOT", "TABLE", "LIVE"];
+export const CATEGORY_VALUES: Category[] = ["SLOT", "TABLE", "LIVE", "POKER", "CASUAL"];
 
 export const STATUS_LABELS: Record<Status, string> = {
   NORMAL: "正常",

@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { deriveStatus, serializeGame } from "@/lib/game-utils";
+import { deriveStatus, serializeGame, CATEGORY_VALUES } from "@/lib/game-utils";
 import type { Category } from "@/types";
 
-const VALID_CATEGORIES: Category[] = ["SLOT", "TABLE", "LIVE"];
+const VALID_CATEGORIES: Category[] = CATEGORY_VALUES;
 
 // GET /api/games?category=SLOT  → 获取所有（激活的）游戏，按 rank 排序
 export async function GET(req: NextRequest) {
