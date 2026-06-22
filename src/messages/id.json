@@ -97,6 +97,7 @@
       "title": "Pengaturan Situs",
       "subtitle": "Judul situs, logo, hak cipta footer",
       "siteTitle": "Judul Situs",
+      "siteDescription": "Deskripsi Situs (subjudul header)",
       "copyright": "Hak Cipta Footer",
       "logo": "Logo / Favicon Situs",
       "logoHint": "Unggah gambar (PNG/SVG/WebP, ≤300KB)",

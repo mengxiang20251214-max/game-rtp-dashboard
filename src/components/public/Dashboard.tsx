@@ -11,9 +11,19 @@ interface DashboardProps {
   initialGames: Game[];
   categories: CategoryItem[];
   copyright: string;
+  siteTitle: string;
+  siteDescription: string;
+  logo: string;
 }
 
-export default function Dashboard({ initialGames, categories, copyright }: DashboardProps) {
+export default function Dashboard({
+  initialGames,
+  categories,
+  copyright,
+  siteTitle,
+  siteDescription,
+  logo,
+}: DashboardProps) {
   const t = useTranslations("home");
   const [games, setGames] = useState<Game[]>(initialGames);
   const [active, setActive] = useState<string>("ALL");
@@ -52,7 +62,14 @@ export default function Dashboard({ initialGames, categories, copyright }: Dashb
 
   return (
     <div className="min-h-screen">
-      <Header onRefresh={handleRefresh} refreshing={refreshing} lastUpdated={lastUpdated} />
+      <Header
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        lastUpdated={lastUpdated}
+        siteTitle={siteTitle}
+        siteDescription={siteDescription}
+        logo={logo}
+      />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* 标题区 */}

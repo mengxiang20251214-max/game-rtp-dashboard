@@ -97,6 +97,7 @@
       "title": "站点设置",
       "subtitle": "网站标题、Logo、底部版权",
       "siteTitle": "网站标题",
+      "siteDescription": "网站描述（顶部副标题）",
       "copyright": "底部版权文字",
       "logo": "网站 Logo / Favicon",
       "logoHint": "上传图片（PNG/SVG/WebP，≤300KB）",

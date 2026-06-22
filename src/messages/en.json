@@ -97,6 +97,7 @@
       "title": "Site Settings",
       "subtitle": "Site title, logo, footer copyright",
       "siteTitle": "Site Title",
+      "siteDescription": "Site Description (header subtitle)",
       "copyright": "Footer Copyright",
       "logo": "Site Logo / Favicon",
       "logoHint": "Upload image (PNG/SVG/WebP, ≤300KB)",

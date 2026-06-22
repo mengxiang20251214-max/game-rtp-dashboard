@@ -63,6 +63,7 @@ export interface CategoryItem {
 // 站点设置
 export interface SiteSettings {
   siteTitle: string;
+  siteDescription: string;
   copyright: string;
   logo: string; // base64 data URL 或空
 }

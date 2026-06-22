@@ -66,6 +66,9 @@ async function GamesDashboard() {
       initialGames={games}
       categories={categories}
       copyright={settings.copyright}
+      siteTitle={settings.siteTitle}
+      siteDescription={settings.siteDescription}
+      logo={settings.logo}
     />
   );
 }

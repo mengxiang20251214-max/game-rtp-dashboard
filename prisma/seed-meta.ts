@@ -13,6 +13,11 @@ const categories = [
 
 const settings = [
   { key: "siteTitle", value: "RTP 数据中枢 · Game RTP Dashboard", type: "text" },
+  {
+    key: "siteDescription",
+    value: "Real-time game return-to-player monitor · v1.0.0",
+    type: "text",
+  },
   { key: "copyright", value: "RTP 数据中枢 · 仅供演示", type: "text" },
   { key: "logo", value: "", type: "image" },
 ];

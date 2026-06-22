@@ -15,6 +15,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
   const t = useTranslations("admin.settings");
   const fileRef = useRef<HTMLInputElement>(null);
   const [siteTitle, setSiteTitle] = useState(initial.siteTitle);
+  const [siteDescription, setSiteDescription] = useState(initial.siteDescription);
   const [copyright, setCopyright] = useState(initial.copyright);
   const [logo, setLogo] = useState(initial.logo);
   const [msg, setMsg] = useState("");
@@ -45,6 +46,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
       body: JSON.stringify({
         settings: [
           { key: "siteTitle", value: siteTitle, type: "text" },
+          { key: "siteDescription", value: siteDescription, type: "text" },
           { key: "copyright", value: copyright, type: "text" },
           { key: "logo", value: logo, type: "image" },
         ],
@@ -76,6 +78,17 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
       <div>
         <label className="mb-1.5 block text-xs text-content-secondary">{t("siteTitle")}</label>
         <input className={inputCls} value={siteTitle} onChange={(e) => setSiteTitle(e.target.value)} />
+      </div>
+
+      <div>
+        <label className="mb-1.5 block text-xs text-content-secondary">
+          {t("siteDescription")}
+        </label>
+        <input
+          className={inputCls}
+          value={siteDescription}
+          onChange={(e) => setSiteDescription(e.target.value)}
+        />
       </div>
 
       <div>
