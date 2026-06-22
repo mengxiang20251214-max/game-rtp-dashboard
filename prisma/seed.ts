@@ -496,6 +496,11 @@ async function main() {
         trend: JSON.stringify(g.trend),
         rank: g.rank,
         isActive: g.isActive,
+        // 初始值（每日重置基准）= 种子值
+        initialRank: g.rank,
+        initialPlayerCount: g.playerCount,
+        initialTotalBets: g.totalBets,
+        initialTotalWins: g.totalWins,
       },
     });
     console.log(`  \u2713 #${g.rank} ${g.name} (${g.category})`);

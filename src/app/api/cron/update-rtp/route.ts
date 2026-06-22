@@ -2,15 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { deriveStatus, parseTrend } from "@/lib/game-utils";
 
-// 不缓存，每次调用都实时执行
 export const dynamic = "force-dynamic";
 
-// 波动范围 ±2%
-const FLUCTUATION_RANGE = 2;
-// trend 保留的数据点数量
+const FLUCTUATION_RANGE = 2; // RTP ±2%
 const TREND_POINTS = 12;
 
-// 获取随机 RTP（在 targetRtp ± FLUCTUATION_RANGE 范围内）
 function getRandomRtp(targetRtp: number): number {
   const min = Math.max(80, targetRtp - FLUCTUATION_RANGE);
   const max = Math.min(99.9, targetRtp + FLUCTUATION_RANGE);
@@ -19,8 +15,6 @@ function getRandomRtp(targetRtp: number): number {
 
 export async function GET(request: Request) {
   try {
-    // 验证 Cron 请求（防止外部调用）。
-    // Vercel 在设置了 CRON_SECRET 后会自动带上 Authorization: Bearer <CRON_SECRET>。
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
@@ -28,18 +22,61 @@ export async function GET(request: Request) {
     }
 
     const games = await prisma.game.findMany({
-      select: { id: true, targetRtp: true, trend: true },
+      select: {
+        id: true,
+        targetRtp: true,
+        trend: true,
+        rank: true,
+        playerCount: true,
+        totalBets: true,
+        initialPlayerCount: true,
+        initialTotalBets: true,
+      },
     });
+    if (games.length === 0) {
+      return NextResponse.json({ success: true, updated: 0, swaps: 0 });
+    }
 
-    // 逐个更新 rtp + status（随 RTP 自动推导）+ trend（滚动追加新点，驱动迷你图）
+    // 1) 随机交换 2-3 对游戏的 rank
+    const rankById = new Map(games.map((g) => [g.id, g.rank]));
+    const ids = games.map((g) => g.id);
+    const swapCount = Math.min(Math.floor(Math.random() * 2) + 2, Math.floor(ids.length / 2));
+    for (let i = 0; i < swapCount; i++) {
+      const a = ids[Math.floor(Math.random() * ids.length)];
+      let b = ids[Math.floor(Math.random() * ids.length)];
+      let guard = 0;
+      while (b === a && guard++ < 10) b = ids[Math.floor(Math.random() * ids.length)];
+      if (a === b) continue;
+      const ra = rankById.get(a)!;
+      rankById.set(a, rankById.get(b)!);
+      rankById.set(b, ra);
+    }
+
+    // 2-6) 同步更新指标 + rtp + status + trend
     const updates = await Promise.all(
-      games.map((game) => {
-        const newRtp = getRandomRtp(game.targetRtp);
-        const newStatus = deriveStatus(newRtp, game.targetRtp);
-        const nextTrend = [...parseTrend(game.trend), newRtp].slice(-TREND_POINTS);
+      games.map((g) => {
+        const playerCountFactor = 0.9 + Math.random() * 0.2; // ±10%
+        const betsFactor = 0.95 + Math.random() * 0.1; // ±5%
+        const winFactor = 0.88 + Math.random() * 0.11; // 88%-99%
+
+        // 以初始值为基准浮动，避免随时间单向漂移
+        const basePlayers = g.initialPlayerCount || g.playerCount || 0;
+        const baseBets = g.initialTotalBets || g.totalBets || 0;
+        const playerCount = Math.max(0, Math.round(basePlayers * playerCountFactor));
+        const totalBets = Math.round(baseBets * betsFactor);
+        const totalWins = Math.round(totalBets * winFactor);
+
+        const newRtp = getRandomRtp(g.targetRtp);
+        const newStatus = deriveStatus(newRtp, g.targetRtp);
+        const nextTrend = [...parseTrend(g.trend), newRtp].slice(-TREND_POINTS);
+
         return prisma.game.update({
-          where: { id: game.id },
+          where: { id: g.id },
           data: {
+            rank: rankById.get(g.id)!,
+            playerCount,
+            totalBets,
+            totalWins,
             rtp: newRtp,
             status: newStatus,
             trend: JSON.stringify(nextTrend),
@@ -51,10 +88,11 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       updated: updates.length,
+      swaps: swapCount,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Cron job failed:", error);
+    console.error("Cron update-rtp failed:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

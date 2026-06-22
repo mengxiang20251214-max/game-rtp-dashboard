@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 interface HeaderProps {
@@ -70,13 +69,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
               </span>
             </button>
           )}
-
-          <Link
-            href="/admin"
-            className="rounded-lg border border-neon-purple/40 bg-neon-purple/10 px-3 py-2 font-display text-xs font-semibold text-neon-purple transition-all hover:shadow-neon-purple"
-          >
-            {t("admin")}
-          </Link>
+          {/* 前后台分离：前台不再显示任何后台/管理入口 */}
         </div>
       </div>
     </header>

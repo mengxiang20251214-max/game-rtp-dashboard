@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 // 5 个初始分类（label 为前台展示用印尼语）
 const categories = [
   { name: "SLOT", label: "Slot", icon: "🎰", sortOrder: 1 },
-  { name: "TABLE", label: "Meja", icon: "🃏", sortOrder: 2 },
-  { name: "LIVE", label: "Langsung", icon: "📺", sortOrder: 3 },
-  { name: "POKER", label: "Poker", icon: "♠️", sortOrder: 4 },
+  { name: "TABLE", label: "Meja", icon: "🎲", sortOrder: 2 },
+  { name: "LIVE", label: "Langsung", icon: "🎯", sortOrder: 3 },
+  { name: "POKER", label: "Poker", icon: "🃏", sortOrder: 4 },
   { name: "CASUAL", label: "Kasual", icon: "🎮", sortOrder: 5 },
 ];
 

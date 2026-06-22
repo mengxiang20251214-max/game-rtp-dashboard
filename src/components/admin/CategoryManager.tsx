@@ -25,6 +25,9 @@ type Draft = {
 
 const empty: Draft = { id: null, name: "", label: "", icon: "", sortOrder: "0", isActive: true };
 
+// 常用图标快捷选择
+const EMOJI_PRESETS = ["🎰", "🎲", "🎯", "🃏", "🎮", "🎪", "🏆", "⭐", "🔥", "📺", "♠️", "💎"];
+
 const inputCls =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-content-primary outline-none focus:border-neon-blue";
 
@@ -122,7 +125,7 @@ export default function CategoryManager({ initial }: { initial: AdminCategory[] 
               placeholder="Slot"
             />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-2 sm:col-span-1">
             <label className="mb-1 block text-[11px] text-content-secondary">{t("icon")}</label>
             <input
               className={inputCls}
@@ -130,6 +133,22 @@ export default function CategoryManager({ initial }: { initial: AdminCategory[] 
               onChange={(e) => setDraft({ ...draft, icon: e.target.value })}
               placeholder="🎰"
             />
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {EMOJI_PRESETS.map((em) => (
+                <button
+                  key={em}
+                  type="button"
+                  onClick={() => setDraft({ ...draft, icon: em })}
+                  className={`rounded border px-1.5 py-0.5 text-sm transition-colors ${
+                    draft.icon === em
+                      ? "border-neon-blue bg-neon-blue/10"
+                      : "border-white/10 hover:border-neon-blue/40"
+                  }`}
+                >
+                  {em}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="col-span-1">
             <label className="mb-1 block text-[11px] text-content-secondary">{t("sortOrder")}</label>
