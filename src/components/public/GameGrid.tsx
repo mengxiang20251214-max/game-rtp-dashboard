@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { Game } from "@/types";
 import GameCard from "./GameCard";
 
@@ -13,11 +14,13 @@ const containerVariants = {
 };
 
 export default function GameGrid({ games }: { games: Game[] }) {
+  const t = useTranslations("grid");
+
   if (games.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-24 text-center">
         <span className="font-display text-4xl text-neon-blue/30">∅</span>
-        <p className="mt-4 text-content-secondary">该分类下暂无游戏</p>
+        <p className="mt-4 text-content-secondary">{t("empty")}</p>
       </div>
     );
   }

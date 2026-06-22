@@ -3,17 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { Game } from "@/types";
-import {
-  CATEGORY_LABELS,
-  STATUS_LABELS,
-  rtpColor,
-  formatRtp,
-  formatPlayers,
-} from "@/lib/game-utils";
+import { rtpColor, formatRtp, formatPlayers } from "@/lib/game-utils";
 
 export default function GameTable({ initialGames }: { initialGames: Game[] }) {
   const router = useRouter();
+  const t = useTranslations("admin.table");
+  const tCat = useTranslations("category");
+  const tStatus = useTranslations("status");
+  const tCommon = useTranslations("common");
   const [games, setGames] = useState<Game[]>(initialGames);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -33,7 +32,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
   }
 
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`确认删除游戏「${name}」？此操作不可撤销。`)) return;
+    if (!confirm(t("confirmDelete", { name }))) return;
     setBusyId(id);
     try {
       const res = await fetch(`/api/games/${id}`, { method: "DELETE" });
@@ -41,7 +40,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
       if (json.ok) {
         setGames((gs) => gs.filter((g) => g.id !== id));
       } else {
-        alert(json.error || "删除失败");
+        alert(json.error || t("deleteFailed"));
       }
     } finally {
       setBusyId(null);
@@ -58,11 +57,11 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
   if (games.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-white/10 py-16 text-center text-content-secondary">
-        暂无游戏，去
+        {t("emptyBefore")}
         <Link href="/admin/games/new" className="mx-1 text-neon-blue hover:underline">
-          添加一个
+          {t("emptyLink")}
         </Link>
-        吧
+        {t("emptyAfter")}
       </div>
     );
   }
@@ -72,14 +71,14 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
       <table className="w-full min-w-[760px] text-left text-sm">
         <thead>
           <tr className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-wider text-content-secondary">
-            <th className="px-4 py-3">排名</th>
-            <th className="px-4 py-3">名称</th>
-            <th className="px-4 py-3">分类</th>
-            <th className="px-4 py-3">RTP / 目标</th>
-            <th className="px-4 py-3">状态</th>
-            <th className="px-4 py-3">玩家</th>
-            <th className="px-4 py-3">显示</th>
-            <th className="px-4 py-3 text-right">操作</th>
+            <th className="px-4 py-3">{t("rank")}</th>
+            <th className="px-4 py-3">{t("name")}</th>
+            <th className="px-4 py-3">{t("category")}</th>
+            <th className="px-4 py-3">{t("rtpTarget")}</th>
+            <th className="px-4 py-3">{t("status")}</th>
+            <th className="px-4 py-3">{t("players")}</th>
+            <th className="px-4 py-3">{t("visible")}</th>
+            <th className="px-4 py-3 text-right">{t("actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -101,7 +100,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                         onClick={() => handleRank(g.id, "up")}
                         disabled={busy}
                         className="text-content-secondary hover:text-neon-blue"
-                        title="上移"
+                        title={t("moveUp")}
                       >
                         ▲
                       </button>
@@ -109,7 +108,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                         onClick={() => handleRank(g.id, "down")}
                         disabled={busy}
                         className="text-content-secondary hover:text-neon-blue"
-                        title="下移"
+                        title={t("moveDown")}
                       >
                         ▼
                       </button>
@@ -118,7 +117,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                 </td>
                 <td className="px-4 py-3 font-medium text-content-primary">{g.name}</td>
                 <td className="px-4 py-3 text-content-secondary">
-                  {CATEGORY_LABELS[g.category]}
+                  {tCat(g.category)}
                 </td>
                 <td className="px-4 py-3">
                   <span style={{ color }} className="font-display font-semibold">
@@ -135,7 +134,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                       className="h-1.5 w-1.5 rounded-full"
                       style={{ background: color }}
                     />
-                    {STATUS_LABELS[g.status]}
+                    {tStatus(g.status)}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-content-secondary">
@@ -154,14 +153,14 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                       href={`/admin/games/${g.id}/edit`}
                       className="rounded-md border border-white/10 px-3 py-1 text-xs text-content-secondary transition-all hover:border-neon-blue/40 hover:text-neon-blue"
                     >
-                      编辑
+                      {tCommon("edit")}
                     </Link>
                     <button
                       onClick={() => handleDelete(g.id, g.name)}
                       disabled={busy}
                       className="rounded-md border border-rtp-danger/30 px-3 py-1 text-xs text-rtp-danger transition-all hover:bg-rtp-danger/10"
                     >
-                      删除
+                      {tCommon("delete")}
                     </button>
                   </div>
                 </td>

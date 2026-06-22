@@ -1,0 +1,135 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "viewDetails": "View Details",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "header": {
+    "title": "RTP Hub",
+    "subtitle": "Real-time game return-to-player monitor · {version}",
+    "lastUpdated": "Updated {time}",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing",
+    "admin": "Admin"
+  },
+  "home": {
+    "titleBefore": "Game ",
+    "titleHighlight": "RTP",
+    "titleAfter": " Live Dashboard",
+    "subtitle": "Monitor the real-time Return To Player of every game. Data is read fresh from the database on each refresh, and colors shift dynamically with the gap between RTP and target.",
+    "footer": "RTP Hub · Demo only · {year}"
+  },
+  "category": {
+    "ALL": "All",
+    "SLOT": "Slots",
+    "TABLE": "Table",
+    "LIVE": "Live"
+  },
+  "status": {
+    "NORMAL": "Normal",
+    "WARNING": "Warning",
+    "CRITICAL": "Critical"
+  },
+  "stats": {
+    "currentRtp": "Current RTP",
+    "targetRtp": "Target RTP",
+    "players": "Players",
+    "totalBets": "Total Bets"
+  },
+  "rtp": {
+    "realtime": "Live RTP",
+    "target": "Target {value}"
+  },
+  "grid": {
+    "empty": "No games in this category"
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "Enter the administrator password to continue",
+      "password": "Password",
+      "submit": "Sign In",
+      "submitting": "Signing in…",
+      "error": "Incorrect password, please try again",
+      "hint": "Default password: {password}"
+    },
+    "layout": {
+      "brand": "Admin Panel",
+      "backToFront": "← Back to site",
+      "signOut": "Sign Out"
+    },
+    "nav": {
+      "overview": "Overview",
+      "games": "Manage Games",
+      "newGame": "Add Game"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "Dashboard data summary",
+      "addGame": "+ Add Game",
+      "totalGames": "Total Games",
+      "active": "Active",
+      "warning": "Critical / Warning",
+      "totalPlayers": "Total Players",
+      "avgRtp": "Average RTP",
+      "totalBets": "Total Bets",
+      "goToGames": "Go to game management →"
+    },
+    "games": {
+      "title": "Manage Games",
+      "subtitle": "{count} games · reorder / edit / delete",
+      "addGame": "+ Add Game",
+      "emptyBefore": "No games yet, go",
+      "emptyLink": "add one",
+      "emptyAfter": ""
+    },
+    "table": {
+      "rank": "Rank",
+      "name": "Name",
+      "category": "Category",
+      "rtpTarget": "RTP / Target",
+      "status": "Status",
+      "players": "Players",
+      "visible": "Visible",
+      "actions": "Actions",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "confirmDelete": "Delete game \"{name}\"? This cannot be undone.",
+      "deleteFailed": "Delete failed"
+    },
+    "form": {
+      "newTitle": "Add Game",
+      "newSubtitle": "Fill in the details to create a game. Status is derived automatically from RTP versus target.",
+      "editTitle": "Edit Game",
+      "name": "Game name *",
+      "namePlaceholder": "e.g. Cyber Wheel",
+      "category": "Category",
+      "image": "Image URL",
+      "rtp": "Current RTP (%)",
+      "targetRtp": "Target RTP (%)",
+      "playerCount": "Players",
+      "rank": "Rank weight (smaller = higher)",
+      "totalBets": "Total Bets",
+      "totalWins": "Total Wins",
+      "description": "Description",
+      "descriptionPlaceholder": "Game description…",
+      "isActive": "Active (show on the public site)",
+      "create": "Create Game",
+      "update": "Update Game",
+      "nameRequired": "Game name is required",
+      "saveFailed": "Save failed",
+      "networkError": "Network error, please retry",
+      "seoSection": "SEO settings (optional)",
+      "seoTitle": "SEO title",
+      "seoDescription": "SEO description",
+      "seoKeywords": "SEO keywords (comma-separated)"
+    }
+  },
+  "locale": {
+    "label": "Language"
+  }
+}

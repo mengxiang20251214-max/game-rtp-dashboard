@@ -51,6 +51,10 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (body.rank != null) data.rank = Number(body.rank);
     if (body.isActive != null) data.isActive = Boolean(body.isActive);
     if (body.description !== undefined) data.description = body.description || null;
+    if (body.seoTitle !== undefined) data.seoTitle = body.seoTitle || null;
+    if (body.seoDescription !== undefined)
+      data.seoDescription = body.seoDescription || null;
+    if (body.seoKeywords !== undefined) data.seoKeywords = body.seoKeywords || null;
 
     // 若 rtp 或 targetRtp 变化，重新推导状态
     const nextRtp = (data.rtp as number) ?? existing.rtp;

@@ -3,15 +3,15 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Game } from "@/types";
 import {
-  CATEGORY_LABELS,
-  STATUS_LABELS,
   rtpColor,
   formatNumber,
   formatPlayers,
   formatRtp,
   sparklinePoints,
+  BLUR_DATA_URL,
 } from "@/lib/game-utils";
 import RTPProgress from "./RTPProgress";
 import StatBadge from "./StatBadge";
@@ -23,6 +23,10 @@ const cardVariants = {
 
 export default function GameCard({ game }: { game: Game }) {
   const [imgError, setImgError] = useState(false);
+  const tCat = useTranslations("category");
+  const tStatus = useTranslations("status");
+  const tStats = useTranslations("stats");
+  const tCommon = useTranslations("common");
   const color = rtpColor(game.status);
   const points = sparklinePoints(game.trend, 100, 28);
 
@@ -41,6 +45,9 @@ export default function GameCard({ game }: { game: Game }) {
             alt={game.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
+            loading="lazy"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             onError={() => setImgError(true)}
           />
@@ -53,7 +60,7 @@ export default function GameCard({ game }: { game: Game }) {
 
         {/* 分类标签 */}
         <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 font-display text-[10px] uppercase tracking-wider text-neon-blue ring-1 ring-neon-blue/40 backdrop-blur">
-          {CATEGORY_LABELS[game.category]}
+          {tCat(game.category)}
         </span>
 
         {/* 状态指示 */}
@@ -65,7 +72,7 @@ export default function GameCard({ game }: { game: Game }) {
             className="h-1.5 w-1.5 rounded-full animate-pulse-glow"
             style={{ background: color, boxShadow: `0 0 6px ${color}` }}
           />
-          {STATUS_LABELS[game.status]}
+          {tStatus(game.status)}
         </span>
 
         {/* 排名 */}
@@ -101,10 +108,10 @@ export default function GameCard({ game }: { game: Game }) {
 
         {/* 4 个统计指标 */}
         <div className="grid grid-cols-2 gap-2">
-          <StatBadge label="当前 RTP" value={formatRtp(game.rtp)} accent="blue" />
-          <StatBadge label="目标 RTP" value={formatRtp(game.targetRtp)} accent="purple" />
-          <StatBadge label="玩家数" value={formatPlayers(game.playerCount)} accent="pink" />
-          <StatBadge label="总投注" value={formatNumber(game.totalBets)} />
+          <StatBadge label={tStats("currentRtp")} value={formatRtp(game.rtp)} accent="blue" />
+          <StatBadge label={tStats("targetRtp")} value={formatRtp(game.targetRtp)} accent="purple" />
+          <StatBadge label={tStats("players")} value={formatPlayers(game.playerCount)} accent="pink" />
+          <StatBadge label={tStats("totalBets")} value={formatNumber(game.totalBets)} />
         </div>
 
         {/* 操作按钮 */}
@@ -112,7 +119,7 @@ export default function GameCard({ game }: { game: Game }) {
           type="button"
           className="mt-auto w-full rounded-lg border border-neon-blue/30 bg-neon-blue/10 py-2 font-display text-xs font-semibold uppercase tracking-wider text-neon-blue transition-all hover:bg-neon-blue/20 hover:shadow-neon-blue"
         >
-          查看详情
+          {tCommon("viewDetails")}
         </button>
       </div>
     </motion.article>

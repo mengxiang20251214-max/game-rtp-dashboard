@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { Category } from "@/types";
-import { CATEGORY_OPTIONS } from "@/lib/game-utils";
+import { CATEGORY_FILTER_VALUES } from "@/lib/game-utils";
 
 interface CategoryFilterProps {
   active: Category | "ALL";
@@ -11,15 +12,17 @@ interface CategoryFilterProps {
 }
 
 export default function CategoryFilter({ active, counts, onChange }: CategoryFilterProps) {
+  const t = useTranslations("category");
+
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {CATEGORY_OPTIONS.map((opt) => {
-        const isActive = active === opt.value;
+      {CATEGORY_FILTER_VALUES.map((value) => {
+        const isActive = active === value;
         return (
           <button
-            key={opt.value}
+            key={value}
             type="button"
-            onClick={() => onChange(opt.value)}
+            onClick={() => onChange(value)}
             className={`relative flex items-center gap-2 rounded-full border px-5 py-2 font-display text-sm font-medium transition-all ${
               isActive
                 ? "border-neon-blue text-neon-blue shadow-neon-blue"
@@ -33,13 +36,13 @@ export default function CategoryFilter({ active, counts, onChange }: CategoryFil
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
-            {opt.label}
+            {t(value)}
             <span
               className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                 isActive ? "bg-neon-blue/20 text-neon-blue" : "bg-white/5 text-content-secondary"
               }`}
             >
-              {counts[opt.value] ?? 0}
+              {counts[value] ?? 0}
             </span>
           </button>
         );

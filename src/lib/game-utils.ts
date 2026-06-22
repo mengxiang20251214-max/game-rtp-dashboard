@@ -4,6 +4,11 @@ import type { Category, Status, Game } from "@/types";
 //  工具函数
 // ─────────────────────────────────────────────
 
+// 深色占位模糊图（加载时显示），与卡片背景同色调
+export const BLUR_DATA_URL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="5"><rect width="8" height="5" fill="#111827"/></svg>'
+)}`;
+
 export const CATEGORY_LABELS: Record<Category, string> = {
   SLOT: "老虎机",
   TABLE: "桌游",
@@ -16,6 +21,16 @@ export const CATEGORY_OPTIONS: { value: Category | "ALL"; label: string }[] = [
   { value: "TABLE", label: "桌游" },
   { value: "LIVE", label: "真人" },
 ];
+
+// 仅取值（标签由 i18n 翻译）
+export const CATEGORY_FILTER_VALUES: (Category | "ALL")[] = [
+  "ALL",
+  "SLOT",
+  "TABLE",
+  "LIVE",
+];
+
+export const CATEGORY_VALUES: Category[] = ["SLOT", "TABLE", "LIVE"];
 
 export const STATUS_LABELS: Record<Status, string> = {
   NORMAL: "正常",
@@ -101,6 +116,9 @@ export function serializeGame(record: {
   rank: number;
   isActive: boolean;
   description: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
   createdAt: Date;
   updatedAt: Date;
 }): Game {
@@ -119,6 +137,9 @@ export function serializeGame(record: {
     rank: record.rank,
     isActive: record.isActive,
     description: record.description,
+    seoTitle: record.seoTitle,
+    seoDescription: record.seoDescription,
+    seoKeywords: record.seoKeywords,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };

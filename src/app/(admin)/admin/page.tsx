@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { serializeGame, formatNumber, formatRtp } from "@/lib/game-utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminHomePage() {
+  const t = await getTranslations("admin.overview");
   const records = await prisma.game.findMany();
   const games = records.map(serializeGame);
 
@@ -17,26 +19,28 @@ export default async function AdminHomePage() {
   const totalBets = games.reduce((s, g) => s + g.totalBets, 0);
 
   const stats = [
-    { label: "游戏总数", value: String(total), accent: "text-neon-blue" },
-    { label: "激活中", value: String(active), accent: "text-rtp-success" },
-    { label: "异常 / 预警", value: String(warning), accent: "text-rtp-warning" },
-    { label: "总玩家数", value: formatNumber(players), accent: "text-neon-pink" },
-    { label: "平均 RTP", value: formatRtp(avgRtp), accent: "text-neon-purple" },
-    { label: "总投注额", value: formatNumber(totalBets), accent: "text-content-primary" },
+    { label: t("totalGames"), value: String(total), accent: "text-neon-blue" },
+    { label: t("active"), value: String(active), accent: "text-rtp-success" },
+    { label: t("warning"), value: String(warning), accent: "text-rtp-warning" },
+    { label: t("totalPlayers"), value: formatNumber(players), accent: "text-neon-pink" },
+    { label: t("avgRtp"), value: formatRtp(avgRtp), accent: "text-neon-purple" },
+    { label: t("totalBets"), value: formatNumber(totalBets), accent: "text-content-primary" },
   ];
 
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-content-primary">概览</h1>
-          <p className="mt-1 text-sm text-content-secondary">后台数据总览</p>
+          <h1 className="font-display text-2xl font-bold text-content-primary">
+            {t("title")}
+          </h1>
+          <p className="mt-1 text-sm text-content-secondary">{t("subtitle")}</p>
         </div>
         <Link
           href="/admin/games/new"
           className="rounded-lg border border-neon-blue/40 bg-neon-blue/10 px-4 py-2 font-display text-sm font-semibold text-neon-blue transition-all hover:shadow-neon-blue"
         >
-          + 添加游戏
+          {t("addGame")}
         </Link>
       </div>
 
@@ -59,7 +63,7 @@ export default async function AdminHomePage() {
           href="/admin/games"
           className="text-sm text-neon-blue hover:underline"
         >
-          前往游戏管理 →
+          {t("goToGames")}
         </Link>
       </div>
     </div>

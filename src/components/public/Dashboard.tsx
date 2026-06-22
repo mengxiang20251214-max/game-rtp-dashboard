@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import type { Category, Game } from "@/types";
 import Header from "./Header";
 import CategoryFilter from "./CategoryFilter";
 import GameGrid from "./GameGrid";
 
 export default function Dashboard({ initialGames }: { initialGames: Game[] }) {
+  const t = useTranslations("home");
   const [games, setGames] = useState<Game[]>(initialGames);
   const [active, setActive] = useState<Category | "ALL">("ALL");
   const [refreshing, setRefreshing] = useState(false);
@@ -54,12 +56,11 @@ export default function Dashboard({ initialGames }: { initialGames: Game[] }) {
         {/* 标题区 */}
         <div className="mb-8">
           <h2 className="font-display text-2xl font-bold text-content-primary sm:text-3xl">
-            游戏 <span className="text-neon-blue text-glow">RTP</span> 实时面板
+            {t("titleBefore")}
+            <span className="text-neon-blue text-glow">{t("titleHighlight")}</span>
+            {t("titleAfter")}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-content-secondary">
-            监控所有游戏的实时回报率（Return To Player），数据每次刷新自数据库读取，
-            颜色随 RTP 与目标值的偏差动态变化。
-          </p>
+          <p className="mt-2 max-w-2xl text-sm text-content-secondary">{t("subtitle")}</p>
         </div>
 
         {/* 分类筛选 */}
@@ -72,7 +73,7 @@ export default function Dashboard({ initialGames }: { initialGames: Game[] }) {
       </main>
 
       <footer className="border-t border-white/10 py-6 text-center text-xs text-content-secondary">
-        RTP 数据中枢 · 仅供演示 · {new Date().getFullYear()}
+        {t("footer", { year: new Date().getFullYear() })}
       </footer>
     </div>
   );

@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// SQLite 不支持 Prisma 原生 enum，使用 String 存储，
+// category/status 以 String 存储（沿用 SQLite 时期的约定，PostgreSQL 同样兼容），
 // 由应用层（src/types + game-utils）约束取值：
 //   category: "SLOT" | "TABLE" | "LIVE"
 //   status:   "NORMAL" | "WARNING" | "CRITICAL"
@@ -26,9 +26,27 @@ model Game {
   rank        Int      @default(0)
   isActive    Boolean  @default(true)
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  // SEO 字段（每个游戏可自定义）
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([category])
   @@index([rank])
+}
+
+// 页面级 SEO 配置（按 key 标识，如 "home"）
+model SeoConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  title       String?
+  description String?
+  keywords    String?
+  ogImage     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

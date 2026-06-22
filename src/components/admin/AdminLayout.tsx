@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 const NAV = [
-  { href: "/admin", label: "概览", exact: true },
-  { href: "/admin/games", label: "游戏管理", exact: false },
-  { href: "/admin/games/new", label: "添加游戏", exact: true },
-];
+  { href: "/admin", key: "overview", exact: true },
+  { href: "/admin/games", key: "games", exact: false },
+  { href: "/admin/games/new", key: "newGame", exact: true },
+] as const;
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const t = useTranslations("admin");
 
   // 登录页不套用后台布局
   if (pathname === "/admin/login") {
@@ -30,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="font-display text-sm font-bold text-neon-purple">R</span>
           </div>
           <span className="font-display text-sm font-bold text-content-primary">
-            后台管理
+            {t("layout.brand")}
           </span>
         </div>
 
@@ -45,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   : "text-content-secondary hover:bg-white/5 hover:text-content-primary"
               }`}
             >
-              {item.label}
+              {t(`nav.${item.key}`)}
             </Link>
           ))}
         </nav>
@@ -55,14 +57,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             href="/"
             className="mb-2 block rounded-lg px-3 py-2 text-sm text-content-secondary transition-all hover:bg-white/5 hover:text-content-primary"
           >
-            ← 返回前台
+            {t("layout.backToFront")}
           </Link>
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/admin/login" })}
             className="w-full rounded-lg border border-rtp-danger/30 px-3 py-2 text-sm text-rtp-danger transition-all hover:bg-rtp-danger/10"
           >
-            退出登录
+            {t("layout.signOut")}
           </button>
         </div>
       </aside>

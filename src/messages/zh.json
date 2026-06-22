@@ -1,0 +1,135 @@
+{
+  "common": {
+    "loading": "加载中…",
+    "viewDetails": "查看详情",
+    "cancel": "取消",
+    "save": "保存",
+    "saving": "保存中…",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "header": {
+    "title": "RTP 数据中枢",
+    "subtitle": "实时游戏回报率监控 · {version}",
+    "lastUpdated": "更新于 {time}",
+    "refresh": "刷新",
+    "refreshing": "刷新中",
+    "admin": "后台"
+  },
+  "home": {
+    "titleBefore": "游戏 ",
+    "titleHighlight": "RTP",
+    "titleAfter": " 实时面板",
+    "subtitle": "监控所有游戏的实时回报率（Return To Player），数据每次刷新自数据库读取，颜色随 RTP 与目标值的偏差动态变化。",
+    "footer": "RTP 数据中枢 · 仅供演示 · {year}"
+  },
+  "category": {
+    "ALL": "全部",
+    "SLOT": "老虎机",
+    "TABLE": "桌游",
+    "LIVE": "真人"
+  },
+  "status": {
+    "NORMAL": "正常",
+    "WARNING": "预警",
+    "CRITICAL": "异常"
+  },
+  "stats": {
+    "currentRtp": "当前 RTP",
+    "targetRtp": "目标 RTP",
+    "players": "玩家数",
+    "totalBets": "总投注"
+  },
+  "rtp": {
+    "realtime": "实时 RTP",
+    "target": "目标 {value}"
+  },
+  "grid": {
+    "empty": "该分类下暂无游戏"
+  },
+  "admin": {
+    "login": {
+      "title": "后台登录",
+      "subtitle": "请输入管理员密码以继续",
+      "password": "密码",
+      "submit": "登录",
+      "submitting": "登录中…",
+      "error": "密码错误，请重试",
+      "hint": "默认密码：{password}"
+    },
+    "layout": {
+      "brand": "后台管理",
+      "backToFront": "← 返回前台",
+      "signOut": "退出登录"
+    },
+    "nav": {
+      "overview": "概览",
+      "games": "游戏管理",
+      "newGame": "添加游戏"
+    },
+    "overview": {
+      "title": "概览",
+      "subtitle": "后台数据总览",
+      "addGame": "+ 添加游戏",
+      "totalGames": "游戏总数",
+      "active": "激活中",
+      "warning": "异常 / 预警",
+      "totalPlayers": "总玩家数",
+      "avgRtp": "平均 RTP",
+      "totalBets": "总投注额",
+      "goToGames": "前往游戏管理 →"
+    },
+    "games": {
+      "title": "游戏管理",
+      "subtitle": "共 {count} 个游戏 · 可调整排名 / 编辑 / 删除",
+      "addGame": "+ 添加游戏",
+      "emptyBefore": "暂无游戏，去",
+      "emptyLink": "添加一个",
+      "emptyAfter": "吧"
+    },
+    "table": {
+      "rank": "排名",
+      "name": "名称",
+      "category": "分类",
+      "rtpTarget": "RTP / 目标",
+      "status": "状态",
+      "players": "玩家",
+      "visible": "显示",
+      "actions": "操作",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "confirmDelete": "确认删除游戏「{name}」？此操作不可撤销。",
+      "deleteFailed": "删除失败"
+    },
+    "form": {
+      "newTitle": "添加游戏",
+      "newSubtitle": "填写信息以创建新游戏，状态将根据 RTP 与目标值自动推导。",
+      "editTitle": "编辑游戏",
+      "name": "游戏名称 *",
+      "namePlaceholder": "例如：赛博之轮",
+      "category": "分类",
+      "image": "图片 URL",
+      "rtp": "当前 RTP (%)",
+      "targetRtp": "目标 RTP (%)",
+      "playerCount": "玩家数",
+      "rank": "排名权重（越小越靠前）",
+      "totalBets": "总投注",
+      "totalWins": "总赢额",
+      "description": "描述",
+      "descriptionPlaceholder": "游戏简介…",
+      "isActive": "激活（前台展示此游戏）",
+      "create": "创建游戏",
+      "update": "更新游戏",
+      "nameRequired": "游戏名称不能为空",
+      "saveFailed": "保存失败",
+      "networkError": "网络错误，请重试",
+      "seoSection": "SEO 设置（选填）",
+      "seoTitle": "SEO 标题",
+      "seoDescription": "SEO 描述",
+      "seoKeywords": "SEO 关键词（逗号分隔）"
+    }
+  },
+  "locale": {
+    "label": "语言"
+  }
+}

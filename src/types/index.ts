@@ -20,6 +20,9 @@ export interface Game {
   rank: number;
   isActive: boolean;
   description: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,10 +41,33 @@ export interface GameInput {
   rank?: number;
   isActive?: boolean;
   description?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoKeywords?: string | null;
 }
 
 // 更新游戏（全部可选）
 export type GameUpdateInput = Partial<GameInput>;
+
+// 页面级 SEO 配置
+export interface SeoConfig {
+  id: string;
+  key: string;
+  title: string | null;
+  description: string | null;
+  keywords: string | null;
+  ogImage: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SeoConfigInput {
+  key: string;
+  title?: string | null;
+  description?: string | null;
+  keywords?: string | null;
+  ogImage?: string | null;
+}
 
 // 分类筛选选项
 export interface CategoryOption {

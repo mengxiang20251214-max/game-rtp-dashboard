@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { serializeGame } from "@/lib/game-utils";
 import GameForm from "@/components/admin/GameForm";
@@ -10,6 +11,7 @@ export default async function EditGamePage({
 }: {
   params: { id: string };
 }) {
+  const t = await getTranslations("admin.form");
   const record = await prisma.game.findUnique({ where: { id: params.id } });
   if (!record) notFound();
 
@@ -18,7 +20,9 @@ export default async function EditGamePage({
   return (
     <div>
       <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-content-primary">编辑游戏</h1>
+        <h1 className="font-display text-2xl font-bold text-content-primary">
+          {t("editTitle")}
+        </h1>
         <p className="mt-1 text-sm text-content-secondary">{game.name}</p>
       </div>
       <GameForm game={game} />

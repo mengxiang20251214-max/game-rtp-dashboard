@@ -1,0 +1,135 @@
+{
+  "common": {
+    "loading": "Memuat…",
+    "viewDetails": "Lihat Detail",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "saving": "Menyimpan…",
+    "edit": "Ubah",
+    "delete": "Hapus"
+  },
+  "header": {
+    "title": "Pusat RTP",
+    "subtitle": "Pemantau return-to-player game secara langsung · {version}",
+    "lastUpdated": "Diperbarui {time}",
+    "refresh": "Segarkan",
+    "refreshing": "Menyegarkan",
+    "admin": "Admin"
+  },
+  "home": {
+    "titleBefore": "Panel ",
+    "titleHighlight": "RTP",
+    "titleAfter": " Langsung",
+    "subtitle": "Pantau Return To Player setiap game secara langsung. Data dibaca segar dari basis data setiap kali disegarkan, dan warna berubah dinamis sesuai selisih antara RTP dan target.",
+    "footer": "Pusat RTP · Demo saja · {year}"
+  },
+  "category": {
+    "ALL": "Semua",
+    "SLOT": "Slot",
+    "TABLE": "Meja",
+    "LIVE": "Langsung"
+  },
+  "status": {
+    "NORMAL": "Normal",
+    "WARNING": "Peringatan",
+    "CRITICAL": "Kritis"
+  },
+  "stats": {
+    "currentRtp": "RTP Saat Ini",
+    "targetRtp": "RTP Target",
+    "players": "Pemain",
+    "totalBets": "Total Taruhan"
+  },
+  "rtp": {
+    "realtime": "RTP Langsung",
+    "target": "Target {value}"
+  },
+  "grid": {
+    "empty": "Tidak ada game di kategori ini"
+  },
+  "admin": {
+    "login": {
+      "title": "Login Admin",
+      "subtitle": "Masukkan kata sandi administrator untuk melanjutkan",
+      "password": "Kata sandi",
+      "submit": "Masuk",
+      "submitting": "Sedang masuk…",
+      "error": "Kata sandi salah, silakan coba lagi",
+      "hint": "Kata sandi default: {password}"
+    },
+    "layout": {
+      "brand": "Panel Admin",
+      "backToFront": "← Kembali ke situs",
+      "signOut": "Keluar"
+    },
+    "nav": {
+      "overview": "Ringkasan",
+      "games": "Kelola Game",
+      "newGame": "Tambah Game"
+    },
+    "overview": {
+      "title": "Ringkasan",
+      "subtitle": "Ringkasan data dasbor",
+      "addGame": "+ Tambah Game",
+      "totalGames": "Total Game",
+      "active": "Aktif",
+      "warning": "Kritis / Peringatan",
+      "totalPlayers": "Total Pemain",
+      "avgRtp": "RTP Rata-rata",
+      "totalBets": "Total Taruhan",
+      "goToGames": "Ke kelola game →"
+    },
+    "games": {
+      "title": "Kelola Game",
+      "subtitle": "{count} game · ubah urutan / edit / hapus",
+      "addGame": "+ Tambah Game",
+      "emptyBefore": "Belum ada game, ayo",
+      "emptyLink": "tambahkan satu",
+      "emptyAfter": ""
+    },
+    "table": {
+      "rank": "Peringkat",
+      "name": "Nama",
+      "category": "Kategori",
+      "rtpTarget": "RTP / Target",
+      "status": "Status",
+      "players": "Pemain",
+      "visible": "Tampil",
+      "actions": "Aksi",
+      "moveUp": "Naik",
+      "moveDown": "Turun",
+      "confirmDelete": "Hapus game \"{name}\"? Tindakan ini tidak dapat dibatalkan.",
+      "deleteFailed": "Gagal menghapus"
+    },
+    "form": {
+      "newTitle": "Tambah Game",
+      "newSubtitle": "Isi detail untuk membuat game. Status ditentukan otomatis dari RTP terhadap target.",
+      "editTitle": "Ubah Game",
+      "name": "Nama game *",
+      "namePlaceholder": "mis. Cyber Wheel",
+      "category": "Kategori",
+      "image": "URL Gambar",
+      "rtp": "RTP Saat Ini (%)",
+      "targetRtp": "RTP Target (%)",
+      "playerCount": "Pemain",
+      "rank": "Bobot peringkat (lebih kecil = lebih atas)",
+      "totalBets": "Total Taruhan",
+      "totalWins": "Total Menang",
+      "description": "Deskripsi",
+      "descriptionPlaceholder": "Deskripsi game…",
+      "isActive": "Aktif (tampilkan di situs publik)",
+      "create": "Buat Game",
+      "update": "Perbarui Game",
+      "nameRequired": "Nama game wajib diisi",
+      "saveFailed": "Gagal menyimpan",
+      "networkError": "Kesalahan jaringan, coba lagi",
+      "seoSection": "Pengaturan SEO (opsional)",
+      "seoTitle": "Judul SEO",
+      "seoDescription": "Deskripsi SEO",
+      "seoKeywords": "Kata kunci SEO (pisahkan koma)"
+    }
+  },
+  "locale": {
+    "label": "Bahasa"
+  }
+}

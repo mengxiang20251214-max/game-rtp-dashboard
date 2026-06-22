@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 interface HeaderProps {
   onRefresh?: () => void;
@@ -12,6 +14,8 @@ interface HeaderProps {
 const VERSION = "v1.0.0";
 
 export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderProps) {
+  const t = useTranslations("header");
+
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-bg-primary/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
@@ -27,10 +31,10 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
           </motion.div>
           <div className="leading-tight">
             <h1 className="font-display text-lg font-bold text-content-primary text-glow sm:text-xl">
-              RTP 数据中枢
+              {t("title")}
             </h1>
             <p className="text-[11px] text-content-secondary">
-              实时游戏回报率监控 · {VERSION}
+              {t("subtitle", { version: VERSION })}
             </p>
           </div>
         </div>
@@ -39,9 +43,11 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
         <div className="flex items-center gap-2 sm:gap-3">
           {lastUpdated && (
             <span className="hidden text-[11px] text-content-secondary sm:inline">
-              更新于 {lastUpdated}
+              {t("lastUpdated", { time: lastUpdated })}
             </span>
           )}
+
+          <LocaleSwitcher />
 
           {onRefresh && (
             <button
@@ -62,7 +68,9 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
                 <path d="M21 12a9 9 0 1 1-2.64-6.36" />
                 <path d="M21 3v6h-6" />
               </svg>
-              <span className="hidden sm:inline">{refreshing ? "刷新中" : "刷新"}</span>
+              <span className="hidden sm:inline">
+                {refreshing ? t("refreshing") : t("refresh")}
+              </span>
             </button>
           )}
 
@@ -70,7 +78,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
             href="/admin"
             className="rounded-lg border border-neon-purple/40 bg-neon-purple/10 px-3 py-2 font-display text-xs font-semibold text-neon-purple transition-all hover:shadow-neon-purple"
           >
-            后台
+            {t("admin")}
           </Link>
         </div>
       </div>

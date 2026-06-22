@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function LoginForm() {
+  const t = useTranslations("admin.login");
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
@@ -26,7 +28,7 @@ export default function LoginForm() {
     setLoading(false);
 
     if (res?.error) {
-      setError("密码错误，请重试");
+      setError(t("error"));
     } else {
       router.push(callbackUrl);
       router.refresh();
@@ -44,14 +46,14 @@ export default function LoginForm() {
             <span className="font-display text-xl font-bold text-neon-blue">R</span>
           </div>
           <h1 className="font-display text-xl font-bold text-content-primary">
-            后台登录
+            {t("title")}
           </h1>
-          <p className="mt-1 text-xs text-content-secondary">
-            请输入管理员密码以继续
-          </p>
+          <p className="mt-1 text-xs text-content-secondary">{t("subtitle")}</p>
         </div>
 
-        <label className="mb-1.5 block text-xs text-content-secondary">密码</label>
+        <label className="mb-1.5 block text-xs text-content-secondary">
+          {t("password")}
+        </label>
         <input
           type="password"
           value={password}
@@ -68,11 +70,11 @@ export default function LoginForm() {
           disabled={loading || !password}
           className="mt-5 w-full rounded-lg border border-neon-blue/40 bg-neon-blue/10 py-2.5 font-display text-sm font-semibold uppercase tracking-wider text-neon-blue transition-all hover:bg-neon-blue/20 hover:shadow-neon-blue disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading ? "登录中…" : "登录"}
+          {loading ? t("submitting") : t("submit")}
         </button>
 
         <p className="mt-4 text-center text-[11px] text-content-secondary">
-          默认密码：<span className="text-content-primary">admin123</span>
+          {t("hint", { password: "admin123" })}
         </p>
       </form>
     </div>

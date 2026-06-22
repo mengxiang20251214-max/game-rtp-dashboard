@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { Status } from "@/types";
-import { rtpColor, rtpPercent, formatRtp } from "@/lib/game-utils";
+import { rtpColor, formatRtp } from "@/lib/game-utils";
 
 interface RTPProgressProps {
   rtp: number;
@@ -11,10 +12,9 @@ interface RTPProgressProps {
 }
 
 export default function RTPProgress({ rtp, targetRtp, status }: RTPProgressProps) {
+  const t = useTranslations("rtp");
   const color = rtpColor(status);
-  const percent = rtpPercent(rtp, targetRtp);
-  // 目标线位置（targetRtp 永远是 100% 参考刻度，所以目标线在 100%）
-  // 改为以 max(rtp,target)*1.02 为满量程，使目标线可见
+  // 以 max(rtp,target)*1.02 为满量程，使目标线可见
   const scaleMax = Math.max(rtp, targetRtp) * 1.02;
   const fillPct = scaleMax > 0 ? Math.min(100, (rtp / scaleMax) * 100) : 0;
   const targetPct = scaleMax > 0 ? Math.min(100, (targetRtp / scaleMax) * 100) : 0;
@@ -23,7 +23,7 @@ export default function RTPProgress({ rtp, targetRtp, status }: RTPProgressProps
     <div className="w-full">
       <div className="mb-1.5 flex items-baseline justify-between">
         <span className="text-[10px] uppercase tracking-wider text-content-secondary">
-          实时 RTP
+          {t("realtime")}
         </span>
         <span
           className="font-display text-base font-bold"
@@ -48,13 +48,13 @@ export default function RTPProgress({ rtp, targetRtp, status }: RTPProgressProps
         <div
           className="absolute top-0 h-full w-px bg-white/70"
           style={{ left: `${targetPct}%` }}
-          title={`目标 ${formatRtp(targetRtp)}`}
+          title={t("target", { value: formatRtp(targetRtp) })}
         />
       </div>
 
       <div className="mt-1 flex justify-end">
         <span className="text-[10px] text-content-secondary">
-          目标 {formatRtp(targetRtp)}
+          {t("target", { value: formatRtp(targetRtp) })}
         </span>
       </div>
     </div>
