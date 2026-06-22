@@ -32,11 +32,40 @@ model Game {
   seoDescription String?
   seoKeywords    String?
 
+  // 分类外键（与 category 字符串同步；category 仍作展示/筛选代码用）
+  categoryId  String?
+  categoryRef Category? @relation(fields: [categoryId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([category])
   @@index([rank])
+  @@index([categoryId])
+}
+
+// 游戏分类（后台可管理，前台动态读取）
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique // 代码，如 SLOT/TABLE/LIVE/POKER/CASUAL 或自定义
+  label     String // 显示名（前台固定印尼语）
+  icon      String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  games     Game[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+// 站点设置（按 key 存储：标题 / Logo / Copyright 等）
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String // 文本，或 image 类型的 base64 data URL
+  type      String   @default("text") // text | image
+  updatedAt DateTime @updatedAt
 }
 
 // 页面级 SEO 配置（按 key 标识，如 "home"）

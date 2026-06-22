@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { serializeGame } from "@/lib/game-utils";
+import { getActiveCategories } from "@/lib/site";
 import GameForm from "@/components/admin/GameForm";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ export default async function EditGamePage({
   if (!record) notFound();
 
   const game = serializeGame(record);
+  const categories = await getActiveCategories();
 
   return (
     <div>
@@ -31,7 +33,7 @@ export default async function EditGamePage({
         </h1>
         <p className="mt-1 text-sm text-content-secondary">{game.name}</p>
       </div>
-      <GameForm game={game} />
+      <GameForm game={game} categories={categories} />
     </div>
   );
 }

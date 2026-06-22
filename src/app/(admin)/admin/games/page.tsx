@@ -10,8 +10,12 @@ export default async function AdminGamesPage() {
   const t = await getTranslations("admin.games");
   const records = await prisma.game.findMany({
     orderBy: [{ rank: "asc" }, { createdAt: "desc" }],
+    include: { categoryRef: true },
   });
-  const games = records.map(serializeGame);
+  const games = records.map((r) => ({
+    ...serializeGame(r),
+    categoryLabel: r.categoryRef?.label ?? r.category,
+  }));
 
   return (
     <div>

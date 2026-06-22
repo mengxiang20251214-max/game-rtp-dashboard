@@ -67,7 +67,45 @@
     "nav": {
       "overview": "概览",
       "games": "游戏管理",
-      "newGame": "添加游戏"
+      "newGame": "添加游戏",
+      "categories": "🏷️ 分类管理",
+      "settings": "⚙️ 站点设置"
+    },
+    "categories": {
+      "title": "分类管理",
+      "subtitle": "管理游戏分类（前台筛选与游戏归类）",
+      "addTitle": "新增分类",
+      "editTitle": "编辑分类",
+      "code": "代码",
+      "label": "显示名",
+      "icon": "图标",
+      "sortOrder": "排序",
+      "active": "启用",
+      "gameCount": "游戏数",
+      "actions": "操作",
+      "create": "创建",
+      "update": "保存",
+      "cancel": "取消",
+      "edit": "编辑",
+      "delete": "删除",
+      "required": "代码与显示名不能为空",
+      "saveFailed": "保存失败",
+      "deleteFailed": "删除失败",
+      "confirmDelete": "确认删除分类「{label}」？"
+    },
+    "settings": {
+      "title": "站点设置",
+      "subtitle": "网站标题、Logo、底部版权",
+      "siteTitle": "网站标题",
+      "copyright": "底部版权文字",
+      "logo": "网站 Logo / Favicon",
+      "logoHint": "上传图片（PNG/SVG/WebP，≤300KB）",
+      "logoTooLarge": "图片过大（请 ≤300KB）",
+      "removeLogo": "移除 Logo",
+      "save": "保存",
+      "saving": "保存中…",
+      "saved": "已保存，前台刷新后生效",
+      "saveFailed": "保存失败"
     },
     "overview": {
       "title": "概览",

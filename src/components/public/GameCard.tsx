@@ -26,7 +26,6 @@ const cardVariants = {
 
 export default function GameCard({ game }: { game: Game }) {
   const [imgError, setImgError] = useState(false);
-  const tCat = useTranslations("category");
   const tStats = useTranslations("stats");
   const tCommon = useTranslations("common");
   const color = rtpColor(game.status);
@@ -68,7 +67,7 @@ export default function GameCard({ game }: { game: Game }) {
 
         {/* 分类标签 */}
         <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 font-display text-[10px] uppercase tracking-wider text-neon-blue ring-1 ring-neon-blue/40 backdrop-blur">
-          {tCat(game.category)}
+          {game.categoryLabel || game.category}
         </span>
 
         {/* 用户友好状态徽章 */}

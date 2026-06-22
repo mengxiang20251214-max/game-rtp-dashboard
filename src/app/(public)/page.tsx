@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { serializeGame } from "@/lib/game-utils";
+import { getActiveCategories, getSiteSettings } from "@/lib/site";
 import Dashboard from "@/components/public/Dashboard";
 import LoadingSkeleton from "@/components/public/LoadingSkeleton";
 
@@ -44,13 +45,29 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // 数据加载组件：在数据就绪前由 Suspense 显示骨架屏
 async function GamesDashboard() {
-  const records = await prisma.game.findMany({
-    where: { isActive: true },
-    orderBy: [{ rank: "asc" }, { createdAt: "desc" }],
-  });
-  const games = records.map(serializeGame);
+  const [records, categories, settings] = await Promise.all([
+    prisma.game.findMany({
+      where: { isActive: true },
+      orderBy: [{ rank: "asc" }, { createdAt: "desc" }],
+      include: { categoryRef: true },
+    }),
+    getActiveCategories(),
+    getSiteSettings(),
+  ]);
 
-  return <Dashboard initialGames={games} />;
+  const labelByName = new Map(categories.map((c) => [c.name, c.label]));
+  const games = records.map((r) => ({
+    ...serializeGame(r),
+    categoryLabel: r.categoryRef?.label ?? labelByName.get(r.category) ?? r.category,
+  }));
+
+  return (
+    <Dashboard
+      initialGames={games}
+      categories={categories}
+      copyright={settings.copyright}
+    />
+  );
 }
 
 export default function HomePage() {

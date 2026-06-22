@@ -46,9 +46,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "游戏名称不能为空" }, { status: 400 });
     }
 
-    const category: Category = VALID_CATEGORIES.includes(body.category)
-      ? body.category
-      : "SLOT";
+    // 分类校验：以数据库分类为准（支持自定义分类），回退内置白名单
+    const requested = String(body.category ?? "").trim().toUpperCase();
+    const catRow =
+      (requested && (await prisma.category.findUnique({ where: { name: requested } }))) || null;
+    const category: string = catRow
+      ? catRow.name
+      : VALID_CATEGORIES.includes(requested as Category)
+        ? requested
+        : "SLOT";
 
     const rtp = Number(body.rtp ?? 0);
     const targetRtp = Number(body.targetRtp ?? 96.5);
@@ -61,6 +67,7 @@ export async function POST(req: NextRequest) {
       data: {
         name,
         category,
+        categoryId: catRow?.id ?? null,
         image: body.image || null,
         rtp,
         targetRtp,

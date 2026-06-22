@@ -23,6 +23,7 @@ export interface Game {
   seoTitle: string | null;
   seoDescription: string | null;
   seoKeywords: string | null;
+  categoryLabel?: string; // 来自 Category.label（前台展示用，运行时附加）
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +49,23 @@ export interface GameInput {
 
 // 更新游戏（全部可选）
 export type GameUpdateInput = Partial<GameInput>;
+
+// 游戏分类（数据库实体；与字符串联合类型 Category 区分）
+export interface CategoryItem {
+  id: string;
+  name: string;
+  label: string;
+  icon: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+// 站点设置
+export interface SiteSettings {
+  siteTitle: string;
+  copyright: string;
+  logo: string; // base64 data URL 或空
+}
 
 // 页面级 SEO 配置
 export interface SeoConfig {

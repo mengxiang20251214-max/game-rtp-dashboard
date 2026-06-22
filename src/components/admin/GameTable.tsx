@@ -10,7 +10,6 @@ import { rtpColor, formatRtp, formatPlayers } from "@/lib/game-utils";
 export default function GameTable({ initialGames }: { initialGames: Game[] }) {
   const router = useRouter();
   const t = useTranslations("admin.table");
-  const tCat = useTranslations("category");
   const tStatus = useTranslations("status");
   const tCommon = useTranslations("common");
   const [games, setGames] = useState<Game[]>(initialGames);
@@ -117,7 +116,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                 </td>
                 <td className="px-4 py-3 font-medium text-content-primary">{g.name}</td>
                 <td className="px-4 py-3 text-content-secondary">
-                  {tCat(g.category)}
+                  {g.categoryLabel || g.category}
                 </td>
                 <td className="px-4 py-3">
                   <span style={{ color }} className="font-display font-semibold">

@@ -10,6 +10,8 @@ const NAV = [
   { href: "/admin", key: "overview", exact: true },
   { href: "/admin/games", key: "games", exact: false },
   { href: "/admin/games/new", key: "newGame", exact: true },
+  { href: "/admin/categories", key: "categories", exact: false },
+  { href: "/admin/settings", key: "settings", exact: false },
 ] as const;
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

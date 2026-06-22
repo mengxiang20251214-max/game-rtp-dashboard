@@ -39,8 +39,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
     const data: Record<string, unknown> = {};
     if (body.name != null) data.name = String(body.name).trim();
-    if (body.category != null && VALID_CATEGORIES.includes(body.category))
-      data.category = body.category;
+    if (body.category != null) {
+      const requested = String(body.category).trim().toUpperCase();
+      const catRow = await prisma.category.findUnique({ where: { name: requested } });
+      if (catRow || VALID_CATEGORIES.includes(requested as Category)) {
+        data.category = catRow ? catRow.name : requested;
+        data.categoryId = catRow?.id ?? null;
+      }
+    }
     if (body.image !== undefined) data.image = body.image || null;
     if (body.rtp != null) data.rtp = Number(body.rtp);
     if (body.targetRtp != null) data.targetRtp = Number(body.targetRtp);

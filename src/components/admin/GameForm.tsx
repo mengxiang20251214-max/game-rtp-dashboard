@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { Category, Game } from "@/types";
-import { CATEGORY_VALUES } from "@/lib/game-utils";
+import type { Category, CategoryItem, Game } from "@/types";
 
 type FormState = {
   name: string;
@@ -46,10 +45,15 @@ const inputCls =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-content-primary outline-none transition-all focus:border-neon-blue focus:shadow-neon-blue";
 const labelCls = "mb-1.5 block text-xs text-content-secondary";
 
-export default function GameForm({ game }: { game?: Game }) {
+export default function GameForm({
+  game,
+  categories,
+}: {
+  game?: Game;
+  categories: CategoryItem[];
+}) {
   const router = useRouter();
   const t = useTranslations("admin.form");
-  const tCat = useTranslations("category");
   const tCommon = useTranslations("common");
   const isEdit = Boolean(game);
   const [form, setForm] = useState<FormState>(() => toFormState(game));
@@ -134,9 +138,10 @@ export default function GameForm({ game }: { game?: Game }) {
             value={form.category}
             onChange={(e) => update("category", e.target.value as Category)}
           >
-            {CATEGORY_VALUES.map((value) => (
-              <option key={value} value={value} className="bg-bg-card">
-                {tCat(value)}
+            {categories.map((c) => (
+              <option key={c.id} value={c.name} className="bg-bg-card">
+                {c.icon ? `${c.icon} ` : ""}
+                {c.label}
               </option>
             ))}
           </select>

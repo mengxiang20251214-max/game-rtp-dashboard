@@ -67,7 +67,45 @@
     "nav": {
       "overview": "Ringkasan",
       "games": "Kelola Game",
-      "newGame": "Tambah Game"
+      "newGame": "Tambah Game",
+      "categories": "🏷️ Kategori",
+      "settings": "⚙️ Pengaturan"
+    },
+    "categories": {
+      "title": "Manajemen Kategori",
+      "subtitle": "Kelola kategori game (filter & pengelompokan di front-end)",
+      "addTitle": "Tambah Kategori",
+      "editTitle": "Ubah Kategori",
+      "code": "Kode",
+      "label": "Label",
+      "icon": "Ikon",
+      "sortOrder": "Urutan",
+      "active": "Aktif",
+      "gameCount": "Game",
+      "actions": "Aksi",
+      "create": "Buat",
+      "update": "Simpan",
+      "cancel": "Batal",
+      "edit": "Ubah",
+      "delete": "Hapus",
+      "required": "Kode dan label wajib diisi",
+      "saveFailed": "Gagal menyimpan",
+      "deleteFailed": "Gagal menghapus",
+      "confirmDelete": "Hapus kategori \"{label}\"?"
+    },
+    "settings": {
+      "title": "Pengaturan Situs",
+      "subtitle": "Judul situs, logo, hak cipta footer",
+      "siteTitle": "Judul Situs",
+      "copyright": "Hak Cipta Footer",
+      "logo": "Logo / Favicon Situs",
+      "logoHint": "Unggah gambar (PNG/SVG/WebP, ≤300KB)",
+      "logoTooLarge": "Gambar terlalu besar (≤300KB)",
+      "removeLogo": "Hapus logo",
+      "save": "Simpan",
+      "saving": "Menyimpan…",
+      "saved": "Tersimpan — segarkan situs untuk melihat perubahan",
+      "saveFailed": "Gagal menyimpan"
     },
     "overview": {
       "title": "Ringkasan",

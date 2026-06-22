@@ -67,7 +67,45 @@
     "nav": {
       "overview": "Overview",
       "games": "Manage Games",
-      "newGame": "Add Game"
+      "newGame": "Add Game",
+      "categories": "🏷️ Categories",
+      "settings": "⚙️ Settings"
+    },
+    "categories": {
+      "title": "Category Management",
+      "subtitle": "Manage game categories (front-end filter & grouping)",
+      "addTitle": "Add Category",
+      "editTitle": "Edit Category",
+      "code": "Code",
+      "label": "Label",
+      "icon": "Icon",
+      "sortOrder": "Order",
+      "active": "Active",
+      "gameCount": "Games",
+      "actions": "Actions",
+      "create": "Create",
+      "update": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "required": "Code and label are required",
+      "saveFailed": "Save failed",
+      "deleteFailed": "Delete failed",
+      "confirmDelete": "Delete category \"{label}\"?"
+    },
+    "settings": {
+      "title": "Site Settings",
+      "subtitle": "Site title, logo, footer copyright",
+      "siteTitle": "Site Title",
+      "copyright": "Footer Copyright",
+      "logo": "Site Logo / Favicon",
+      "logoHint": "Upload image (PNG/SVG/WebP, ≤300KB)",
+      "logoTooLarge": "Image too large (≤300KB)",
+      "removeLogo": "Remove logo",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved — refresh the site to see changes",
+      "saveFailed": "Save failed"
     },
     "overview": {
       "title": "Overview",
