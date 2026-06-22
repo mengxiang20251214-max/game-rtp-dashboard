@@ -48,6 +48,8 @@ export default function GameCard({ game }: { game: Game }) {
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
             loading="lazy"
+            // picsum 等占位随机图直接由浏览器加载，绕过 next/image 优化器（更快更稳）
+            unoptimized={game.image.includes("picsum.photos")}
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             onError={() => setImgError(true)}
           />

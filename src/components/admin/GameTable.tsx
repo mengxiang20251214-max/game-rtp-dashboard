@@ -150,7 +150,7 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
                     <Link
-                      href={`/admin/games/${g.id}/edit`}
+                      href={`/admin/games/edit?id=${encodeURIComponent(g.id)}`}
                       className="rounded-md border border-white/10 px-3 py-1 text-xs text-content-secondary transition-all hover:border-neon-blue/40 hover:text-neon-blue"
                     >
                       {tCommon("edit")}
