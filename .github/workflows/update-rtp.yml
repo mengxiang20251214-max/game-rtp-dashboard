@@ -1,0 +1,22 @@
+name: Update RTP every 5 minutes
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update-rtp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call update-rtp endpoint
+        env:
+          CRON_SECRET: ${{secrets.CRON_SECRET}}
+          SITE_URL: ${{secrets.SITE_URL}}
+        run: |
+          BASE="${SITE_URL:-https://game-rtp-dashboard.vercel.app}"
+          code=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
+            "$BASE/api/cron/update-rtp" -H "Authorization: Bearer $CRON_SECRET")
+          echo "HTTP $code"
+          cat /tmp/resp.json
+          test "$code" = "200"
