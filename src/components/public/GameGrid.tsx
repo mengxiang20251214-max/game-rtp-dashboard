@@ -21,9 +21,10 @@ const cardVariants = {
 interface GameGridProps {
   games: Game[];
   sectionTitle?: string;
+  resetKey?: unknown;   // 透传给 GameCard，用于排序切换时重启 count-up
 }
 
-export default function GameGrid({ games, sectionTitle }: GameGridProps) {
+export default function GameGrid({ games, sectionTitle, resetKey }: GameGridProps) {
   const t = useTranslations("grid");
 
   if (games.length === 0) {
@@ -89,6 +90,7 @@ export default function GameGrid({ games, sectionTitle }: GameGridProps) {
               <GameCard
                 game={game}
                 isFeature={i === featureIdx}
+                resetKey={resetKey}
               />
             </motion.div>
           ))}

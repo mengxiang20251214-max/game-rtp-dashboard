@@ -50,6 +50,12 @@
   "grid": {
     "empty": "该分类下暂无游戏"
   },
+  "sort": {
+    "composite": "综合",
+    "hot": "最热",
+    "new": "最新",
+    "rtp": "高RTP"
+  },
   "admin": {
     "login": {
       "title": "后台登录",

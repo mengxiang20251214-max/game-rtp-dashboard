@@ -3,11 +3,56 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import type { CategoryItem, Game } from "@/types";
+import { SORT_MODES, normalizeSort, type SortMode } from "@/lib/ranking";
 import { useLoading } from "@/hooks/useLoading";
 import LoadingScreen from "./LoadingScreen";
 import Header from "./Header";
 import CategoryFilter from "./CategoryFilter";
 import GameGrid from "./GameGrid";
+
+const SORT_STORAGE_KEY = "x168-sort-mode";
+
+// ── 排序切换胶囊组 ────────────────────────────────────────────────
+function SortSwitcher({
+  active,
+  onChange,
+}: {
+  active: SortMode;
+  onChange: (m: SortMode) => void;
+}) {
+  const t = useTranslations("sort");
+  return (
+    <div className="scrollbar-none -mx-3 flex gap-2 overflow-x-auto px-3 sm:mx-0 sm:px-0">
+      {SORT_MODES.map((mode) => {
+        const isActive = mode === active;
+        return (
+          <button
+            key={mode}
+            type="button"
+            onClick={() => onChange(mode)}
+            className="shrink-0 rounded-full px-4 py-2 font-display text-[12px] font-semibold transition-all"
+            style={
+              isActive
+                ? {
+                    border: "1px solid rgba(55,182,255,0.55)",
+                    background: "rgba(55,182,255,0.12)",
+                    color: "#37b6ff",
+                    boxShadow: "0 0 16px rgba(55,182,255,0.18)",
+                  }
+                : {
+                    border: "1px solid rgba(174,184,208,0.14)",
+                    background: "transparent",
+                    color: "#8b96b4",
+                  }
+            }
+          >
+            {t(mode)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 interface DashboardProps {
   initialGames: Game[];
@@ -112,9 +157,48 @@ export default function Dashboard({
   const { ready } = useLoading();
   const [games, setGames] = useState<Game[]>(initialGames);
   const [active, setActive] = useState<string>("ALL");
+  const [sort, setSort] = useState<SortMode>("composite");
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>(() =>
     new Date().toLocaleTimeString("id-ID", { hour12: false })
+  );
+
+  // 拉取指定排序模式的列表（前端零二次排序，按接口返回顺序渲染）
+  const fetchSorted = useCallback(async (mode: SortMode) => {
+    setRefreshing(true);
+    try {
+      const res = await fetch(`/api/games?sort=${mode}`, { cache: "no-store" });
+      const json = await res.json();
+      if (json.ok) {
+        setGames(json.data as Game[]);
+        setLastUpdated(new Date().toLocaleTimeString("id-ID", { hour12: false }));
+      }
+    } catch (err) {
+      console.error("排序拉取失败:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  // 初次挂载：恢复上次所选排序模式（localStorage）
+  useEffect(() => {
+    const saved = normalizeSort(
+      typeof window !== "undefined" ? localStorage.getItem(SORT_STORAGE_KEY) : null
+    );
+    if (saved !== "composite") {
+      setSort(saved);
+      void fetchSorted(saved);
+    }
+  }, [fetchSorted]);
+
+  const handleSort = useCallback(
+    (mode: SortMode) => {
+      if (mode === sort) return;
+      setSort(mode);
+      if (typeof window !== "undefined") localStorage.setItem(SORT_STORAGE_KEY, mode);
+      void fetchSorted(mode);
+    },
+    [sort, fetchSorted]
   );
 
   const counts = useMemo(() => {
@@ -129,21 +213,7 @@ export default function Dashboard({
     [games, active]
   );
 
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const res = await fetch("/api/games", { cache: "no-store" });
-      const json = await res.json();
-      if (json.ok) {
-        setGames(json.data as Game[]);
-        setLastUpdated(new Date().toLocaleTimeString("id-ID", { hour12: false }));
-      }
-    } catch (err) {
-      console.error("刷新失败:", err);
-    } finally {
-      setRefreshing(false);
-    }
-  }, []);
+  const handleRefresh = useCallback(() => fetchSorted(sort), [fetchSorted, sort]);
 
   if (!ready) return <LoadingScreen />;
 
@@ -188,9 +258,14 @@ export default function Dashboard({
 
       {/* ── 可滚动内容区 ── */}
       <main className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-10">
+        {/* 排序切换 */}
+        <div className="mb-5 sm:mb-7">
+          <SortSwitcher active={sort} onChange={handleSort} />
+        </div>
         <GameGrid
           games={filtered}
           sectionTitle={active === "ALL" ? t("allGames") : undefined}
+          resetKey={sort}
         />
       </main>
 

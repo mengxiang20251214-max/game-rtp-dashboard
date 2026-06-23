@@ -50,6 +50,12 @@
   "grid": {
     "empty": "Tidak ada game di kategori ini"
   },
+  "sort": {
+    "composite": "Unggulan",
+    "hot": "Terpanas",
+    "new": "Terbaru",
+    "rtp": "RTP Tinggi"
+  },
   "admin": {
     "login": {
       "title": "Login Admin",

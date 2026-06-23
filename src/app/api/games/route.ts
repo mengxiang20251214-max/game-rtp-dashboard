@@ -3,31 +3,36 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { deriveStatus, serializeGame, CATEGORY_VALUES } from "@/lib/game-utils";
-import { computeRankings, toRankInput } from "@/lib/ranking";
+import { computeRankings, toRankInput, normalizeSort } from "@/lib/ranking";
 import type { Category } from "@/types";
 
 const VALID_CATEGORIES: Category[] = CATEGORY_VALUES;
 
-// GET /api/games?category=SLOT  → 已排好序的游戏列表（含 heatTier / delta）
+// GET /api/games?category=SLOT&sort=composite|hot|new|rtp
+//   → 已排好序的游戏列表（含 heatTier / delta）；前端零二次排序
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
     const includeInactive = searchParams.get("all") === "true";
+    const sort = normalizeSort(searchParams.get("sort"));
 
     const where: Record<string, unknown> = {};
     if (!includeInactive) where.isActive = true;
 
     const records = await prisma.game.findMany({ where });
 
-    // 两段式算分排序（全量），单一权威
+    // 两段式算分 + 按 sort 模式排展示顺序（单一权威，置顶区恒定优先）
     const rankResults = computeRankings(
-      records.map((g) => toRankInput(g as Record<string, unknown>))
+      records.map((g) => toRankInput(g as Record<string, unknown>)),
+      sort
     );
     const rankMap = new Map(rankResults.map((r) => [r.id, r]));
+    // computeRankings 返回的数组顺序 = 展示顺序
+    const orderIdx = new Map(rankResults.map((r, i) => [r.id, i]));
 
     records.sort(
-      (a, b) => (rankMap.get(a.id)?.rank ?? 999) - (rankMap.get(b.id)?.rank ?? 999)
+      (a, b) => (orderIdx.get(a.id) ?? 999) - (orderIdx.get(b.id) ?? 999)
     );
 
     const filtered =

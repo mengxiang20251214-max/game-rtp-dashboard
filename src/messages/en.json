@@ -50,6 +50,12 @@
   "grid": {
     "empty": "No games in this category"
   },
+  "sort": {
+    "composite": "Featured",
+    "hot": "Hottest",
+    "new": "Newest",
+    "rtp": "High RTP"
+  },
   "admin": {
     "login": {
       "title": "Admin Login",

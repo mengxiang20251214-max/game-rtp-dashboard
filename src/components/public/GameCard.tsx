@@ -23,7 +23,8 @@ function rtpPct(v: number) {
 type Tone = "gold" | "cyan" | "cold";
 
 // ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
-function useLiveMultiplier(): number {
+// resetKey 变化时（如切换排序模式）重新触发 count-up
+function useLiveMultiplier(resetKey?: unknown): number {
   const [mult, setMult] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const rafRef   = useRef<number>();
@@ -42,7 +43,7 @@ function useLiveMultiplier(): number {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [resetKey]);
 
   useEffect(() => {
     const prefersReduced =
@@ -144,9 +145,10 @@ function DeltaBadge({ delta, isNew }: { delta: number; isNew: boolean }) {
 interface GameCardProps {
   game: Game;
   isFeature?: boolean;
+  resetKey?: unknown;   // 变化时重新触发 count-up（如排序切换）
 }
 
-export default function GameCard({ game, isFeature = false }: GameCardProps) {
+export default function GameCard({ game, isFeature = false, resetKey }: GameCardProps) {
   const [imgError, setImgError] = useState(false);
   const tStats  = useTranslations("stats");
   const tCommon = useTranslations("common");
@@ -160,7 +162,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
   const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
 
   const hasLink  = Boolean(game.detailUrl);
-  const mult     = useLiveMultiplier();
+  const mult     = useLiveMultiplier(resetKey);
 
   const shownPlayers = Math.max(0, Math.round(game.playerCount * mult));
   const shownBets    = Math.max(0, Math.round(game.totalBets * mult));

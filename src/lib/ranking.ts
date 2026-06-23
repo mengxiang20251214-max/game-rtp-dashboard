@@ -5,6 +5,13 @@
 
 export type HeatTier = "blazing" | "hot" | "normal" | "cold";
 
+// 用户端排序模式（仅作用于「自动区」，置顶区恒定优先）
+export type SortMode = "composite" | "hot" | "new" | "rtp";
+export const SORT_MODES: SortMode[] = ["composite", "hot", "new", "rtp"];
+export function normalizeSort(v: string | null | undefined): SortMode {
+  return SORT_MODES.includes(v as SortMode) ? (v as SortMode) : "composite";
+}
+
 export interface RankInput {
   id: string;
   pinned: boolean;
@@ -15,6 +22,7 @@ export interface RankInput {
   totalWins: number;
   targetRtp: number;
   prevRank: number;     // last computed rank; 0 = new / unknown
+  createdAt: number;    // ms timestamp, for "new" sort mode
 }
 
 export interface RankResult {
@@ -38,7 +46,7 @@ function minmaxNorm(values: number[]): (v: number) => number {
   return (v) => ((v - min) / range) * 100;
 }
 
-export function computeRankings(games: RankInput[]): RankResult[] {
+export function computeRankings(games: RankInput[], sort: SortMode = "composite"): RankResult[] {
   if (games.length === 0) return [];
 
   const logPlayers = games.map((g) => Math.log(1 + g.playerCount));
@@ -56,16 +64,17 @@ export function computeRankings(games: RankInput[]): RankResult[] {
     return { ...g, currentRtp, playersScore, betScore, rtpScore, score };
   });
 
-  const pinned = scored.filter((g) => g.pinned).sort((a, b) => a.pinOrder - b.pinOrder);
-  const auto   = scored.filter((g) => !g.pinned).sort((a, b) => b.score - a.score);
-  const sorted = [...pinned, ...auto];
+  type Scored = (typeof scored)[number];
+  const pinnedRegion = scored.filter((g) => g.pinned).sort((a, b) => a.pinOrder - b.pinOrder);
+  const autoRegion   = scored.filter((g) => !g.pinned);
 
-  const n = sorted.length;
-  return sorted.map((g, i) => {
+  // ── 权威名次/热度/涨跌：始终按「综合」模式判定（不随排序模式变） ──
+  const composite = [...pinnedRegion, ...[...autoRegion].sort((a, b) => b.score - a.score)];
+  const n = composite.length;
+  const meta = new Map<string, RankResult>();
+  composite.forEach((g, i) => {
     const rank = i + 1;
     const percentile = n > 1 ? i / (n - 1) : 0; // 0 = top, 1 = bottom
-
-    // Monotonic heat: glow follows heat, never give cold games special highlight
     let heatTier: HeatTier;
     if (rank === 1 || g.featured) {
       heatTier = "blazing";
@@ -76,8 +85,7 @@ export function computeRankings(games: RankInput[]): RankResult[] {
     } else {
       heatTier = "normal";
     }
-
-    return {
+    meta.set(g.id, {
       id:           g.id,
       currentRtp:   Math.round(g.currentRtp * 100) / 100,
       score:        Math.round(g.score),
@@ -88,8 +96,23 @@ export function computeRankings(games: RankInput[]): RankResult[] {
       delta:        g.prevRank > 0 ? g.prevRank - rank : 0,
       heatTier,
       isNew:        g.prevRank === 0,
-    };
+    });
   });
+
+  // ── 展示顺序：置顶区恒定优先 ⧺ 自动区按 sort 模式排序 ──
+  const autoSorters: Record<SortMode, (a: Scored, b: Scored) => number> = {
+    composite: (a, b) => b.score - a.score,
+    hot:       (a, b) => b.playerCount - a.playerCount,
+    rtp:       (a, b) => b.currentRtp - a.currentRtp,
+    // 最新：新游优先，再按上架时间倒序
+    new:       (a, b) =>
+      (b.prevRank === 0 ? 1 : 0) - (a.prevRank === 0 ? 1 : 0) || b.createdAt - a.createdAt,
+  };
+  const autoDisplay = [...autoRegion].sort(autoSorters[sort]);
+  const display = [...pinnedRegion, ...autoDisplay];
+
+  // 返回「展示顺序」的结果，但每项的 rank/delta/heatTier 取自综合权威 meta
+  return display.map((g) => meta.get(g.id)!);
 }
 
 // Build a RankInput from a raw DB record (tolerates pre-migration rows via rankWeight)
@@ -107,5 +130,10 @@ export function toRankInput(g: Record<string, unknown>): RankInput {
     totalWins:   (g.totalWins as number) ?? 0,
     targetRtp:   (g.targetRtp as number) ?? 96.5,
     prevRank:    (g.prevRank as number) ?? 0,
+    createdAt:   g.createdAt instanceof Date
+      ? g.createdAt.getTime()
+      : typeof g.createdAt === "string"
+        ? new Date(g.createdAt).getTime()
+        : (g.createdAt as number) ?? 0,
   };
 }
