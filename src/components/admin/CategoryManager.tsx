@@ -113,7 +113,6 @@ export default function CategoryManager({ initial }: { initial: AdminCategory[] 
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
               placeholder="SLOT"
-              disabled={isEdit}
             />
           </div>
           <div className="col-span-1">
