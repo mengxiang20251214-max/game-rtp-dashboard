@@ -59,14 +59,14 @@ export default function Header({
         )}
 
         {/* 居中内容 */}
-        <div className="flex flex-col items-center gap-1.5">
+        <div className="flex flex-col items-center gap-1">
 
           {/* X168 Logo — Playfair Display 衬线，青色渐变 + 发光 */}
           <motion.h1
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="font-serif text-4xl font-bold leading-none sm:text-5xl"
+            className="font-serif text-3xl font-bold leading-none sm:text-4xl"
             style={{
               background: "linear-gradient(135deg, #00f0ff 0%, #38bdf8 50%, #00f0ff 100%)",
               WebkitBackgroundClip: "text",

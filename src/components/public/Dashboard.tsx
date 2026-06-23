@@ -76,19 +76,24 @@ export default function Dashboard({
         logo={logo}
       />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        {/* 标题区 */}
-        <div className="mb-8">
-          <h2 className="font-display text-2xl font-bold text-content-primary sm:text-3xl">
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        {/* 标题区 — 与 Header 同轴居中 */}
+        <div className="mb-6 flex flex-col items-center text-center">
+          <h2 className="font-display text-xl font-bold tracking-wide text-content-primary sm:text-2xl">
             {t("titleBefore")}
             <span className="text-neon-blue text-glow">{t("titleHighlight")}</span>
             {t("titleAfter")}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-content-secondary">{t("subtitle")}</p>
+          <p className="mt-2 max-w-xl text-xs leading-relaxed text-content-secondary/70">
+            {t("subtitle")}
+          </p>
         </div>
 
-        {/* 分类筛选（动态读取自数据库） */}
-        <div className="mb-8">
+        {/* 分隔线 */}
+        <div className="mb-6 h-px w-full bg-white/5" />
+
+        {/* 分类筛选 — 居中胶囊 */}
+        <div className="mb-10">
           <CategoryFilter
             active={active}
             categories={categories}
