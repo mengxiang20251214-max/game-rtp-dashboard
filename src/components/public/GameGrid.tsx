@@ -34,7 +34,7 @@ export default function GameGrid({ games, sectionTitle }: GameGridProps) {
       >
         <span
           className="font-mono text-4xl"
-          style={{ color: "rgba(63,208,201,0.25)" }}
+          style={{ color: "rgba(61,140,255,0.25)" }}
         >
           ∅
         </span>

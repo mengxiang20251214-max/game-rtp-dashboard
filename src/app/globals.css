@@ -6,7 +6,7 @@
   --bg-primary:   #04060c;
   --bg-secondary: #070b14;
   --bg-card:      #0d1320;
-  --aurora:       #3fd0c9;
+  --aurora:       #3d8cff;
   --gold:         #f2c14e;
   --text-primary: #d3dae9;
   --text-em:      #eef1f8;
@@ -41,10 +41,10 @@ body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: #070b14; }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(63, 208, 201, 0.30);
+  background: rgba(61, 140, 255, 0.30);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(63, 208, 201, 0.55); }
+::-webkit-scrollbar-thumb:hover { background: rgba(61, 140, 255, 0.55); }
 
 /* 隐藏滚动条（分类横滑） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
@@ -64,8 +64,8 @@ body {
 }
 .glass-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 50px rgba(63,208,201,0.38), 0 30px 70px rgba(0,0,0,0.60);
-  border-color: rgba(63, 208, 201, 0.45);
+  box-shadow: 0 0 50px rgba(61,140,255,0.38), 0 30px 70px rgba(0,0,0,0.60);
+  border-color: rgba(61, 140, 255, 0.45);
 }
 .glass-card--gold:hover {
   box-shadow: 0 0 50px rgba(242,193,78,0.32), 0 30px 70px rgba(0,0,0,0.60);

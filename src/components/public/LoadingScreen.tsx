@@ -37,7 +37,7 @@ export default function LoadingScreen() {
             width: "420px",
             height: "420px",
             background:
-              "radial-gradient(circle, rgba(63,208,201,0.16) 0%, rgba(39,154,145,0.06) 45%, transparent 70%)",
+              "radial-gradient(circle, rgba(61,140,255,0.16) 0%, rgba(39,154,145,0.06) 45%, transparent 70%)",
             filter: "blur(40px)",
           }}
         />
@@ -51,7 +51,7 @@ export default function LoadingScreen() {
               left: s.left,
               width:  `${s.r}px`,
               height: `${s.r}px`,
-              background: `rgba(63,208,201,${0.35 + (i % 4) * 0.12})`,
+              background: `rgba(61,140,255,${0.35 + (i % 4) * 0.12})`,
               animationDelay: `${s.d}ms`,
               animationDuration: `${2.2 + (i % 3) * 0.6}s`,
             }}
@@ -67,8 +67,8 @@ export default function LoadingScreen() {
           style={{
             width: "64px",
             height: "64px",
-            background: "linear-gradient(150deg, #3fd0c9 0%, #114f49 100%)",
-            boxShadow: "0 0 28px rgba(63,208,201,0.50), inset 0 1px 0 rgba(255,255,255,0.22)",
+            background: "linear-gradient(150deg, #3d8cff 0%, #0f2c6e 100%)",
+            boxShadow: "0 0 28px rgba(61,140,255,0.50), inset 0 1px 0 rgba(255,255,255,0.22)",
           }}
         >
           <span
@@ -84,7 +84,7 @@ export default function LoadingScreen() {
             className="font-serif font-bold leading-none"
             style={{ fontSize: "42px", letterSpacing: "-0.01em", color: "#eef1f8" }}
           >
-            X<span style={{ color: "#3fd0c9" }}>168</span>
+            X<span style={{ color: "#3d8cff" }}>168</span>
           </h1>
           <p
             className="font-mono uppercase"
@@ -105,8 +105,8 @@ export default function LoadingScreen() {
             className="h-full rounded-full transition-all duration-150 ease-out"
             style={{
               width: `${progress}%`,
-              background: "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)",
-              boxShadow: "0 0 12px rgba(63,208,201,0.60)",
+              background: "linear-gradient(90deg, #2563eb, #3d8cff, #6ba6ff)",
+              boxShadow: "0 0 12px rgba(61,140,255,0.60)",
             }}
           />
         </div>
@@ -119,7 +119,7 @@ export default function LoadingScreen() {
           </span>
           <span
             className="font-mono tabular-nums text-[11px]"
-            style={{ color: "#3fd0c9" }}
+            style={{ color: "#3d8cff" }}
           >
             {progress}%
           </span>
@@ -135,7 +135,7 @@ export default function LoadingScreen() {
             style={{
               width: "6px",
               height: "6px",
-              background: "rgba(63,208,201,0.55)",
+              background: "rgba(61,140,255,0.55)",
               animationDelay: `${i * 220}ms`,
             }}
           />
