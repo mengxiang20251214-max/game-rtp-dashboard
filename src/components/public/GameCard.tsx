@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import type { Game } from "@/types";
+import type { Game, HeatTier } from "@/types";
 import {
   formatNumber,
   formatPlayers,
@@ -20,13 +20,14 @@ function rtpPct(v: number) {
   return Math.max(0, Math.min(100, ((v - RTP_MIN) / (RTP_MAX - RTP_MIN)) * 100));
 }
 
+type Tone = "gold" | "cyan" | "cold";
+
 // ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
 function useLiveMultiplier(): number {
-  const [mult, setMult] = useState(0); // 0→1 count-up, then jitter around 1
+  const [mult, setMult] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const rafRef   = useRef<number>();
 
-  // Phase 1: ease-out count-up 0→1 over 1.2s
   useEffect(() => {
     let start: number | null = null;
     const duration = 1200;
@@ -43,7 +44,6 @@ function useLiveMultiplier(): number {
     };
   }, []);
 
-  // Phase 2: micro-jitter (±0.3%) every 2–4s, starts after count-up
   useEffect(() => {
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -66,22 +66,24 @@ interface DataRowProps {
   label: string;
   value: string;
   pct: number;
-  isGold?: boolean;
-  isWeak?: boolean;
+  tone: Tone;
 }
 
-function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
-  const fillStyle = isWeak
-    ? { background: "linear-gradient(90deg, #1a4040, #2d6b65)", boxShadow: "none" }
-    : isGold
-    ? {
-        background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)",
-        boxShadow: "0 0 10px rgba(242,193,78,0.40)",
-      }
-    : {
-        background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
-        boxShadow: "0 0 10px rgba(55,182,255,0.40)",
-      };
+function DataRow({ label, value, pct, tone }: DataRowProps) {
+  const fillStyle =
+    tone === "cold"
+      ? { background: "linear-gradient(90deg, #2a3142, #3d4761)", boxShadow: "none" }
+      : tone === "gold"
+      ? {
+          background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)",
+          boxShadow: "0 0 10px rgba(242,193,78,0.40)",
+        }
+      : {
+          background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
+          boxShadow: "0 0 10px rgba(55,182,255,0.40)",
+        };
+
+  const valueColor = tone === "cold" ? "#8b96b4" : tone === "gold" ? "#f2c14e" : "#37b6ff";
 
   return (
     <div>
@@ -94,7 +96,7 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
         </span>
         <span
           className="shrink-0 font-mono text-[12px] sm:text-[13px] leading-none tabular-nums"
-          style={{ color: isGold ? "#f2c14e" : "#37b6ff" }}
+          style={{ color: valueColor }}
         >
           {value}
         </span>
@@ -112,8 +114,15 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
   );
 }
 
-// ── 涨跌箭头 ─────────────────────────────────────────────────────
-function DeltaBadge({ delta, rank }: { delta: number; rank: number }) {
+// ── 涨跌箭头 / 新游标记 ──────────────────────────────────────────
+function DeltaBadge({ delta, isNew }: { delta: number; isNew: boolean }) {
+  if (isNew) {
+    return (
+      <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: "#37b6ff" }}>
+        NEW
+      </span>
+    );
+  }
   if (delta > 0) {
     return (
       <span className="font-mono text-[10px] tabular-nums" style={{ color: "#22c55e" }}>
@@ -128,14 +137,7 @@ function DeltaBadge({ delta, rank }: { delta: number; rank: number }) {
       </span>
     );
   }
-  if (rank === 1) {
-    return (
-      <span className="font-mono text-[9px] uppercase tracking-widest" style={{ color: "#f2c14e" }}>
-        HOT
-      </span>
-    );
-  }
-  return null;
+  return <span className="font-mono text-[10px]" style={{ color: "rgba(174,184,208,0.35)" }}>—</span>;
 }
 
 // ── Main GameCard ─────────────────────────────────────────────────
@@ -149,12 +151,17 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
   const tStats  = useTranslations("stats");
   const tCommon = useTranslations("common");
 
-  // rank=1 is always HOT gold card
-  const isGold   = isFeature;
+  // 热度由后端打的 heatTier 决定（视觉强度严格跟随）；rank=1 兜底为 blazing
+  const heat: HeatTier =
+    game.heatTier ?? (isFeature ? "blazing" : "normal");
+  const isGold = heat === "blazing";
+  const isHot  = heat === "hot";
+  const isCold = heat === "cold";
+  const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
+
   const hasLink  = Boolean(game.detailUrl);
   const mult     = useLiveMultiplier();
 
-  // Live-animated display values
   const shownPlayers = Math.max(0, Math.round(game.playerCount * mult));
   const shownBets    = Math.max(0, Math.round(game.totalBets * mult));
   const shownRtp     = Math.max(0, Math.round(game.rtp * Math.min(mult, 1) * 100) / 100);
@@ -162,9 +169,17 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
   const delta = game.delta ?? 0;
   const rank  = game.rank  ?? 0;
 
+  const cardCls = isGold
+    ? "glass-card--gold"
+    : isHot
+    ? "glass-card--hot"
+    : isCold
+    ? "glass-card--cold"
+    : "";
+
   return (
     <article
-      className={`glass-card ${isGold ? "glass-card--gold" : ""} group relative flex flex-col overflow-hidden`}
+      className={`glass-card ${cardCls} group relative flex flex-col overflow-hidden`}
       style={
         isGold
           ? {
@@ -175,12 +190,14 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
           : undefined
       }
     >
-      {/* 顶部高光线 */}
+      {/* 顶部高光线（cold 无高光） */}
       <div
         className="h-[2px] w-full shrink-0"
         style={{
           background: isGold
             ? "linear-gradient(90deg, transparent, rgba(242,193,78,0.75), transparent)"
+            : isCold
+            ? "transparent"
             : "linear-gradient(90deg, transparent, rgba(55,182,255,0.75), transparent)",
         }}
       />
@@ -195,12 +212,11 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
           >
             #{rank}
           </span>
-          <DeltaBadge delta={delta} rank={rank} />
+          <DeltaBadge delta={delta} isNew={game.isNew ?? false} />
         </div>
 
         {/* ── 图标 + 标题 ── */}
         <div className="flex gap-3">
-          {/* 游戏图标方块 */}
           <div
             className="relative shrink-0 overflow-hidden"
             style={{
@@ -209,6 +225,8 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
               borderRadius: "12px",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
+                : isCold
+                ? "none"
                 : "0 0 18px rgba(55,182,255,0.24)",
             }}
           >
@@ -243,14 +261,28 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
             )}
           </div>
 
-          {/* 标题区 */}
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-            <span
-              className="font-mono text-[9px] sm:text-[10px] uppercase"
-              style={{ letterSpacing: "0.20em", color: "#37b6ff" }}
-            >
-              {game.categoryLabel || game.category}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className="font-mono text-[9px] sm:text-[10px] uppercase"
+                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#37b6ff" }}
+              >
+                {game.categoryLabel || game.category}
+              </span>
+              {/* 热门青标签（仅 hot 档） */}
+              {isHot && (
+                <span
+                  className="rounded-full px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase"
+                  style={{
+                    background: "rgba(55,182,255,0.14)",
+                    color: "#37b6ff",
+                    letterSpacing: "0.10em",
+                  }}
+                >
+                  🔥 Populer
+                </span>
+              )}
+            </div>
             <h3
               className="line-clamp-2 font-serif text-[13px] sm:text-[15px] font-bold leading-tight"
               style={
@@ -261,7 +293,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
                     }
-                  : { color: "#eef1f8" }
+                  : { color: isCold ? "#aeb8d0" : "#eef1f8" }
               }
             >
               {game.name}
@@ -283,32 +315,10 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
 
         {/* ── 4 条数据行 ── */}
         <div className="flex flex-col gap-2.5 sm:gap-3">
-          <DataRow
-            label={tStats("currentRtp")}
-            value={formatRtp(shownRtp)}
-            pct={rtpPct(shownRtp)}
-            isGold={isGold}
-          />
-          <DataRow
-            label={tStats("targetRtp")}
-            value={formatRtp(game.targetRtp)}
-            pct={rtpPct(game.targetRtp)}
-            isGold={isGold}
-          />
-          <DataRow
-            label={tStats("players")}
-            value={formatPlayers(shownPlayers)}
-            pct={Math.min(100, (shownPlayers / 20000) * 100)}
-            isGold={isGold}
-            isWeak={game.playerCount < 50}
-          />
-          <DataRow
-            label={tStats("totalBets")}
-            value={formatNumber(shownBets)}
-            pct={Math.min(100, (shownBets / 500000) * 100)}
-            isGold={isGold}
-            isWeak={game.totalBets < 5000}
-          />
+          <DataRow label={tStats("currentRtp")} value={formatRtp(shownRtp)} pct={rtpPct(shownRtp)} tone={tone} />
+          <DataRow label={tStats("targetRtp")} value={formatRtp(game.targetRtp)} pct={rtpPct(game.targetRtp)} tone={tone} />
+          <DataRow label={tStats("players")} value={formatPlayers(shownPlayers)} pct={Math.min(100, (shownPlayers / 20000) * 100)} tone={tone} />
+          <DataRow label={tStats("totalBets")} value={formatNumber(shownBets)} pct={Math.min(100, (shownBets / 500000) * 100)} tone={tone} />
         </div>
 
         {/* ── CTA 按钮 ── */}
@@ -321,11 +331,15 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
             style={{
               background: isGold
                 ? "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)"
+                : isCold
+                ? "linear-gradient(90deg, #2a3142, #3d4761)"
                 : "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
-              color: "#04060c",
+              color: isCold ? "#aeb8d0" : "#04060c",
               letterSpacing: "0.14em",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
+                : isCold
+                ? "none"
                 : "0 0 18px rgba(55,182,255,0.28)",
             }}
             onMouseEnter={(e) => {

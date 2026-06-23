@@ -39,7 +39,11 @@ model Game {
   categoryId  String?
   categoryRef Category? @relation(fields: [categoryId], references: [id])
 
-  // 排名控制（rankWeight 越小越靠前，0=自动按综合分排）
+  // 排名控制 V2：开关式（运营不手填数字）
+  pinned      Boolean @default(false)  // 是否置顶
+  pinOrder    Int     @default(0)      // 置顶区内顺序（拖拽/上下移动写入，越小越前）
+  featured    Boolean @default(false)  // 是否给 HOT 金色焦点
+  // 兼容旧字段：rankWeight 与 pinned/pinOrder 自动同步（pinned ? pinOrder : 0）
   rankWeight  Int   @default(0)
   prevRank    Int   @default(0)  // 上次计算排名，用于 delta
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { deriveStatus, parseTrend } from "@/lib/game-utils";
-import { computeRankings } from "@/lib/ranking";
+import { computeRankings, toRankInput } from "@/lib/ranking";
 
 export const dynamic = "force-dynamic";
 
@@ -67,26 +67,12 @@ export async function GET(request: Request) {
       })
     );
 
-    // Step 2: Re-fetch updated metrics + rankWeight for scoring
-    const fresh = await prisma.game.findMany({
-      select: {
-        id: true,
-        rank: true,
-        playerCount: true,
-        totalBets: true,
-        totalWins: true,
-        targetRtp: true,
-      },
-    });
+    // Step 2: Re-fetch updated metrics + pin/featured flags for scoring
+    const fresh = await prisma.game.findMany();
 
     const rankResults = computeRankings(
       fresh.map((g) => ({
-        id: g.id,
-        rankWeight: (g as Record<string, unknown>).rankWeight as number ?? 0,
-        playerCount: g.playerCount,
-        totalBets: g.totalBets,
-        totalWins: g.totalWins,
-        targetRtp: g.targetRtp,
+        ...toRankInput(g as Record<string, unknown>),
         prevRank: g.rank,  // current stored rank becomes prevRank
       }))
     );

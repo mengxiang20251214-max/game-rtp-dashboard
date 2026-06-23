@@ -6,8 +6,9 @@ import { serializeGame } from "@/lib/game-utils";
 
 type Params = { params: { id: string } };
 
-// PATCH /api/games/:id/rank  → 调整排名（权重排序，需登录）
-// body: { rank: number }  或  { direction: "up" | "down" }
+// PATCH /api/games/:id/rank  → 调整置顶区顺序（仅对 pinned 游戏，需登录）
+// body: { direction: "up" | "down" }
+// 在置顶区内与相邻的 pinned 游戏交换 pinOrder（同步 rankWeight）。
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions);
@@ -21,40 +22,49 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       return NextResponse.json({ ok: false, error: "游戏不存在" }, { status: 404 });
     }
 
-    // 方式一：上移/下移（与相邻游戏交换 rank）
-    if (body.direction === "up" || body.direction === "down") {
-      const isUp = body.direction === "up";
-      const neighbor = await prisma.game.findFirst({
-        where: isUp ? { rank: { lt: current.rank } } : { rank: { gt: current.rank } },
-        orderBy: { rank: isUp ? "desc" : "asc" },
-      });
-
-      if (!neighbor) {
-        // 已经在边界，无需移动
-        return NextResponse.json({ ok: true, data: serializeGame(current) });
-      }
-
-      const [updated] = await prisma.$transaction([
-        prisma.game.update({ where: { id: current.id }, data: { rank: neighbor.rank } }),
-        prisma.game.update({ where: { id: neighbor.id }, data: { rank: current.rank } }),
-      ]);
-
-      return NextResponse.json({ ok: true, data: serializeGame(updated) });
+    const cur = current as Record<string, unknown>;
+    if (!(cur.pinned as boolean)) {
+      return NextResponse.json(
+        { ok: false, error: "仅置顶游戏可调整顺序" },
+        { status: 400 }
+      );
     }
 
-    // 方式二：直接设置 rank 值
-    if (body.rank != null) {
-      const game = await prisma.game.update({
-        where: { id: params.id },
-        data: { rank: Number(body.rank) },
-      });
-      return NextResponse.json({ ok: true, data: serializeGame(game) });
+    if (body.direction !== "up" && body.direction !== "down") {
+      return NextResponse.json({ ok: false, error: "缺少 direction 参数" }, { status: 400 });
     }
 
-    return NextResponse.json(
-      { ok: false, error: "缺少 rank 或 direction 参数" },
-      { status: 400 }
-    );
+    const isUp = body.direction === "up";
+    const curOrder = (cur.pinOrder as number) ?? 0;
+
+    // 在置顶区内找相邻游戏（up=pinOrder 更小的最近一个，down=更大的最近一个）
+    const neighbor = await prisma.game.findFirst({
+      where: {
+        pinned: true,
+        pinOrder: isUp ? { lt: curOrder } : { gt: curOrder },
+      },
+      orderBy: { pinOrder: isUp ? "desc" : "asc" },
+    });
+
+    if (!neighbor) {
+      return NextResponse.json({ ok: true, data: serializeGame(current) });
+    }
+
+    const nb = neighbor as Record<string, unknown>;
+    const nbOrder = (nb.pinOrder as number) ?? 0;
+
+    const [updated] = await prisma.$transaction([
+      prisma.game.update({
+        where: { id: current.id },
+        data: { pinOrder: nbOrder, rankWeight: nbOrder } as Record<string, unknown>,
+      }),
+      prisma.game.update({
+        where: { id: neighbor.id },
+        data: { pinOrder: curOrder, rankWeight: curOrder } as Record<string, unknown>,
+      }),
+    ]);
+
+    return NextResponse.json({ ok: true, data: serializeGame(updated) });
   } catch (err) {
     console.error("PATCH /api/games/:id/rank error:", err);
     return NextResponse.json({ ok: false, error: "调整排名失败" }, { status: 500 });

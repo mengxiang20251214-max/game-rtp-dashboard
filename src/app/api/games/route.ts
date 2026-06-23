@@ -3,12 +3,12 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { deriveStatus, serializeGame, CATEGORY_VALUES } from "@/lib/game-utils";
-import { computeRankings } from "@/lib/ranking";
+import { computeRankings, toRankInput } from "@/lib/ranking";
 import type { Category } from "@/types";
 
 const VALID_CATEGORIES: Category[] = CATEGORY_VALUES;
 
-// GET /api/games?category=SLOT  → 获取所有（激活的）游戏，按综合算分排序
+// GET /api/games?category=SLOT  → 已排好序的游戏列表（含 heatTier / delta）
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -18,29 +18,18 @@ export async function GET(req: NextRequest) {
     const where: Record<string, unknown> = {};
     if (!includeInactive) where.isActive = true;
 
-    // Fetch all active games (no orderBy — ranking handles sort)
     const records = await prisma.game.findMany({ where });
 
-    // Compute two-stage ranking across ALL games
+    // 两段式算分排序（全量），单一权威
     const rankResults = computeRankings(
-      records.map((g) => ({
-        id: g.id,
-        rankWeight: (g as Record<string, unknown>).rankWeight as number ?? 0,
-        playerCount: g.playerCount,
-        totalBets: g.totalBets,
-        totalWins: g.totalWins,
-        targetRtp: g.targetRtp,
-        prevRank: (g as Record<string, unknown>).prevRank as number ?? 0,
-      }))
+      records.map((g) => toRankInput(g as Record<string, unknown>))
     );
     const rankMap = new Map(rankResults.map((r) => [r.id, r]));
 
-    // Sort records by computed rank
     records.sort(
       (a, b) => (rankMap.get(a.id)?.rank ?? 999) - (rankMap.get(b.id)?.rank ?? 999)
     );
 
-    // Apply category filter AFTER ranking (preserving global rank order)
     const filtered =
       category && VALID_CATEGORIES.includes(category as Category)
         ? records.filter((g) => g.category === category)
@@ -52,9 +41,11 @@ export async function GET(req: NextRequest) {
         const r = rankMap.get(g.id);
         return {
           ...serializeGame(g),
-          rtp: r?.currentRtp ?? g.rtp,   // computed RTP = totalWins/totalBets
+          rtp: r?.currentRtp ?? g.rtp,
           rank: r?.rank ?? g.rank,
           delta: r?.delta ?? 0,
+          heatTier: r?.heatTier ?? "normal",
+          isNew: r?.isNew ?? false,
         };
       }),
     });
@@ -92,7 +83,17 @@ export async function POST(req: NextRequest) {
 
     const maxRank = await prisma.game.aggregate({ _max: { rank: true } });
     const rank = (maxRank._max.rank ?? 0) + 1;
-    const rankWeight = Math.max(0, Number(body.rankWeight ?? 0));
+
+    const pinned = Boolean(body.pinned);
+    // 新置顶游戏默认排到置顶区末尾
+    let pinOrder = 0;
+    if (pinned) {
+      const maxPin = await prisma.game.aggregate({
+        where: { pinned: true },
+        _max: { pinOrder: true },
+      });
+      pinOrder = (maxPin._max.pinOrder ?? 0) + 1;
+    }
 
     const game = await prisma.game.create({
       data: {
@@ -108,14 +109,17 @@ export async function POST(req: NextRequest) {
         totalWins: Number(body.totalWins ?? 0),
         trend: JSON.stringify(Array.isArray(body.trend) ? body.trend : []),
         rank,
-        rankWeight,
+        pinned,
+        pinOrder,
+        featured: Boolean(body.featured),
+        rankWeight: pinned ? pinOrder : 0,  // legacy 同步
         isActive: body.isActive ?? true,
         description: body.description || null,
         detailUrl: body.detailUrl || null,
         seoTitle: body.seoTitle || null,
         seoDescription: body.seoDescription || null,
         seoKeywords: body.seoKeywords || null,
-      } as Record<string, unknown>,
+      },
     });
 
     return NextResponse.json({ ok: true, data: serializeGame(game) }, { status: 201 });

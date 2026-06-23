@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { serializeGame } from "@/lib/game-utils";
-import { computeRankings } from "@/lib/ranking";
+import { computeRankings, toRankInput } from "@/lib/ranking";
 import { getActiveCategories, getSiteSettings } from "@/lib/site";
 import Dashboard from "@/components/public/Dashboard";
 import LoadingSkeleton from "@/components/public/LoadingSkeleton";
@@ -54,15 +54,7 @@ async function GamesDashboard() {
 
   // Two-stage ranking (server-side, authoritative)
   const rankResults = computeRankings(
-    records.map((g) => ({
-      id: g.id,
-      rankWeight: (g as Record<string, unknown>).rankWeight as number ?? 0,
-      playerCount: g.playerCount,
-      totalBets: g.totalBets,
-      totalWins: g.totalWins,
-      targetRtp: g.targetRtp,
-      prevRank: (g as Record<string, unknown>).prevRank as number ?? 0,
-    }))
+    records.map((g) => toRankInput(g as Record<string, unknown>))
   );
   const rankMap = new Map(rankResults.map((r) => [r.id, r]));
 
@@ -80,6 +72,8 @@ async function GamesDashboard() {
       rtp: ranked?.currentRtp ?? r.rtp,
       rank: ranked?.rank ?? r.rank,
       delta: ranked?.delta ?? 0,
+      heatTier: ranked?.heatTier ?? "normal",
+      isNew: ranked?.isNew ?? false,
     };
   });
 

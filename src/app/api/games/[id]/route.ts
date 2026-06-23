@@ -55,7 +55,32 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (body.totalWins != null) data.totalWins = Number(body.totalWins);
     if (Array.isArray(body.trend)) data.trend = JSON.stringify(body.trend);
     if (body.rank != null) data.rank = Number(body.rank);
-    if (body.rankWeight != null) data.rankWeight = Math.max(0, Number(body.rankWeight));
+
+    // V2 开关式置顶：pinned / pinOrder / featured，并同步 legacy rankWeight
+    if (body.pinned !== undefined) {
+      const pinned = Boolean(body.pinned);
+      data.pinned = pinned;
+      if (pinned) {
+        // 开启置顶：若未带 pinOrder，则排到置顶区末尾
+        let pinOrder = body.pinOrder != null ? Math.max(1, Number(body.pinOrder)) : 0;
+        if (pinOrder === 0) {
+          const maxPin = await prisma.game.aggregate({
+            where: { pinned: true, NOT: { id: params.id } },
+            _max: { pinOrder: true },
+          });
+          pinOrder = (maxPin._max.pinOrder ?? 0) + 1;
+        }
+        data.pinOrder = pinOrder;
+        data.rankWeight = pinOrder;
+      } else {
+        data.pinOrder = 0;
+        data.rankWeight = 0;
+      }
+    } else if (body.pinOrder != null) {
+      data.pinOrder = Math.max(0, Number(body.pinOrder));
+      data.rankWeight = Number(data.pinOrder);
+    }
+    if (body.featured !== undefined) data.featured = Boolean(body.featured);
     if (body.isActive != null) data.isActive = Boolean(body.isActive);
     if (body.description !== undefined) data.description = body.description || null;
     if (body.detailUrl !== undefined) data.detailUrl = body.detailUrl || null;

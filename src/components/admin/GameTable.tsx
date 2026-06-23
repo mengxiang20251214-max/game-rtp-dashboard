@@ -94,27 +94,40 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
                     <span className="font-display text-content-primary">#{g.rank}</span>
-                    <div className="flex flex-col">
-                      <button
-                        onClick={() => handleRank(g.id, "up")}
-                        disabled={busy}
-                        className="text-content-secondary hover:text-neon-blue"
-                        title={t("moveUp")}
-                      >
-                        ▲
-                      </button>
-                      <button
-                        onClick={() => handleRank(g.id, "down")}
-                        disabled={busy}
-                        className="text-content-secondary hover:text-neon-blue"
-                        title={t("moveDown")}
-                      >
-                        ▼
-                      </button>
-                    </div>
+                    {/* 仅置顶游戏可在置顶区内调顺序 */}
+                    {g.pinned && (
+                      <div className="flex flex-col">
+                        <button
+                          onClick={() => handleRank(g.id, "up")}
+                          disabled={busy}
+                          className="text-content-secondary hover:text-neon-blue"
+                          title={t("moveUp")}
+                        >
+                          ▲
+                        </button>
+                        <button
+                          onClick={() => handleRank(g.id, "down")}
+                          disabled={busy}
+                          className="text-content-secondary hover:text-neon-blue"
+                          title={t("moveDown")}
+                        >
+                          ▼
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </td>
-                <td className="px-4 py-3 font-medium text-content-primary">{g.name}</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-medium text-content-primary">{g.name}</span>
+                    {g.pinned && (
+                      <span title="置顶" className="text-[11px]">📌</span>
+                    )}
+                    {g.featured && (
+                      <span title="HOT 焦点" className="text-[11px]">⭐</span>
+                    )}
+                  </div>
+                </td>
                 <td className="px-4 py-3 text-content-secondary">
                   {g.categoryLabel || g.category}
                 </td>

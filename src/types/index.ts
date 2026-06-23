@@ -4,6 +4,7 @@
 
 export type Category = "SLOT" | "TABLE" | "LIVE" | "POKER" | "CASUAL";
 export type Status = "NORMAL" | "WARNING" | "CRITICAL";
+export type HeatTier = "blazing" | "hot" | "normal" | "cold";
 
 export interface Game {
   id: string;
@@ -18,8 +19,12 @@ export interface Game {
   totalWins: number;
   trend: number[];
   rank: number;
-  rankWeight: number;   // 越小越靠前，0=自动
+  pinned: boolean;      // 置顶开关
+  pinOrder: number;     // 置顶区内顺序
+  featured: boolean;    // HOT 金色焦点
   delta: number;        // prevRank − rank (>0=上升, <0=下降, 0=不变/新)
+  heatTier: HeatTier;   // 后端打的热度分级（视觉强度跟随）
+  isNew: boolean;       // 新游（prevRank=0）
   isActive: boolean;
   description: string | null;
   detailUrl: string | null;
@@ -43,7 +48,9 @@ export interface GameInput {
   totalWins?: number;
   trend?: number[];
   rank?: number;
-  rankWeight?: number;
+  pinned?: boolean;
+  pinOrder?: number;
+  featured?: boolean;
   isActive?: boolean;
   description?: string | null;
   detailUrl?: string | null;

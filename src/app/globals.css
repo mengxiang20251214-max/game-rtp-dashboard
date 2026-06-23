@@ -69,6 +69,23 @@ body {
   border-color: rgba(242, 193, 78, 0.50);
 }
 
+/* ── 热度分级（视觉强度严格跟随热度，越热越亮） ── */
+/* hot：青色发光描边（静止态即有光） */
+.glass-card--hot {
+  border-color: rgba(55, 182, 255, 0.34);
+  box-shadow: 0 0 24px rgba(55,182,255,0.14), 0 24px 60px rgba(0,0,0,0.50);
+}
+/* cold：降饱和、不发光（绝不给冷门特殊高亮） */
+.glass-card--cold {
+  filter: saturate(0.6);
+  opacity: 0.9;
+}
+.glass-card--cold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.50);
+  border-color: rgba(174, 184, 208, 0.20);
+}
+
 /* ── 图片文字阴影 ── */
 .game-title-shadow {
   text-shadow: 0 2px 8px rgba(0,0,0,0.90), 0 0 20px rgba(0,0,0,0.70);

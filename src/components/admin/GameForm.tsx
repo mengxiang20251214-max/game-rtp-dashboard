@@ -14,7 +14,8 @@ type FormState = {
   playerCount: string;
   totalBets: string;
   totalWins: string;
-  rankWeight: string;
+  pinned: boolean;
+  featured: boolean;
   isActive: boolean;
   description: string;
   detailUrl: string;
@@ -33,7 +34,8 @@ function toFormState(game?: Game): FormState {
     playerCount: game ? String(game.playerCount) : "0",
     totalBets: game ? String(game.totalBets) : "0",
     totalWins: game ? String(game.totalWins) : "0",
-    rankWeight: game ? String(game.rankWeight ?? 0) : "0",
+    pinned: game?.pinned ?? false,
+    featured: game?.featured ?? false,
     isActive: game?.isActive ?? true,
     description: game?.description ?? "",
     detailUrl: game?.detailUrl ?? "",
@@ -106,7 +108,8 @@ export default function GameForm({
       playerCount: Number(form.playerCount) || 0,
       totalBets: Number(form.totalBets) || 0,
       totalWins: Number(form.totalWins) || 0,
-      rankWeight: Math.max(0, Number(form.rankWeight) || 0),
+      pinned: form.pinned,
+      featured: form.featured,
       isActive: form.isActive,
       description: form.description.trim() || null,
       detailUrl: form.detailUrl.trim() || null,
@@ -297,18 +300,36 @@ export default function GameForm({
           />
         </div>
 
-        <div>
-          <label className={labelCls}>{t("rank")}</label>
-          <input
-            type="number"
-            min="0"
-            className={inputCls}
-            value={form.rankWeight}
-            onChange={(e) => update("rankWeight", e.target.value)}
-          />
-          <p className="mt-1 text-[10px] text-content-secondary/60">
-            0 = 自动排序（综合得分）；1/2/3… = 强制置顶（数字越小越靠前）
-          </p>
+        {/* 排序由综合算分自动决定；运营只用开关做业务判断 */}
+        <div className="sm:col-span-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-white/10 bg-black/20 px-3 py-2.5">
+            <input
+              type="checkbox"
+              checked={form.pinned}
+              onChange={(e) => update("pinned", e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-neon-blue"
+            />
+            <span className="text-sm text-content-secondary">
+              📌 置顶（Pin）
+              <span className="mt-0.5 block text-[10px] text-content-secondary/60">
+                开启后排到最前；多个置顶游戏可在列表用 ▲▼ 调顺序
+              </span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-white/10 bg-black/20 px-3 py-2.5">
+            <input
+              type="checkbox"
+              checked={form.featured}
+              onChange={(e) => update("featured", e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-neon-gold"
+            />
+            <span className="text-sm text-content-secondary">
+              ⭐ HOT 焦点（Featured）
+              <span className="mt-0.5 block text-[10px] text-content-secondary/60">
+                金色 HOT 卡样式，建议全站仅 1 个
+              </span>
+            </span>
+          </label>
         </div>
 
         <div>

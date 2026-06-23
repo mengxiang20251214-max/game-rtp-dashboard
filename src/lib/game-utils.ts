@@ -158,7 +158,10 @@ export function serializeGame(record: {
   totalWins: number;
   trend: unknown;
   rank: number;
-  rankWeight?: number;  // optional until prisma generate runs on Vercel
+  pinned?: boolean;
+  pinOrder?: number;
+  featured?: boolean;
+  rankWeight?: number;  // legacy, kept synced
   isActive: boolean;
   description: string | null;
   detailUrl?: string | null;
@@ -181,8 +184,12 @@ export function serializeGame(record: {
     totalWins: record.totalWins,
     trend: parseTrend(record.trend),
     rank: record.rank,
-    rankWeight: record.rankWeight ?? 0,
-    delta: 0,  // overridden by computeRankings at query time
+    pinned: record.pinned ?? (record.rankWeight ?? 0) > 0,
+    pinOrder: record.pinOrder ?? record.rankWeight ?? 0,
+    featured: record.featured ?? false,
+    delta: 0,            // overridden by computeRankings at query time
+    heatTier: "normal",  // overridden by computeRankings at query time
+    isNew: false,        // overridden by computeRankings at query time
     isActive: record.isActive,
     description: record.description,
     detailUrl: record.detailUrl ?? null,
