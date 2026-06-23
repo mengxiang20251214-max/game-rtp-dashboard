@@ -3,21 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #bde0f7;
-  --bg-secondary: #d0eaf8;
-  --bg-card: #ffffff;
-  --border-glow: #0d9488;
-  --text-primary: #1e1b4b;
-  --text-secondary: #64748b;
-  --neon-blue: #0ea5e9;
-  --neon-teal: #0d9488;
-  --neon-purple: #8b5cf6;
-  --neon-pink: #ec4899;
-  --neon-gold: #f59e0b;
-  --neon-orange: #f97316;
-  --rtp-success: #22c55e;
-  --rtp-warning: #f59e0b;
-  --rtp-danger: #ef4444;
+  --bg-primary:   #04060c;
+  --bg-secondary: #070b14;
+  --bg-card:      #0d1320;
+  --aurora:       #3fd0c9;
+  --gold:         #f2c14e;
+  --text-primary: #d3dae9;
+  --text-em:      #eef1f8;
+  --text-sec:     #8b96b4;
+  --text-weak:    #5d6b91;
+  --track:        #152036;
+  --border:       rgba(174, 184, 208, 0.14);
 }
 
 * { box-sizing: border-box; }
@@ -30,58 +26,60 @@ html, body {
   min-height: 100vh;
 }
 
-/* 天空蓝·粉紫 大厅背景 */
+/* ── 深空宇宙背景 ── */
 body {
-  background-image:
-    radial-gradient(ellipse at 18% 8%,  rgba(255,255,255,0.75) 0%, transparent 36%),
-    radial-gradient(ellipse at 82% 6%,  rgba(255,255,255,0.55) 0%, transparent 32%),
-    radial-gradient(ellipse at 55% 88%, rgba(196,168,240,0.38) 0%, transparent 48%),
-    radial-gradient(ellipse at 88% 78%, rgba(240,180,220,0.22) 0%, transparent 38%),
-    linear-gradient(175deg,
-      #7ec8e3 0%,
-      #a8d8f0 15%,
-      #bde0f7 30%,
-      #c4ccee 55%,
-      #d0c0e8 75%,
-      #dcc8ec 100%
-    );
+  background-image: radial-gradient(
+    150% 120% at 50% -10%,
+    #0c1726 0%,
+    #070b14 46%,
+    #04060c 100%
+  );
   background-attachment: fixed;
 }
 
-/* 自定义滚动条 */
+/* ── 自定义滚动条 ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: rgba(189,224,247,0.3); }
-::-webkit-scrollbar-thumb {
-  background: rgba(13, 148, 136, 0.35);
+::-webkit-scrollbar-track  { background: #070b14; }
+::-webkit-scrollbar-thumb  {
+  background: rgba(63, 208, 201, 0.30);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(13, 148, 136, 0.60); }
+::-webkit-scrollbar-thumb:hover { background: rgba(63, 208, 201, 0.55); }
 
-/* 隐藏滚动条（分类横滑用） */
+/* 隐藏滚动条（分类横滑） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 文字发光 */
-.text-glow        { text-shadow: 0 0 10px rgba(14, 165, 233, 0.65); }
-.text-glow-gold   { text-shadow: 0 0 12px rgba(245, 158, 11, 0.80); }
-.text-glow-teal   { text-shadow: 0 0 8px  rgba(13, 148, 136, 0.65); }
-
-/* 卡片 hover 青色光效 */
-.card-glow {
-  position: relative;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+/* ── 玻璃卡片基底 ── */
+.glass-card {
+  background: rgba(13, 19, 32, 0.66);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(174, 184, 208, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.50);
+  transition: transform 200ms cubic-bezier(0.16,1,0.3,1),
+              box-shadow 200ms cubic-bezier(0.16,1,0.3,1),
+              border-color 200ms cubic-bezier(0.16,1,0.3,1);
 }
-.card-glow:hover {
-  border-color: rgba(13, 148, 136, 0.50);
-  box-shadow:
-    0 0 0 1px rgba(13, 148, 136, 0.25),
-    0 12px 40px rgba(100, 160, 220, 0.18),
-    0 4px 16px rgba(0, 0, 0, 0.07);
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 50px rgba(63,208,201,0.38), 0 30px 70px rgba(0,0,0,0.60);
+  border-color: rgba(63, 208, 201, 0.45);
+}
+.glass-card--gold:hover {
+  box-shadow: 0 0 50px rgba(242,193,78,0.32), 0 30px 70px rgba(0,0,0,0.60);
+  border-color: rgba(242, 193, 78, 0.50);
 }
 
-/* 图片上游戏名文字阴影 */
+/* ── 图片文字阴影 ── */
 .game-title-shadow {
   text-shadow: 0 2px 8px rgba(0,0,0,0.90), 0 0 20px rgba(0,0,0,0.70);
+}
+
+/* ── 减少动画偏好 ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float { animation: none; }
 }
 
 @keyframes fadeIn {

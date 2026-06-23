@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Orbitron, Playfair_Display, Space_Mono } from "next/font/google";
+import { Inter, Sora, Playfair_Display, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -12,9 +12,9 @@ const inter = Inter({
   display: "swap",
 });
 
-const orbitron = Orbitron({
+const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-orbitron",
+  variable: "--font-sora",
   display: "swap",
 });
 
@@ -37,7 +37,6 @@ const SITE_NAME = "RTP 数据中枢";
 const SITE_DESC =
   "深色赛博朋克风格的游戏 RTP（Return To Player）实时展示面板，实时监控老虎机、桌游与真人游戏的回报率。";
 
-// 标题与 favicon 从站点设置动态读取（后台可改，前台立即生效）
 export async function generateMetadata(): Promise<Metadata> {
   const { siteTitle, logo } = await getSiteSettings();
   const title = siteTitle || `${SITE_NAME} · Game RTP Dashboard`;
@@ -93,7 +92,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${orbitron.variable} ${playfair.variable} ${spaceMono.variable}`}
+      className={`${inter.variable} ${sora.variable} ${playfair.variable} ${spaceMono.variable}`}
     >
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>

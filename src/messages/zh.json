@@ -21,7 +21,8 @@
     "titleHighlight": "RTP",
     "titleAfter": " 实时面板",
     "subtitle": "监控所有游戏的实时回报率（Return To Player），数据每次刷新自数据库读取，颜色随 RTP 与目标值的偏差动态变化。",
-    "footer": "RTP 数据中枢 · 仅供演示 · {year}"
+    "footer": "RTP 数据中枢 · 仅供演示 · {year}",
+    "allGames": "全部游戏"
   },
   "category": {
     "ALL": "全部",

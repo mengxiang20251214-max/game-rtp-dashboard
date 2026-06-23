@@ -16,14 +16,17 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
   const t = useTranslations("header");
 
   return (
-    <header className="border-b border-sky-200/60">
-      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6">
+    <header className="border-b border-border-subtle/14">
+      <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6">
 
-        {/* 刷新按钮 — 绝对定位右侧 */}
+        {/* 刷新按钮 — 右侧绝对定位 */}
         {(onRefresh || lastUpdated) && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:right-6">
             {lastUpdated && (
-              <span className="hidden text-[10px] tracking-wide text-slate-400 sm:inline">
+              <span
+                className="hidden font-mono text-[10px] sm:inline"
+                style={{ color: "#5d6b91", letterSpacing: "0.10em" }}
+              >
                 {t("lastUpdated", { time: lastUpdated })}
               </span>
             )}
@@ -32,11 +35,23 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
                 type="button"
                 onClick={onRefresh}
                 disabled={refreshing}
-                className="flex items-center gap-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 px-3 py-2 text-xs text-teal-600 transition-all hover:bg-teal-500/20 hover:shadow-neon-teal disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-display text-xs font-semibold uppercase transition-all disabled:opacity-50"
+                style={{
+                  borderColor: "rgba(63,208,201,0.40)",
+                  background: "rgba(63,208,201,0.08)",
+                  color: "#3fd0c9",
+                  letterSpacing: "0.10em",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(63,208,201,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(63,208,201,0.08)";
+                }}
               >
                 <svg
-                  width="13" height="13" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" strokeWidth="2"
+                  width="11" height="11" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="2.5"
                   className={refreshing ? "animate-spin" : ""}
                 >
                   <path d="M21 12a9 9 0 1 1-2.64-6.36" />
@@ -50,48 +65,67 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
           </div>
         )}
 
-        {/* 居中内容 */}
-        <div className="flex flex-col items-center gap-1">
+        {/* ── 居中 Logo 区 ── */}
+        <div className="flex flex-col items-center gap-2">
 
-          {/* X168 — 金色渐变衬线（浅蓝背景上的金色非常醒目） */}
-          <motion.h1
-            initial={{ opacity: 0, y: -8 }}
+          {/* Logo 组（方块 + 品牌名），整组 6s 浮动 */}
+          <motion.div
+            className="animate-float flex items-center gap-3"
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="font-serif text-3xl font-bold leading-none sm:text-4xl"
-            style={{
-              background: "linear-gradient(135deg, #fde68a 0%, #f59e0b 50%, #d97706 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              filter: "drop-shadow(0 2px 8px rgba(245,158,11,0.45))",
-              letterSpacing: "0.04em",
-            }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
-            X168
-          </motion.h1>
+            {/* 青色渐变方块 */}
+            <div
+              className="flex shrink-0 items-center justify-center rounded-[12px]"
+              style={{
+                width: "42px",
+                height: "42px",
+                background: "linear-gradient(150deg, #3fd0c9 0%, #114f49 100%)",
+                boxShadow:
+                  "0 0 22px rgba(63,208,201,0.45), inset 0 1px 0 rgba(255,255,255,0.20)",
+              }}
+            >
+              <span
+                className="font-serif text-xl font-bold leading-none"
+                style={{ color: "#eef1f8" }}
+              >
+                X
+              </span>
+            </div>
 
-          {/* 描述行 */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-mono text-[10px] uppercase text-teal-600/70"
-            style={{ letterSpacing: "0.20em" }}
-          >
-            AI · ANALISIS · PERMAINAN · SLOT
-          </motion.p>
+            {/* 品牌名：X168 */}
+            <h1
+              className="font-serif font-bold leading-none"
+              style={{ fontSize: "32px", letterSpacing: "-0.01em", color: "#eef1f8" }}
+            >
+              X<span style={{ color: "#3fd0c9" }}>168</span>
+            </h1>
+          </motion.div>
 
-          {/* 版本号 */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            className="font-mono text-[9px] uppercase text-slate-400"
+          {/* 副标题行 */}
+          <motion.div
+            className="flex items-center gap-2 font-mono text-[10px] uppercase"
             style={{ letterSpacing: "0.18em" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.18 }}
           >
-            VER 1.0.0
-          </motion.p>
+            <span style={{ color: "#3fd0c9" }}>AI</span>
+            <span style={{ color: "#5d6b91" }}>·</span>
+            <span style={{ color: "#8b96b4" }}>ANALISIS PERMAINAN SLOT</span>
+            <span style={{ color: "#5d6b91" }}>·</span>
+            {/* 版本号 — 金色描边胶囊 */}
+            <span
+              className="rounded-full border px-1.5 py-0.5 text-[9px]"
+              style={{
+                borderColor: "rgba(242,193,78,0.45)",
+                color: "#f2c14e",
+              }}
+            >
+              VER 1.0.0
+            </span>
+          </motion.div>
         </div>
       </div>
     </header>

@@ -69,7 +69,10 @@ export default function Dashboard({
     <div className="min-h-screen animate-[fadeIn_0.4s_ease-out]">
 
       {/* ── 固定置顶区：Logo → 分类 ── */}
-      <div className="sticky top-0 z-50 bg-bg-primary/90 backdrop-blur-[16px]">
+      <div
+        className="sticky top-0 z-50 backdrop-blur-[18px]"
+        style={{ background: "rgba(4,6,12,0.85)" }}
+      >
         <Header
           onRefresh={handleRefresh}
           refreshing={refreshing}
@@ -79,7 +82,10 @@ export default function Dashboard({
           logo={logo}
         />
         {/* 分类筛选 */}
-        <div className="border-b border-sky-200/50 px-3 py-2 sm:px-6 sm:py-3">
+        <div
+          className="border-b px-3 py-2.5 sm:px-6 sm:py-3"
+          style={{ borderColor: "rgba(174,184,208,0.14)" }}
+        >
           <div className="mx-auto max-w-7xl">
             <CategoryFilter
               active={active}
@@ -92,12 +98,17 @@ export default function Dashboard({
       </div>
 
       {/* ── 可滚动内容区 ── */}
-      <main className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8">
-        {/* 游戏网格 */}
-        <GameGrid games={filtered} />
+      <main className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-10">
+        <GameGrid
+          games={filtered}
+          sectionTitle={active === "ALL" ? t("allGames") : undefined}
+        />
       </main>
 
-      <footer className="border-t border-sky-200/50 py-6 text-center text-xs text-content-secondary">
+      <footer
+        className="border-t py-6 text-center text-xs text-content-weak"
+        style={{ borderColor: "rgba(174,184,208,0.14)" }}
+      >
         {copyright} · {new Date().getFullYear()}
       </footer>
     </div>

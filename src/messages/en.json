@@ -21,7 +21,8 @@
     "titleHighlight": "RTP",
     "titleAfter": " Live Dashboard",
     "subtitle": "Monitor the real-time Return To Player of every game. Data is read fresh from the database on each refresh, and colors shift dynamically with the gap between RTP and target.",
-    "footer": "RTP Hub · Demo only · {year}"
+    "footer": "RTP Hub · Demo only · {year}",
+    "allGames": "All Games"
   },
   "category": {
     "ALL": "All",

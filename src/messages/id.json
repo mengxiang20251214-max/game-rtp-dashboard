@@ -21,7 +21,8 @@
     "titleHighlight": "RTP",
     "titleAfter": " Langsung",
     "subtitle": "Pantau Return To Player setiap game secara langsung. Data dibaca segar dari basis data setiap kali disegarkan, dan warna berubah dinamis sesuai selisih antara RTP dan target.",
-    "footer": "Pusat RTP · Demo saja · {year}"
+    "footer": "Pusat RTP · Demo saja · {year}",
+    "allGames": "Semua Permainan"
   },
   "category": {
     "ALL": "Semua",

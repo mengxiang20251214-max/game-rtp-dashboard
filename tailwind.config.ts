@@ -4,78 +4,107 @@ const config: Config = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    // getUserStatus/getHotBadge 在此返回 Tailwind 类名，需纳入扫描
     "./src/lib/**/*.{js,ts}",
   ],
   theme: {
     extend: {
       colors: {
+        // 背景层
         bg: {
-          primary: "#bde0f7",   // 天空蓝
-          secondary: "#d0eaf8", // 浅天蓝
-          card: "#ffffff",      // 白色卡片
+          primary:   "#04060c",
+          secondary: "#070b14",
+          card:      "#0d1320", // 搭配 /66 使用 → 玻璃效果
         },
+        // 主色 — 青色 Aurora（唯一品牌色）
+        aurora: {
+          DEFAULT: "#3fd0c9",
+          dark:    "#279a91",
+          light:   "#62ded7",
+        },
+        // 焦点色 — 金色（全页最多一处，HOT 卡专用）
+        gold: {
+          DEFAULT: "#f2c14e",
+          light:   "#f8e3a3",
+          dark:    "#c8982f",
+        },
+        // 文字阶梯
+        content: {
+          emphasis:  "#eef1f8",
+          primary:   "#d3dae9",
+          secondary: "#8b96b4",
+          weak:      "#5d6b91",
+        },
+        // 进度条底轨
+        track: "#152036",
+        // 边框辅助（配合 /14 /55 透明度修饰符）
+        border: {
+          subtle: "#aeb8d0",
+          aurora: "#3fd0c9",
+        },
+        // 兼容旧 admin 引用的 neon token（保持不删，避免 admin 样式损坏）
         neon: {
-          blue: "#0ea5e9",    // sky-500 — 白底可读
+          blue:   "#3fd0c9",
           purple: "#8b5cf6",
-          pink: "#ec4899",
-          gold: "#f59e0b",
+          pink:   "#ec4899",
+          gold:   "#f2c14e",
           orange: "#f97316",
-          green: "#22c55e",
-          teal: "#0d9488",    // 分类选中色
+          green:  "#22c55e",
+          teal:   "#3fd0c9",
         },
         rtp: {
           success: "#22c55e",
           warning: "#f59e0b",
-          danger: "#ef4444",
+          danger:  "#ef4444",
         },
-        content: {
-          primary: "#1e1b4b",   // 深靛蓝文字
-          secondary: "#64748b", // 板岩灰次要文字
-        },
-        "border-glow": "#0d9488",
       },
       fontFamily: {
-        display: ["var(--font-orbitron)", "Orbitron", "sans-serif"],
-        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-        serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
-        mono: ["var(--font-space-mono)", "Space Mono", "monospace"],
+        display: ["var(--font-sora)",       "Sora",            "system-ui", "sans-serif"],
+        sans:    ["var(--font-inter)",      "Inter",           "system-ui", "sans-serif"],
+        serif:   ["var(--font-playfair)",   "Playfair Display","Georgia",   "serif"],
+        mono:    ["var(--font-space-mono)", "Space Mono",      "monospace"],
       },
       boxShadow: {
-        "neon-blue":   "0 0 5px rgba(14,165,233,0.6), 0 0 20px rgba(14,165,233,0.30)",
-        "neon-purple": "0 0 5px #8b5cf6, 0 0 20px rgba(139, 92, 246, 0.35)",
-        "neon-pink":   "0 0 5px #ec4899, 0 0 20px rgba(236, 72, 153, 0.35)",
-        "neon-gold":   "0 0 8px #f59e0b, 0 0 24px rgba(245, 158, 11, 0.40)",
-        "neon-green":  "0 0 8px #22c55e, 0 0 20px rgba(34, 197, 94, 0.35)",
-        "neon-teal":   "0 0 8px #0d9488, 0 0 20px rgba(13, 148, 136, 0.40)",
-        card: "0 4px 24px rgba(100,160,220,0.14), 0 1px 6px rgba(0,0,0,0.05)",
+        card:         "0 24px 60px rgba(0,0,0,0.50)",
+        "card-hover": "0 0 50px rgba(63,208,201,0.40), 0 30px 70px rgba(0,0,0,0.60)",
+        "card-gold":  "0 0 50px rgba(242,193,78,0.35), 0 30px 70px rgba(0,0,0,0.60)",
+        aurora:       "0 0 12px rgba(63,208,201,0.45)",
+        "aurora-sm":  "0 0 8px  rgba(63,208,201,0.35)",
+        gold:         "0 0 12px rgba(242,193,78,0.42)",
+        // 保持 admin 兼容
+        "neon-blue":   "0 0 5px #3fd0c9, 0 0 20px rgba(63,208,201,0.35)",
+        "neon-gold":   "0 0 8px #f2c14e, 0 0 24px rgba(242,193,78,0.40)",
+        "neon-green":  "0 0 8px #22c55e, 0 0 20px rgba(34,197,94,0.35)",
+        "neon-purple": "0 0 5px #8b5cf6, 0 0 20px rgba(139,92,246,0.35)",
+        "neon-teal":   "0 0 8px #3fd0c9, 0 0 20px rgba(63,208,201,0.40)",
       },
       backgroundImage: {
-        "grid-glow":
-          "radial-gradient(circle at 50% 0%, rgba(14,165,233,0.08), transparent 60%)",
+        "aurora-line":
+          "linear-gradient(90deg, transparent, rgba(63,208,201,0.70), transparent)",
+        "gold-line":
+          "linear-gradient(90deg, transparent, rgba(242,193,78,0.70), transparent)",
       },
       keyframes: {
-        "pulse-glow": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.6" },
-        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-4px)" },
+          "50%":      { transform: "translateY(-5px)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1" },
+          "50%":      { opacity: "0.55" },
         },
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
         fadeIn: {
-          "0%": { opacity: "0" },
+          "0%":   { opacity: "0" },
           "100%": { opacity: "1" },
         },
       },
       animation: {
+        float:        "float 6s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
-        float: "float 4s ease-in-out infinite",
-        shimmer: "shimmer 2s infinite",
-        fadeIn: "fadeIn 0.4s ease-out",
+        shimmer:      "shimmer 2s infinite",
+        fadeIn:       "fadeIn 0.4s ease-out",
       },
     },
   },
