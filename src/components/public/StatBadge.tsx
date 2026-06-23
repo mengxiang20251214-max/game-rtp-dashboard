@@ -2,6 +2,7 @@ interface StatBadgeProps {
   label: string;
   value: string;
   accent?: "blue" | "purple" | "pink" | "default";
+  compact?: boolean;
 }
 
 const accentMap: Record<NonNullable<StatBadgeProps["accent"]>, string> = {
@@ -11,13 +12,30 @@ const accentMap: Record<NonNullable<StatBadgeProps["accent"]>, string> = {
   default: "text-content-primary",
 };
 
-export default function StatBadge({ label, value, accent = "default" }: StatBadgeProps) {
+export default function StatBadge({
+  label,
+  value,
+  accent = "default",
+  compact = false,
+}: StatBadgeProps) {
   return (
-    <div className="flex flex-col rounded-lg bg-black/30 px-3 py-2 ring-1 ring-white/5">
-      <span className="text-[10px] uppercase tracking-wider text-content-secondary">
+    <div
+      className={`flex flex-col rounded-lg bg-black/30 ring-1 ring-white/5 ${
+        compact ? "px-2 py-1.5" : "px-3 py-2"
+      }`}
+    >
+      <span
+        className={`uppercase tracking-wider text-content-secondary ${
+          compact ? "text-[8px]" : "text-[10px]"
+        }`}
+      >
         {label}
       </span>
-      <span className={`mt-0.5 font-display text-sm font-semibold ${accentMap[accent]}`}>
+      <span
+        className={`mt-0.5 font-display font-semibold ${accentMap[accent]} ${
+          compact ? "text-[11px]" : "text-sm"
+        }`}
+      >
         {value}
       </span>
     </div>

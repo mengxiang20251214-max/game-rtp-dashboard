@@ -31,7 +31,7 @@ export default function GameGrid({ games }: { games: Game[] }) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid grid-cols-1 gap-6 sm:grid-cols-2"
+      className="grid grid-cols-2 gap-3 sm:gap-5"
     >
       <AnimatePresence mode="popLayout">
         {games.map((game) => (

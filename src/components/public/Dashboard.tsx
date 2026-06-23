@@ -79,7 +79,7 @@ export default function Dashboard({
           logo={logo}
         />
         {/* 分类筛选 */}
-        <div className="border-b border-white/10 px-4 py-3 sm:px-6">
+        <div className="border-b border-white/10 px-3 py-2 sm:px-6 sm:py-3">
           <div className="mx-auto max-w-7xl">
             <CategoryFilter
               active={active}
@@ -92,7 +92,7 @@ export default function Dashboard({
       </div>
 
       {/* ── 可滚动内容区 ── */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8">
         {/* 游戏网格 */}
         <GameGrid games={filtered} />
       </main>

@@ -25,7 +25,8 @@ export default function CategoryFilter({
   ];
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2.5">
+    /* 手机：单行横滑（隐藏滚动条）；桌面：居中换行 */
+    <div className="scrollbar-none flex gap-2 overflow-x-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:gap-2.5">
       {options.map((opt) => {
         const isActive = active === opt.value;
         return (
@@ -33,17 +34,19 @@ export default function CategoryFilter({
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
+            /* 手机缩小内边距；桌面恢复宽松间距 */
             className={[
-              "relative flex items-center gap-2 rounded-full border px-5 py-2",
-              "font-mono text-xs font-bold uppercase transition-all",
+              "relative flex shrink-0 items-center gap-1.5 rounded-full border",
+              "px-3 py-1.5 sm:px-5 sm:py-2",
+              "font-mono text-[10px] sm:text-xs font-bold uppercase transition-all",
               isActive
                 ? "border-neon-blue text-neon-blue shadow-neon-blue"
                 : "border-white/15 text-content-secondary hover:border-neon-blue/40 hover:text-content-primary",
             ].join(" ")}
             style={
               isActive
-                ? { letterSpacing: "0.16em", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.4))" }
-                : { letterSpacing: "0.16em" }
+                ? { letterSpacing: "0.14em", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.4))" }
+                : { letterSpacing: "0.14em" }
             }
           >
             {isActive && (
@@ -57,7 +60,7 @@ export default function CategoryFilter({
             {opt.label}
             <span
               className={[
-                "rounded-full px-1.5 py-0.5 text-[9px] tabular-nums",
+                "rounded-full px-1 py-0.5 text-[8px] tabular-nums",
                 isActive
                   ? "bg-neon-blue/20 text-neon-blue"
                   : "bg-white/5 text-content-secondary",
