@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
         rank,
         isActive: body.isActive ?? true,
         description: body.description || null,
+        detailUrl: body.detailUrl || null,
         seoTitle: body.seoTitle || null,
         seoDescription: body.seoDescription || null,
         seoKeywords: body.seoKeywords || null,

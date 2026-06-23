@@ -27,6 +27,9 @@ model Game {
   isActive    Boolean  @default(true)
   description String?
 
+  // 详情跳转链接（前台「查看详情」按钮目标）
+  detailUrl      String?
+
   // SEO 字段（每个游戏可自定义）
   seoTitle       String?
   seoDescription String?

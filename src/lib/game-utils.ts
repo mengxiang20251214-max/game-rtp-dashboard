@@ -160,6 +160,7 @@ export function serializeGame(record: {
   rank: number;
   isActive: boolean;
   description: string | null;
+  detailUrl?: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoKeywords: string | null;
@@ -181,6 +182,7 @@ export function serializeGame(record: {
     rank: record.rank,
     isActive: record.isActive,
     description: record.description,
+    detailUrl: record.detailUrl ?? null,
     seoTitle: record.seoTitle,
     seoDescription: record.seoDescription,
     seoKeywords: record.seoKeywords,

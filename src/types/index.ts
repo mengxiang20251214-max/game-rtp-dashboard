@@ -20,6 +20,7 @@ export interface Game {
   rank: number;
   isActive: boolean;
   description: string | null;
+  detailUrl: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoKeywords: string | null;
@@ -42,6 +43,7 @@ export interface GameInput {
   rank?: number;
   isActive?: boolean;
   description?: string | null;
+  detailUrl?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoKeywords?: string | null;

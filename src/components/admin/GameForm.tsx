@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Category, CategoryItem, Game } from "@/types";
@@ -17,6 +17,7 @@ type FormState = {
   rank: string;
   isActive: boolean;
   description: string;
+  detailUrl: string;
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
@@ -35,11 +36,14 @@ function toFormState(game?: Game): FormState {
     rank: game ? String(game.rank) : "0",
     isActive: game?.isActive ?? true,
     description: game?.description ?? "",
+    detailUrl: game?.detailUrl ?? "",
     seoTitle: game?.seoTitle ?? "",
     seoDescription: game?.seoDescription ?? "",
     seoKeywords: game?.seoKeywords ?? "",
   };
 }
+
+const MAX_IMG_BYTES = 2 * 1024 * 1024; // 2 MB
 
 const inputCls =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-content-primary outline-none transition-all focus:border-neon-blue focus:shadow-neon-blue";
@@ -58,10 +62,28 @@ export default function GameForm({
   const isEdit = Boolean(game);
   const [form, setForm] = useState<FormState>(() => toFormState(game));
   const [error, setError] = useState("");
+  const [imgError, setImgError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [imgTab, setImgTab] = useState<"url" | "upload">(
+    game?.image?.startsWith("data:") ? "upload" : "url"
+  );
+  const fileRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_IMG_BYTES) {
+      setImgError("图片过大（最大 2 MB）");
+      return;
+    }
+    setImgError("");
+    const reader = new FileReader();
+    reader.onload = () => update("image", reader.result as string);
+    reader.readAsDataURL(file);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -86,6 +108,7 @@ export default function GameForm({
       rank: Number(form.rank) || 0,
       isActive: form.isActive,
       description: form.description.trim() || null,
+      detailUrl: form.detailUrl.trim() || null,
       seoTitle: form.seoTitle.trim() || null,
       seoDescription: form.seoDescription.trim() || null,
       seoKeywords: form.seoKeywords.trim() || null,
@@ -147,14 +170,97 @@ export default function GameForm({
           </select>
         </div>
 
+        {/* 图片：URL 或 本地上传 */}
         <div className="sm:col-span-2">
           <label className={labelCls}>{t("image")}</label>
-          <input
-            className={inputCls}
-            value={form.image}
-            onChange={(e) => update("image", e.target.value)}
-            placeholder="https://…"
-          />
+
+          {/* Tab 切换 */}
+          <div className="mb-2 flex gap-1 rounded-lg border border-white/10 p-1 text-xs w-fit">
+            <button
+              type="button"
+              onClick={() => setImgTab("url")}
+              className={`rounded px-3 py-1 transition-all ${
+                imgTab === "url"
+                  ? "bg-neon-blue/20 text-neon-blue"
+                  : "text-content-secondary hover:text-content-primary"
+              }`}
+            >
+              URL
+            </button>
+            <button
+              type="button"
+              onClick={() => setImgTab("upload")}
+              className={`rounded px-3 py-1 transition-all ${
+                imgTab === "upload"
+                  ? "bg-neon-blue/20 text-neon-blue"
+                  : "text-content-secondary hover:text-content-primary"
+              }`}
+            >
+              上传图片
+            </button>
+          </div>
+
+          {imgTab === "url" ? (
+            <input
+              className={inputCls}
+              value={form.image.startsWith("data:") ? "" : form.image}
+              onChange={(e) => update("image", e.target.value)}
+              placeholder="https://…"
+            />
+          ) : (
+            <div className="space-y-2">
+              {/* 点击区域 */}
+              <div
+                onClick={() => fileRef.current?.click()}
+                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-white/20 bg-black/20 px-4 py-6 transition-all hover:border-neon-blue/40 hover:bg-neon-blue/5"
+              >
+                {form.image.startsWith("data:") ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={form.image}
+                    alt="preview"
+                    className="max-h-32 max-w-full rounded object-contain"
+                  />
+                ) : (
+                  <>
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className="text-content-secondary"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span className="text-xs text-content-secondary">
+                      点击选择图片（PNG / JPG / WebP，≤ 2 MB）
+                    </span>
+                  </>
+                )}
+              </div>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              {imgError && <p className="text-xs text-rtp-danger">{imgError}</p>}
+              {form.image.startsWith("data:") && (
+                <button
+                  type="button"
+                  onClick={() => { update("image", ""); if (fileRef.current) fileRef.current.value = ""; }}
+                  className="text-xs text-content-secondary hover:text-rtp-danger"
+                >
+                  移除图片
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
@@ -227,6 +333,20 @@ export default function GameForm({
             onChange={(e) => update("description", e.target.value)}
             placeholder={t("descriptionPlaceholder")}
           />
+        </div>
+
+        {/* 详情跳转链接 */}
+        <div className="sm:col-span-2">
+          <label className={labelCls}>详情跳转链接（「查看详情」按钮目标 URL）</label>
+          <input
+            className={inputCls}
+            value={form.detailUrl}
+            onChange={(e) => update("detailUrl", e.target.value)}
+            placeholder="https://example.com/game/mahjong-ways"
+          />
+          <p className="mt-1 text-[10px] text-content-secondary/60">
+            填写后前台「查看详情」会跳转到此地址（新标签页打开），留空则按钮置灰
+          </p>
         </div>
 
         <label className="flex items-center gap-2 sm:col-span-2">
