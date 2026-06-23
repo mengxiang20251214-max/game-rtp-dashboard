@@ -11,7 +11,6 @@ import {
   formatPct,
   BLUR_DATA_URL,
 } from "@/lib/game-utils";
-import { stableBase, type MetricBase } from "@/lib/stable-metrics";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -165,24 +164,10 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   const hasLink  = Boolean(game.detailUrl);
   const mult     = useLiveMultiplier(resetKey);
 
-  // 跨刷新一致的虚拟基线（当天持久化；SSR 与首帧用服务端值，避免水合不一致）
-  const serverBase: MetricBase = {
-    players:   game.playerCount,
-    totalBets: game.totalBets,
-    totalWins: game.totalWins,
-  };
-  const [base, setBase] = useState<MetricBase>(serverBase);
-  useEffect(() => {
-    setBase(stableBase(game.id, serverBase));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game.id]);
-
-  // currentRtp 始终 = totalWin/totalBet×100（随基线/跳动重算，自洽）
-  const baseRtp = base.totalBets > 0 ? (base.totalWins / base.totalBets) * 100 : game.targetRtp;
-
-  const shownPlayers = Math.max(0, Math.round(base.players * mult));
-  const shownBets    = Math.max(0, Math.round(base.totalBets * mult));
-  const shownRtp     = Math.max(0, Math.round(baseRtp * Math.min(mult, 1) * 100) / 100);
+  // 值已由 Dashboard 的随机游走（walkMetrics）按刷新累积；卡片只做 count-up + 微跳显示
+  const shownPlayers = Math.max(0, Math.round(game.playerCount * mult));
+  const shownBets    = Math.max(0, Math.round(game.totalBets * mult));
+  const shownRtp     = Math.max(0, Math.round(game.rtp * Math.min(mult, 1) * 100) / 100);
 
   const delta = game.delta ?? 0;
   const rank  = game.rank  ?? 0;

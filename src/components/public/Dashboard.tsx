@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { CategoryItem, Game } from "@/types";
 import { SORT_MODES, normalizeSort, type SortMode } from "@/lib/ranking";
 import { formatIDR, formatNum } from "@/lib/game-utils";
+import { walkMetrics, walkOnline } from "@/lib/stable-metrics";
 import { useLoading } from "@/hooks/useLoading";
 import LoadingScreen from "./LoadingScreen";
 import Header from "./Header";
@@ -12,6 +13,55 @@ import CategoryFilter from "./CategoryFilter";
 import GameGrid from "./GameGrid";
 
 const SORT_STORAGE_KEY = "x168-sort-mode";
+
+// 让数据"活起来但不穿帮"：每次加载/刷新对每款游戏走一小步（walkMetrics），
+// currentRtp 随之重算；并以 ~18% 概率让「自动区」相邻两款（综合分接近）换一次位，
+// 换位用 delta ▲/▼ 体现。置顶区顺序永不变。
+function livenGames(games: Game[]): Game[] {
+  // 1) 各项指标走一步（基于上次显示值累积）
+  const walked = games.map((g) => {
+    const m = walkMetrics(g.id, {
+      players: g.playerCount,
+      totalBets: g.totalBets,
+      totalWins: g.totalWins,
+      targetRtp: g.targetRtp,
+    });
+    const rtp =
+      m.totalBets > 0 ? Math.round((m.totalWins / m.totalBets) * 1000) / 10 : g.rtp;
+    return { ...g, playerCount: m.players, totalBets: m.totalBets, totalWins: m.totalWins, rtp };
+  });
+
+  // 2) 偶尔一次相邻换位（仅自动区、非置顶、非 blazing、不动榜首）
+  let upId = "";
+  let downId = "";
+  if (typeof window !== "undefined" && Math.random() < 0.18) {
+    const cand: number[] = [];
+    for (let i = 1; i < walked.length - 1; i++) {
+      const a = walked[i];
+      const b = walked[i + 1];
+      if (!a.pinned && !b.pinned && a.heatTier !== "blazing" && b.heatTier !== "blazing") {
+        cand.push(i);
+      }
+    }
+    if (cand.length > 0) {
+      const i = cand[Math.floor(Math.random() * cand.length)];
+      [walked[i], walked[i + 1]] = [walked[i + 1], walked[i]];
+      upId = walked[i].id;     // 上移
+      downId = walked[i + 1].id; // 下移
+    }
+  }
+
+  // 3) 重新编号 rank；delta 默认 0（大多稳定），换位的两款显示 ▲/▼
+  return walked.map((g, idx) => ({
+    ...g,
+    rank: idx + 1,
+    delta: g.id === upId ? 1 : g.id === downId ? -1 : 0,
+  }));
+}
+
+function sumPlayers(games: Game[]): number {
+  return games.reduce((s, g) => s + g.playerCount, 0);
+}
 
 // ── 排序切换胶囊组 ────────────────────────────────────────────────
 function SortSwitcher({
@@ -160,7 +210,7 @@ function WinnerTicker({ games }: { games: Game[] }) {
 }
 
 // ── LIVE 状态条 ───────────────────────────────────────────────────
-function LiveBar({ games, lastUpdated }: { games: Game[]; lastUpdated: string }) {
+function LiveBar({ online, lastUpdated }: { online: number; lastUpdated: string }) {
   const [secsAgo, setSecsAgo] = useState(0);
   const startRef = useRef(Date.now());
 
@@ -173,10 +223,7 @@ function LiveBar({ games, lastUpdated }: { games: Game[]; lastUpdated: string })
     return () => clearInterval(id);
   }, [lastUpdated]);
 
-  const totalOnline = useMemo(
-    () => games.reduce((sum, g) => sum + g.playerCount, 0),
-    [games]
-  );
+  const totalOnline = online;
 
   return (
     <div
@@ -216,11 +263,12 @@ export default function Dashboard({
   const [sort, setSort] = useState<SortMode>("composite");
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [liveOnline, setLiveOnline] = useState<number>(() => sumPlayers(initialGames));
   const [lastUpdated, setLastUpdated] = useState<string>(() =>
     new Date().toLocaleTimeString("id-ID", { hour12: false })
   );
 
-  // 拉取指定排序模式的列表（前端零二次排序，按接口返回顺序渲染）
+  // 拉取指定排序模式的列表（前端零二次排序；每次刷新走一小步让数据"活起来"）
   const fetchSorted = useCallback(async (mode: SortMode) => {
     setRefreshing(true);
     setLoadError(false);
@@ -228,7 +276,9 @@ export default function Dashboard({
       const res = await fetch(`/api/games?sort=${mode}`, { cache: "no-store" });
       const json = await res.json();
       if (json.ok) {
-        setGames(json.data as Game[]);
+        const walked = livenGames(json.data as Game[]);
+        setGames(walked);
+        setLiveOnline(walkOnline(sumPlayers(walked)));
         setLastUpdated(new Date().toLocaleTimeString("id-ID", { hour12: false }));
       } else {
         setLoadError(true);
@@ -241,7 +291,7 @@ export default function Dashboard({
     }
   }, []);
 
-  // 初次挂载：恢复上次所选排序模式（localStorage）
+  // 初次挂载：恢复排序模式；并对首屏数据走一小步（与刷新一致）
   useEffect(() => {
     const saved = normalizeSort(
       typeof window !== "undefined" ? localStorage.getItem(SORT_STORAGE_KEY) : null
@@ -249,8 +299,14 @@ export default function Dashboard({
     if (saved !== "composite") {
       setSort(saved);
       void fetchSorted(saved);
+    } else {
+      const walked = livenGames(initialGames);
+      setGames(walked);
+      setLiveOnline(walkOnline(sumPlayers(walked)));
     }
-  }, [fetchSorted]);
+    // 仅挂载执行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSort = useCallback(
     (mode: SortMode) => {
@@ -296,7 +352,7 @@ export default function Dashboard({
         />
 
         {/* LIVE 状态条 */}
-        <LiveBar games={games} lastUpdated={lastUpdated} />
+        <LiveBar online={liveOnline} lastUpdated={lastUpdated} />
 
         {/* 中奖飘条 */}
         <WinnerTicker games={games} />
