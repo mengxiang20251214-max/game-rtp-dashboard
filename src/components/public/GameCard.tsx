@@ -42,8 +42,8 @@ export default function GameCard({ game }: { game: Game }) {
       whileHover={{ y: -6 }}
       className="card-glow group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-bg-card/80 backdrop-blur-sm"
     >
-      {/* 图片区 — 放高至 h-56 配合 2 列宽卡片 */}
-      <div className="relative h-56 w-full overflow-hidden bg-bg-secondary">
+      {/* 图片区 — 4:3 比例自适应，宽屏/窄屏等比缩放 */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-bg-secondary">
         {game.image && !imgError ? (
           <Image
             src={game.image}
