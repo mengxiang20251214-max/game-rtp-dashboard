@@ -34,6 +34,8 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-orbitron)", "Orbitron", "sans-serif"],
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
+        mono: ["var(--font-space-mono)", "Space Mono", "monospace"],
       },
       boxShadow: {
         "neon-blue": "0 0 5px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.35)",

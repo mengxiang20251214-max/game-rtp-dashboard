@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Orbitron } from "next/font/google";
+import { Inter, Orbitron, Playfair_Display, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -15,6 +15,19 @@ const inter = Inter({
 const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
   display: "swap",
 });
 
@@ -78,7 +91,10 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${orbitron.variable}`}>
+    <html
+      lang={locale}
+      className={`${inter.variable} ${orbitron.variable} ${playfair.variable} ${spaceMono.variable}`}
+    >
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
