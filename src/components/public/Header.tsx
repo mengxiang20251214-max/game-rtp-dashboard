@@ -20,7 +20,7 @@ export default function Header({
   const t = useTranslations("header");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-bg-primary/80 backdrop-blur-[16px]">
+    <header className="border-b border-white/10">
       <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6">
 
         {/* 刷新按钮 — 绝对定位右侧，不影响居中 */}

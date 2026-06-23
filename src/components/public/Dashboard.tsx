@@ -67,41 +67,32 @@ export default function Dashboard({
 
   return (
     <div className="min-h-screen animate-[fadeIn_0.4s_ease-out]">
-      <Header
-        onRefresh={handleRefresh}
-        refreshing={refreshing}
-        lastUpdated={lastUpdated}
-        siteTitle={siteTitle}
-        siteDescription={siteDescription}
-        logo={logo}
-      />
 
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        {/* 标题区 — 与 Header 同轴居中 */}
-        <div className="mb-6 flex flex-col items-center text-center">
-          <h2 className="font-display text-xl font-bold tracking-wide text-content-primary sm:text-2xl">
-            {t("titleBefore")}
-            <span className="text-neon-blue text-glow">{t("titleHighlight")}</span>
-            {t("titleAfter")}
-          </h2>
-          <p className="mt-2 max-w-xl text-xs leading-relaxed text-content-secondary/70">
-            {t("subtitle")}
-          </p>
+      {/* ── 固定置顶区：Logo → 分类 ── */}
+      <div className="sticky top-0 z-50 bg-bg-primary/90 backdrop-blur-[16px]">
+        <Header
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          lastUpdated={lastUpdated}
+          siteTitle={siteTitle}
+          siteDescription={siteDescription}
+          logo={logo}
+        />
+        {/* 分类筛选 */}
+        <div className="border-b border-white/10 px-4 py-3 sm:px-6">
+          <div className="mx-auto max-w-7xl">
+            <CategoryFilter
+              active={active}
+              categories={categories}
+              counts={counts}
+              onChange={setActive}
+            />
+          </div>
         </div>
+      </div>
 
-        {/* 分隔线 */}
-        <div className="mb-6 h-px w-full bg-white/5" />
-
-        {/* 分类筛选 — 居中胶囊 */}
-        <div className="mb-10">
-          <CategoryFilter
-            active={active}
-            categories={categories}
-            counts={counts}
-            onChange={setActive}
-          />
-        </div>
-
+      {/* ── 可滚动内容区 ── */}
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* 游戏网格 */}
         <GameGrid games={filtered} />
       </main>

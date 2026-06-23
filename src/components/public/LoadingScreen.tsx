@@ -8,12 +8,25 @@ export default function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-primary">
       {/* Logo / 品牌 */}
-      <div className="mb-10 flex flex-col items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-neon-blue/10 ring-1 ring-neon-blue/30">
-          <span className="font-display text-3xl font-black text-neon-blue text-glow">R</span>
-        </div>
-        <p className="text-sm tracking-widest text-content-secondary uppercase">
-          RTP Live Dashboard
+      <div className="mb-10 flex flex-col items-center gap-3">
+        <h1
+          className="font-serif text-5xl font-bold leading-none"
+          style={{
+            background: "linear-gradient(135deg, #00f0ff 0%, #38bdf8 50%, #00f0ff 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            filter: "drop-shadow(0 0 10px rgba(0,240,255,0.6))",
+            letterSpacing: "0.04em",
+          }}
+        >
+          X168
+        </h1>
+        <p
+          className="font-mono text-[11px] uppercase text-content-secondary"
+          style={{ letterSpacing: "0.22em" }}
+        >
+          RTP LIVE
         </p>
       </div>
 
