@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary:   #04060c;
-  --bg-secondary: #070b14;
+  --bg-primary:   #0c2348;   /* Olympus 深底 */
+  --bg-secondary: #143a72;   /* Olympus 中层 */
   --bg-card:      #0d1320;
-  --aurora:       #4dabe9;
+  --acc:          #37b6ff;   /* 电光蓝 */
   --gold:         #f2c14e;
   --text-primary: #d3dae9;
   --text-em:      #eef1f8;
@@ -26,31 +26,28 @@ html, body {
   min-height: 100vh;
 }
 
-/* ── 深空宇宙背景 ── */
+/* ── Olympus 天穹背景：上亮下深 ── */
 body {
-  background-image: radial-gradient(
-    150% 120% at 50% -10%,
-    #0c1726 0%,
-    #070b14 46%,
-    #04060c 100%
-  );
+  background-image:
+    radial-gradient(closest-side at 50% 0%, rgba(55,182,255,0.20), transparent),
+    radial-gradient(140% 120% at 50% -8%, #2f8fd6 0%, #1f5fa8 30%, #143a72 60%, #0c2348 100%);
   background-attachment: fixed;
 }
 
 /* ── 自定义滚动条 ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: #070b14; }
+::-webkit-scrollbar-track  { background: #0c2348; }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(77, 171, 233, 0.30);
+  background: rgba(55, 182, 255, 0.30);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(77, 171, 233, 0.55); }
+::-webkit-scrollbar-thumb:hover { background: rgba(55, 182, 255, 0.55); }
 
 /* 隐藏滚动条（分类横滑） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── 玻璃卡片基底 ── */
+/* ── 玻璃卡片基底（漂浮于亮蓝天空） ── */
 .glass-card {
   background: rgba(13, 19, 32, 0.66);
   backdrop-filter: blur(16px);
@@ -64,8 +61,8 @@ body {
 }
 .glass-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 50px rgba(77,171,233,0.38), 0 30px 70px rgba(0,0,0,0.60);
-  border-color: rgba(77, 171, 233, 0.45);
+  box-shadow: 0 0 50px rgba(55,182,255,0.45), 0 30px 70px rgba(0,0,0,0.60);
+  border-color: rgba(55, 182, 255, 0.55);
 }
 .glass-card--gold:hover {
   box-shadow: 0 0 50px rgba(242,193,78,0.32), 0 30px 70px rgba(0,0,0,0.60);

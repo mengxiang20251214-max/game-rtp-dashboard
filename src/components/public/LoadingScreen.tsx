@@ -2,19 +2,20 @@
 
 import { useLoading } from "@/hooks/useLoading";
 
-const STARS = [
-  { top: "6%",  left: "12%", r: 1.5, d: 0   },
-  { top: "10%", left: "68%", r: 2,   d: 400  },
-  { top: "19%", left: "31%", r: 1,   d: 200  },
-  { top: "15%", left: "84%", r: 1.5, d: 600  },
-  { top: "32%", left: "4%",  r: 1,   d: 100  },
-  { top: "42%", left: "91%", r: 2,   d: 700  },
-  { top: "55%", left: "7%",  r: 1.5, d: 300  },
-  { top: "67%", left: "79%", r: 1,   d: 500  },
-  { top: "78%", left: "22%", r: 1,   d: 800  },
-  { top: "88%", left: "61%", r: 1.5, d: 250  },
-  { top: "4%",  left: "46%", r: 1,   d: 900  },
-  { top: "26%", left: "55%", r: 2,   d: 150  },
+// 白色光点（天空光粒子）
+const SPARKLES = [
+  { top: "6%",  left: "12%", r: 1.5, d: 0,   o: 0.55 },
+  { top: "10%", left: "70%", r: 2,   d: 400,  o: 0.45 },
+  { top: "18%", left: "32%", r: 1,   d: 200,  o: 0.60 },
+  { top: "14%", left: "85%", r: 1.5, d: 600,  o: 0.40 },
+  { top: "30%", left: "5%",  r: 1,   d: 100,  o: 0.50 },
+  { top: "40%", left: "92%", r: 2,   d: 700,  o: 0.55 },
+  { top: "52%", left: "8%",  r: 1.5, d: 300,  o: 0.45 },
+  { top: "65%", left: "80%", r: 1,   d: 500,  o: 0.50 },
+  { top: "76%", left: "23%", r: 1,   d: 800,  o: 0.35 },
+  { top: "86%", left: "63%", r: 1.5, d: 250,  o: 0.40 },
+  { top: "4%",  left: "47%", r: 1,   d: 900,  o: 0.50 },
+  { top: "24%", left: "56%", r: 2,   d: 150,  o: 0.45 },
 ];
 
 export default function LoadingScreen() {
@@ -24,25 +25,26 @@ export default function LoadingScreen() {
     <div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
       style={{
-        background:
-          "radial-gradient(150% 120% at 50% -10%, #0c1726 0%, #070b14 46%, #04060c 100%)",
+        background: [
+          "radial-gradient(closest-side at 50% 0%, rgba(55,182,255,0.22), transparent)",
+          "radial-gradient(140% 120% at 50% -8%, #2f8fd6 0%, #1f5fa8 30%, #143a72 60%, #0c2348 100%)",
+        ].join(", "),
       }}
     >
-      {/* 星空 & 发光晕 */}
+      {/* 光粒子层 */}
       <div className="pointer-events-none absolute inset-0">
-        {/* 主青色核心光晕 */}
+        {/* 顶部电光晕 */}
         <div
-          className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="absolute left-1/2 top-0 -translate-x-1/2 rounded-full"
           style={{
-            width: "420px",
-            height: "420px",
-            background:
-              "radial-gradient(circle, rgba(77,171,233,0.16) 0%, rgba(39,154,145,0.06) 45%, transparent 70%)",
-            filter: "blur(40px)",
+            width: "500px",
+            height: "260px",
+            background: "radial-gradient(ellipse, rgba(55,182,255,0.22) 0%, transparent 70%)",
+            filter: "blur(24px)",
           }}
         />
-        {/* 星点 */}
-        {STARS.map((s, i) => (
+        {/* 白色光粒（模拟天空微光） */}
+        {SPARKLES.map((s, i) => (
           <div
             key={i}
             className="absolute animate-pulse-glow rounded-full"
@@ -51,9 +53,9 @@ export default function LoadingScreen() {
               left: s.left,
               width:  `${s.r}px`,
               height: `${s.r}px`,
-              background: `rgba(77,171,233,${0.35 + (i % 4) * 0.12})`,
+              background: `rgba(255,255,255,${s.o})`,
               animationDelay: `${s.d}ms`,
-              animationDuration: `${2.2 + (i % 3) * 0.6}s`,
+              animationDuration: `${2.2 + (i % 3) * 0.7}s`,
             }}
           />
         ))}
@@ -61,14 +63,14 @@ export default function LoadingScreen() {
 
       {/* ── Logo 区 ── */}
       <div className="animate-float relative mb-12 flex items-center gap-4">
-        {/* 青色方块 */}
+        {/* 电光蓝渐变方块 */}
         <div
           className="flex shrink-0 items-center justify-center rounded-[14px]"
           style={{
             width: "64px",
             height: "64px",
-            background: "linear-gradient(150deg, #4dabe9 0%, #0f2c6e 100%)",
-            boxShadow: "0 0 28px rgba(77,171,233,0.50), inset 0 1px 0 rgba(255,255,255,0.22)",
+            background: "linear-gradient(150deg, #37b6ff 0%, #15448f 100%)",
+            boxShadow: "0 0 30px rgba(55,182,255,0.55), inset 0 1px 0 rgba(255,255,255,0.24)",
           }}
         >
           <span
@@ -84,11 +86,11 @@ export default function LoadingScreen() {
             className="font-serif font-bold leading-none"
             style={{ fontSize: "42px", letterSpacing: "-0.01em", color: "#eef1f8" }}
           >
-            X<span style={{ color: "#4dabe9" }}>168</span>
+            X<span style={{ color: "#37b6ff" }}>168</span>
           </h1>
           <p
             className="font-mono uppercase"
-            style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#8b96b4" }}
+            style={{ fontSize: "10px", letterSpacing: "0.22em", color: "rgba(238,241,248,0.65)" }}
           >
             RTP LIVE
           </p>
@@ -97,29 +99,30 @@ export default function LoadingScreen() {
 
       {/* ── 进度条 ── */}
       <div className="w-72 space-y-3">
+        {/* 白色半透明底轨（天空背景上比深色底轨更自然） */}
         <div
           className="h-[5px] w-full overflow-hidden rounded-full"
-          style={{ background: "#152036" }}
+          style={{ background: "rgba(255,255,255,0.15)" }}
         >
           <div
             className="h-full rounded-full transition-all duration-150 ease-out"
             style={{
               width: `${progress}%`,
-              background: "linear-gradient(90deg, #2563eb, #4dabe9, #7fc9f5)",
-              boxShadow: "0 0 12px rgba(77,171,233,0.60)",
+              background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
+              boxShadow: "0 0 12px rgba(55,182,255,0.70)",
             }}
           />
         </div>
         <div className="flex items-center justify-between">
           <span
             className="font-mono text-[11px]"
-            style={{ color: "#8b96b4", letterSpacing: "0.06em" }}
+            style={{ color: "rgba(238,241,248,0.65)", letterSpacing: "0.06em" }}
           >
             Memuat sumber daya.
           </span>
           <span
             className="font-mono tabular-nums text-[11px]"
-            style={{ color: "#4dabe9" }}
+            style={{ color: "#37b6ff" }}
           >
             {progress}%
           </span>
@@ -135,7 +138,7 @@ export default function LoadingScreen() {
             style={{
               width: "6px",
               height: "6px",
-              background: "rgba(77,171,233,0.55)",
+              background: "rgba(55,182,255,0.70)",
               animationDelay: `${i * 220}ms`,
             }}
           />

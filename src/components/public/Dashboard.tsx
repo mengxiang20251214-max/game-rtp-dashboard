@@ -71,7 +71,7 @@ export default function Dashboard({
       {/* ── 固定置顶区：Logo → 分类 ── */}
       <div
         className="sticky top-0 z-50 backdrop-blur-[18px]"
-        style={{ background: "rgba(4,6,12,0.85)" }}
+        style={{ background: "rgba(8,22,52,0.88)" }}
       >
         <Header
           onRefresh={handleRefresh}

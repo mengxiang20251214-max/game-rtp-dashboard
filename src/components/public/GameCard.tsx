@@ -42,8 +42,8 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
         boxShadow: "0 0 10px rgba(242,193,78,0.40)",
       }
     : {
-        background: "linear-gradient(90deg, #2563eb, #4dabe9, #7fc9f5)",
-        boxShadow: "0 0 10px rgba(77,171,233,0.40)",
+        background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
+        boxShadow: "0 0 10px rgba(55,182,255,0.40)",
       };
 
   return (
@@ -57,7 +57,7 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
         </span>
         <span
           className="shrink-0 font-mono text-[12px] sm:text-[13px] leading-none tabular-nums"
-          style={{ color: isGold ? "#f2c14e" : "#4dabe9" }}
+          style={{ color: isGold ? "#f2c14e" : "#37b6ff" }}
         >
           {value}
         </span>
@@ -110,7 +110,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
         style={{
           background: isGold
             ? "linear-gradient(90deg, transparent, rgba(242,193,78,0.75), transparent)"
-            : "linear-gradient(90deg, transparent, rgba(77,171,233,0.75), transparent)",
+            : "linear-gradient(90deg, transparent, rgba(55,182,255,0.75), transparent)",
         }}
       />
 
@@ -127,7 +127,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
               borderRadius: "12px",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
-                : "0 0 18px rgba(77,171,233,0.24)",
+                : "0 0 18px rgba(55,182,255,0.24)",
             }}
           >
             {game.image && !imgError ? (
@@ -154,7 +154,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
               >
                 <span
                   className="font-mono text-[10px] font-bold"
-                  style={{ color: "rgba(77,171,233,0.35)" }}
+                  style={{ color: "rgba(55,182,255,0.35)" }}
                 >
                   X168
                 </span>
@@ -167,7 +167,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
             {/* 分类眉标 */}
             <span
               className="font-mono text-[9px] sm:text-[10px] uppercase"
-              style={{ letterSpacing: "0.20em", color: "#4dabe9" }}
+              style={{ letterSpacing: "0.20em", color: "#37b6ff" }}
             >
               {game.categoryLabel || game.category}
             </span>
@@ -245,12 +245,12 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
             style={{
               background: isGold
                 ? "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)"
-                : "linear-gradient(90deg, #2563eb, #4dabe9, #7fc9f5)",
+                : "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
               color: "#04060c",
               letterSpacing: "0.14em",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
-                : "0 0 18px rgba(77,171,233,0.28)",
+                : "0 0 18px rgba(55,182,255,0.28)",
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.08)";
