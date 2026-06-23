@@ -4,6 +4,7 @@ import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import type { CategoryItem, Game } from "@/types";
 import { SORT_MODES, normalizeSort, type SortMode } from "@/lib/ranking";
+import { formatIDR, formatNum } from "@/lib/game-utils";
 import { useLoading } from "@/hooks/useLoading";
 import LoadingScreen from "./LoadingScreen";
 import Header from "./Header";
@@ -54,6 +55,60 @@ function SortSwitcher({
   );
 }
 
+// ── 卡片骨架屏（切换排序 / 刷新时占位，替代白屏） ──────────────────
+function GridSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:gap-[28px]">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="glass-card animate-pulse-glow overflow-hidden p-3 sm:p-[22px]"
+          style={{ minHeight: "260px" }}
+        >
+          <div className="flex gap-3">
+            <div className="h-[60px] w-[60px] shrink-0 rounded-[12px]" style={{ background: "rgba(174,184,208,0.10)" }} />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-2.5 w-1/2 rounded-full" style={{ background: "rgba(174,184,208,0.10)" }} />
+              <div className="h-3.5 w-3/4 rounded-full" style={{ background: "rgba(174,184,208,0.10)" }} />
+            </div>
+          </div>
+          <div className="mt-4 space-y-3">
+            {Array.from({ length: 4 }).map((_, j) => (
+              <div key={j} className="h-[5px] w-full rounded-full" style={{ background: "rgba(174,184,208,0.08)" }} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── 错误态（接口失败，印尼语提示 + 重试） ──────────────────────────
+function ErrorState({ onRetry }: { onRetry: () => void }) {
+  const t = useTranslations("state");
+  return (
+    <div
+      className="flex flex-col items-center justify-center gap-4 rounded-[20px] border py-20 text-center"
+      style={{ borderColor: "rgba(174,184,208,0.14)", borderStyle: "dashed" }}
+    >
+      <span className="font-mono text-4xl" style={{ color: "rgba(239,68,68,0.5)" }}>!</span>
+      <p className="font-display text-sm" style={{ color: "#8b96b4" }}>{t("loadFailed")}</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-full px-5 py-2 font-display text-[12px] font-semibold transition-all"
+        style={{
+          border: "1px solid rgba(55,182,255,0.55)",
+          background: "rgba(55,182,255,0.12)",
+          color: "#37b6ff",
+        }}
+      >
+        {t("retry")}
+      </button>
+    </div>
+  );
+}
+
 interface DashboardProps {
   initialGames: Game[];
   categories: CategoryItem[];
@@ -65,7 +120,8 @@ interface DashboardProps {
 
 // ── 中奖飘条 ──────────────────────────────────────────────────────
 const PLAYER_NAMES = ["V***88","A***43","M***17","R***29","S***62","B***05","D***91","T***34","K***56","W***72"];
-const WIN_AMOUNTS  = ["Rp 8.250","Rp 23.480","Rp 5.900","Rp 156.000","Rp 12.850","Rp 67.300","Rp 3.175","Rp 89.500","Rp 14.600","Rp 210.000"];
+// 金额数值统一走 formatIDR（印尼盾、千分位用点）
+const WIN_AMOUNTS  = [82500, 234800, 1590000, 156000, 1285000, 673000, 317500, 8950000, 146000, 2100000];
 
 function WinnerTicker({ games }: { games: Game[] }) {
   const gameNames = useMemo(
@@ -75,7 +131,7 @@ function WinnerTicker({ games }: { games: Game[] }) {
   const messages = useMemo(() =>
     Array.from({ length: 10 }, (_, i) => ({
       player: PLAYER_NAMES[i % PLAYER_NAMES.length],
-      amount: WIN_AMOUNTS[i % WIN_AMOUNTS.length],
+      amount: formatIDR(WIN_AMOUNTS[i % WIN_AMOUNTS.length]),
       game:   gameNames[i % gameNames.length],
     })), [gameNames]
   );
@@ -137,7 +193,7 @@ function LiveBar({ games, lastUpdated }: { games: Game[]; lastUpdated: string })
         </span>
       </div>
       <span className="font-mono text-[10px]" style={{ color: "#8b96b4" }}>
-        <span style={{ color: "#d3dae9" }}>{totalOnline.toLocaleString("id-ID")}</span>
+        <span style={{ color: "#d3dae9" }}>{formatNum(totalOnline)}</span>
         {" "}orang online
       </span>
     </div>
@@ -159,6 +215,7 @@ export default function Dashboard({
   const [active, setActive] = useState<string>("ALL");
   const [sort, setSort] = useState<SortMode>("composite");
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>(() =>
     new Date().toLocaleTimeString("id-ID", { hour12: false })
   );
@@ -166,15 +223,19 @@ export default function Dashboard({
   // 拉取指定排序模式的列表（前端零二次排序，按接口返回顺序渲染）
   const fetchSorted = useCallback(async (mode: SortMode) => {
     setRefreshing(true);
+    setLoadError(false);
     try {
       const res = await fetch(`/api/games?sort=${mode}`, { cache: "no-store" });
       const json = await res.json();
       if (json.ok) {
         setGames(json.data as Game[]);
         setLastUpdated(new Date().toLocaleTimeString("id-ID", { hour12: false }));
+      } else {
+        setLoadError(true);
       }
     } catch (err) {
       console.error("排序拉取失败:", err);
+      setLoadError(true);
     } finally {
       setRefreshing(false);
     }
@@ -262,11 +323,17 @@ export default function Dashboard({
         <div className="mb-5 sm:mb-7">
           <SortSwitcher active={sort} onChange={handleSort} />
         </div>
-        <GameGrid
-          games={filtered}
-          sectionTitle={active === "ALL" ? t("allGames") : undefined}
-          resetKey={sort}
-        />
+        {loadError ? (
+          <ErrorState onRetry={() => fetchSorted(sort)} />
+        ) : refreshing ? (
+          <GridSkeleton />
+        ) : (
+          <GameGrid
+            games={filtered}
+            sectionTitle={active === "ALL" ? t("allGames") : undefined}
+            resetKey={sort}
+          />
+        )}
       </main>
 
       <footer

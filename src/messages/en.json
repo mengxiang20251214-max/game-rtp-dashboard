@@ -50,6 +50,10 @@
   "grid": {
     "empty": "No games in this category"
   },
+  "state": {
+    "loadFailed": "Failed to load data",
+    "retry": "Try again"
+  },
   "sort": {
     "composite": "Featured",
     "hot": "Hottest",

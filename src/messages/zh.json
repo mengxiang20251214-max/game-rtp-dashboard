@@ -50,6 +50,10 @@
   "grid": {
     "empty": "该分类下暂无游戏"
   },
+  "state": {
+    "loadFailed": "数据加载失败",
+    "retry": "重试"
+  },
   "sort": {
     "composite": "综合",
     "hot": "最热",

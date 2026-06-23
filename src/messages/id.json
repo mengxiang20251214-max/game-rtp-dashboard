@@ -1,7 +1,7 @@
 {
   "common": {
     "loading": "Memuat…",
-    "viewDetails": "Lihat Detail",
+    "viewDetails": "Main Sekarang",
     "cancel": "Batal",
     "save": "Simpan",
     "saving": "Menyimpan…",
@@ -49,6 +49,10 @@
   },
   "grid": {
     "empty": "Tidak ada game di kategori ini"
+  },
+  "state": {
+    "loadFailed": "Gagal memuat data",
+    "retry": "Coba lagi"
   },
   "sort": {
     "composite": "Unggulan",

@@ -110,22 +110,54 @@ export function rtpPercent(rtp: number, targetRtp: number): number {
   return Math.max(0, Math.min(100, Math.round(pct * 10) / 10));
 }
 
-/** 千分位 + 中文单位（万 / 亿）格式化大数字 */
+/** 千分位 + 中文单位（万 / 亿）格式化大数字（后台使用，保持现状） */
 export function formatNumber(n: number): string {
   if (n >= 1e8) return `${(n / 1e8).toFixed(2)}亿`;
   if (n >= 1e4) return `${(n / 1e4).toFixed(1)}万`;
   return n.toLocaleString("zh-CN");
 }
 
-/** 格式化人数 */
+/** 格式化人数（后台使用，保持现状） */
 export function formatPlayers(n: number): string {
   if (n >= 1e4) return `${(n / 1e4).toFixed(1)}万`;
   return n.toLocaleString("zh-CN");
 }
 
-/** 百分比格式化（RTP） */
+/** 百分比格式化（RTP，后台使用，保持现状） */
 export function formatRtp(n: number): string {
   return `${n.toFixed(1)}%`;
+}
+
+// ─────────────────────────────────────────────
+//  前台印尼本地化格式（id-ID：千分位用点、小数用逗号）
+//  统一走 Intl.NumberFormat('id-ID')，禁止手写逗号拼接
+// ─────────────────────────────────────────────
+
+const idrFmt = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+});
+const numFmt = new Intl.NumberFormat("id-ID");
+const pctFmt = new Intl.NumberFormat("id-ID", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+/** 印尼盾金额：12480000 → "Rp 12.480.000" */
+export function formatIDR(n: number): string {
+  // Intl 输出 "Rp12.480.000"，补一个空格更易读
+  return idrFmt.format(Math.max(0, Math.round(n))).replace(/^Rp\s?/, "Rp ");
+}
+
+/** 普通数量（玩家数等）：12847 → "12.847" */
+export function formatNum(n: number): string {
+  return numFmt.format(Math.max(0, Math.round(n)));
+}
+
+/** 百分比（RTP，两位小数、逗号）：96.53 → "96,53%" */
+export function formatPct(n: number): string {
+  return `${pctFmt.format(n)}%`;
 }
 
 /** 安全解析 trend（Prisma Json 字段可能是任意类型） */
