@@ -12,18 +12,14 @@ interface HeaderProps {
   logo?: string;
 }
 
-export default function Header({
-  onRefresh,
-  refreshing,
-  lastUpdated,
-}: HeaderProps) {
+export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderProps) {
   const t = useTranslations("header");
 
   return (
     <header className="border-b border-white/10">
-      <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6">
+      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6">
 
-        {/* 刷新按钮 — 绝对定位右侧，不影响居中 */}
+        {/* 刷新按钮 — 绝对定位右侧 */}
         {(onRefresh || lastUpdated) && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:right-6">
             {lastUpdated && (
@@ -36,15 +32,11 @@ export default function Header({
                 type="button"
                 onClick={onRefresh}
                 disabled={refreshing}
-                className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs text-content-secondary transition-all hover:border-neon-blue/40 hover:text-neon-blue disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-lg border border-neon-gold/30 bg-neon-gold/10 px-3 py-2 text-xs text-neon-gold transition-all hover:bg-neon-gold/20 hover:shadow-neon-gold disabled:opacity-60"
               >
                 <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                  width="13" height="13" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="2"
                   className={refreshing ? "animate-spin" : ""}
                 >
                   <path d="M21 12a9 9 0 1 1-2.64-6.36" />
@@ -61,30 +53,30 @@ export default function Header({
         {/* 居中内容 */}
         <div className="flex flex-col items-center gap-1">
 
-          {/* X168 Logo — Playfair Display 衬线，青色渐变 + 发光 */}
+          {/* X168 — 金色渐变衬线 */}
           <motion.h1
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="font-serif text-3xl font-bold leading-none sm:text-4xl"
             style={{
-              background: "linear-gradient(135deg, #00f0ff 0%, #38bdf8 50%, #00f0ff 100%)",
+              background: "linear-gradient(135deg, #fde68a 0%, #f59e0b 50%, #d97706 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              filter: "drop-shadow(0 0 8px rgba(0,240,255,0.55))",
+              filter: "drop-shadow(0 0 10px rgba(245,158,11,0.65))",
               letterSpacing: "0.04em",
             }}
           >
             X168
           </motion.h1>
 
-          {/* 描述行 — Space Mono，全大写，高字距 */}
+          {/* 描述行 */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-mono text-[10px] uppercase text-content-secondary"
+            className="font-mono text-[10px] uppercase text-neon-gold/60"
             style={{ letterSpacing: "0.20em" }}
           >
             AI · ANALISIS · PERMAINAN · SLOT
@@ -95,7 +87,7 @@ export default function Header({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="font-mono text-[9px] uppercase text-content-secondary/50"
+            className="font-mono text-[9px] uppercase text-content-secondary/40"
             style={{ letterSpacing: "0.18em" }}
           >
             VER 1.0.0

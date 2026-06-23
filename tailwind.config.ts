@@ -11,14 +11,17 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: "#0a0e17",
-          secondary: "#111827",
-          card: "#1a2332",
+          primary: "#0d0b1e",
+          secondary: "#160f30",
+          card: "#1c1640",
         },
         neon: {
           blue: "#00f0ff",
           purple: "#8b5cf6",
           pink: "#ec4899",
+          gold: "#f59e0b",
+          orange: "#f97316",
+          green: "#22c55e",
         },
         rtp: {
           success: "#22c55e",
@@ -26,10 +29,10 @@ const config: Config = {
           danger: "#ef4444",
         },
         content: {
-          primary: "#e2e8f0",
-          secondary: "#94a3b8",
+          primary: "#f0eeff",
+          secondary: "#a89fc0",
         },
-        "border-glow": "#00f0ff",
+        "border-glow": "#f59e0b",
       },
       fontFamily: {
         display: ["var(--font-orbitron)", "Orbitron", "sans-serif"],
@@ -41,7 +44,9 @@ const config: Config = {
         "neon-blue": "0 0 5px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.35)",
         "neon-purple": "0 0 5px #8b5cf6, 0 0 20px rgba(139, 92, 246, 0.35)",
         "neon-pink": "0 0 5px #ec4899, 0 0 20px rgba(236, 72, 153, 0.35)",
-        card: "0 8px 30px rgba(0, 0, 0, 0.5)",
+        "neon-gold": "0 0 8px #f59e0b, 0 0 24px rgba(245, 158, 11, 0.4)",
+        "neon-green": "0 0 8px #22c55e, 0 0 20px rgba(34, 197, 94, 0.35)",
+        card: "0 8px 30px rgba(0, 0, 0, 0.6)",
       },
       backgroundImage: {
         "grid-glow":

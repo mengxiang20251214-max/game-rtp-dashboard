@@ -3,26 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #0a0e17;
-  --bg-secondary: #111827;
-  --bg-card: #1a2332;
-  --border-glow: #00f0ff;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
+  --bg-primary: #0d0b1e;
+  --bg-secondary: #160f30;
+  --bg-card: #1c1640;
+  --border-glow: #f59e0b;
+  --text-primary: #f0eeff;
+  --text-secondary: #a89fc0;
   --neon-blue: #00f0ff;
   --neon-purple: #8b5cf6;
   --neon-pink: #ec4899;
+  --neon-gold: #f59e0b;
+  --neon-orange: #f97316;
   --rtp-success: #22c55e;
   --rtp-warning: #f59e0b;
   --rtp-danger: #ef4444;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   padding: 0;
   margin: 0;
   background-color: var(--bg-primary);
@@ -30,70 +29,52 @@ body {
   min-height: 100vh;
 }
 
+/* 深紫金赌场背景 */
 body {
   background-image:
-    radial-gradient(circle at 15% 0%, rgba(0, 240, 255, 0.07), transparent 45%),
-    radial-gradient(circle at 85% 10%, rgba(139, 92, 246, 0.08), transparent 45%);
+    radial-gradient(ellipse at 20% 0%,  rgba(139, 92, 246, 0.18), transparent 55%),
+    radial-gradient(ellipse at 80% 5%,  rgba(245, 158, 11, 0.10), transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(109, 40, 217, 0.12), transparent 60%);
   background-attachment: fixed;
 }
 
-/* 科技感网格背景 */
-.cyber-grid {
-  background-image:
-    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
 /* 自定义滚动条 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 240, 255, 0.3);
+  background: rgba(245, 158, 11, 0.35);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.5);
-}
-
-/* 文字霓虹发光 */
-.text-glow {
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-}
-.text-glow-purple {
-  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
-}
-
-/* 卡片渐变边框光效 */
-.card-glow {
-  position: relative;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-.card-glow:hover {
-  border-color: rgba(0, 240, 255, 0.6);
-  box-shadow:
-    0 0 0 1px rgba(0, 240, 255, 0.4),
-    0 8px 40px rgba(0, 240, 255, 0.15);
-}
+::-webkit-scrollbar-thumb:hover { background: rgba(245, 158, 11, 0.6); }
 
 /* 隐藏滚动条（分类横滑用） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* sparkline 渐隐入场 */
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
+/* 文字发光 */
+.text-glow        { text-shadow: 0 0 10px rgba(0, 240, 255, 0.65); }
+.text-glow-gold   { text-shadow: 0 0 12px rgba(245, 158, 11, 0.80); }
+.text-glow-purple { text-shadow: 0 0 8px  rgba(139, 92, 246, 0.65); }
+
+/* 卡片 hover 金色光效 */
+.card-glow {
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
+.card-glow:hover {
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(245, 158, 11, 0.35),
+    0 10px 40px rgba(139, 92, 246, 0.20),
+    0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* 图片上游戏名文字阴影 */
+.game-title-shadow {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+}
+
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
