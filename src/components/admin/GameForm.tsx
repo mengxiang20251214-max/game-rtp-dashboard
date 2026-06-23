@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Category, CategoryItem, Game } from "@/types";
@@ -43,7 +43,7 @@ function toFormState(game?: Game): FormState {
   };
 }
 
-const MAX_IMG_BYTES = 2 * 1024 * 1024; // 2 MB
+const MAX_IMG_BYTES = 3 * 1024 * 1024; // 3 MB（base64后约4MB，在Vercel 4.5MB限制内）
 
 const inputCls =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-content-primary outline-none transition-all focus:border-neon-blue focus:shadow-neon-blue";
@@ -67,7 +67,7 @@ export default function GameForm({
   const [imgTab, setImgTab] = useState<"url" | "upload">(
     game?.image?.startsWith("data:") ? "upload" : "url"
   );
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileInputId = "game-image-upload";
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -77,12 +77,13 @@ export default function GameForm({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_IMG_BYTES) {
-      setImgError("图片过大（最大 2 MB）");
+      setImgError(`图片过大（${(file.size / 1024 / 1024).toFixed(1)} MB），最大允许 3 MB`);
       return;
     }
     setImgError("");
     const reader = new FileReader();
     reader.onload = () => update("image", reader.result as string);
+    reader.onerror = () => setImgError("读取文件失败，请重试");
     reader.readAsDataURL(file);
   }
 
@@ -209,9 +210,9 @@ export default function GameForm({
             />
           ) : (
             <div className="space-y-2">
-              {/* 点击区域 */}
-              <div
-                onClick={() => fileRef.current?.click()}
+              {/* 用 label + htmlFor 触发，比 div+onClick 更可靠（Safari / iOS 兼容） */}
+              <label
+                htmlFor={fileInputId}
                 className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-white/20 bg-black/20 px-4 py-6 transition-all hover:border-neon-blue/40 hover:bg-neon-blue/5"
               >
                 {form.image.startsWith("data:") ? (
@@ -219,7 +220,7 @@ export default function GameForm({
                   <img
                     src={form.image}
                     alt="preview"
-                    className="max-h-32 max-w-full rounded object-contain"
+                    className="max-h-40 max-w-full rounded object-contain"
                   />
                 ) : (
                   <>
@@ -237,23 +238,24 @@ export default function GameForm({
                       <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
                     <span className="text-xs text-content-secondary">
-                      点击选择图片（PNG / JPG / WebP，≤ 2 MB）
+                      点击选择图片（PNG / JPG / WebP，≤ 3 MB）
                     </span>
                   </>
                 )}
-              </div>
+              </label>
+              {/* sr-only: 视觉隐藏但仍可被 label 触发，比 hidden 更可靠 */}
               <input
-                ref={fileRef}
+                id={fileInputId}
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/gif"
-                className="hidden"
+                className="sr-only"
                 onChange={handleFileChange}
               />
               {imgError && <p className="text-xs text-rtp-danger">{imgError}</p>}
               {form.image.startsWith("data:") && (
                 <button
                   type="button"
-                  onClick={() => { update("image", ""); if (fileRef.current) fileRef.current.value = ""; }}
+                  onClick={() => update("image", "")}
                   className="text-xs text-content-secondary hover:text-rtp-danger"
                 >
                   移除图片
