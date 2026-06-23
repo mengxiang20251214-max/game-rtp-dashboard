@@ -17,9 +17,9 @@ const config: Config = {
         },
         // 主色 — 青色 Aurora（唯一品牌色）
         aurora: {
-          DEFAULT: "#3d8cff",
+          DEFAULT: "#4dabe9",
           dark:    "#2563eb",
-          light:   "#6ba6ff",
+          light:   "#7fc9f5",
         },
         // 焦点色 — 金色（全页最多一处，HOT 卡专用）
         gold: {
@@ -39,17 +39,17 @@ const config: Config = {
         // 边框辅助（配合 /14 /55 透明度修饰符）
         border: {
           subtle: "#aeb8d0",
-          aurora: "#3d8cff",
+          aurora: "#4dabe9",
         },
         // 兼容旧 admin 引用的 neon token（保持不删，避免 admin 样式损坏）
         neon: {
-          blue:   "#3d8cff",
+          blue:   "#4dabe9",
           purple: "#8b5cf6",
           pink:   "#ec4899",
           gold:   "#f2c14e",
           orange: "#f97316",
           green:  "#22c55e",
-          teal:   "#3d8cff",
+          teal:   "#4dabe9",
         },
         rtp: {
           success: "#22c55e",
@@ -65,21 +65,21 @@ const config: Config = {
       },
       boxShadow: {
         card:         "0 24px 60px rgba(0,0,0,0.50)",
-        "card-hover": "0 0 50px rgba(61,140,255,0.40), 0 30px 70px rgba(0,0,0,0.60)",
+        "card-hover": "0 0 50px rgba(77,171,233,0.40), 0 30px 70px rgba(0,0,0,0.60)",
         "card-gold":  "0 0 50px rgba(242,193,78,0.35), 0 30px 70px rgba(0,0,0,0.60)",
-        aurora:       "0 0 12px rgba(61,140,255,0.45)",
-        "aurora-sm":  "0 0 8px  rgba(61,140,255,0.35)",
+        aurora:       "0 0 12px rgba(77,171,233,0.45)",
+        "aurora-sm":  "0 0 8px  rgba(77,171,233,0.35)",
         gold:         "0 0 12px rgba(242,193,78,0.42)",
         // 保持 admin 兼容
-        "neon-blue":   "0 0 5px #3d8cff, 0 0 20px rgba(61,140,255,0.35)",
+        "neon-blue":   "0 0 5px #4dabe9, 0 0 20px rgba(77,171,233,0.35)",
         "neon-gold":   "0 0 8px #f2c14e, 0 0 24px rgba(242,193,78,0.40)",
         "neon-green":  "0 0 8px #22c55e, 0 0 20px rgba(34,197,94,0.35)",
         "neon-purple": "0 0 5px #8b5cf6, 0 0 20px rgba(139,92,246,0.35)",
-        "neon-teal":   "0 0 8px #3d8cff, 0 0 20px rgba(61,140,255,0.40)",
+        "neon-teal":   "0 0 8px #4dabe9, 0 0 20px rgba(77,171,233,0.40)",
       },
       backgroundImage: {
         "aurora-line":
-          "linear-gradient(90deg, transparent, rgba(61,140,255,0.70), transparent)",
+          "linear-gradient(90deg, transparent, rgba(77,171,233,0.70), transparent)",
         "gold-line":
           "linear-gradient(90deg, transparent, rgba(242,193,78,0.70), transparent)",
       },
