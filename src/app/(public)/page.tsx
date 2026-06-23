@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { serializeGame } from "@/lib/game-utils";
+import { computeRankings } from "@/lib/ranking";
 import { getActiveCategories, getSiteSettings } from "@/lib/site";
 import Dashboard from "@/components/public/Dashboard";
 import LoadingSkeleton from "@/components/public/LoadingSkeleton";
 
-// 每次请求都从数据库读取最新数据
 export const dynamic = "force-dynamic";
 
-// 优先使用后台 SeoConfig("home") 的配置，否则回退默认文案
 export async function generateMetadata(): Promise<Metadata> {
   const fallbackTitle = "游戏 RTP 实时面板";
   const fallbackDesc =
@@ -30,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
     }
   } catch {
-    // 数据库不可用时使用默认值
+    // fallback to defaults
   }
 
   return {
@@ -43,23 +42,46 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// 数据加载组件：在数据就绪前由 Suspense 显示骨架屏
 async function GamesDashboard() {
   const [records, categories, settings] = await Promise.all([
     prisma.game.findMany({
       where: { isActive: true },
-      orderBy: [{ rank: "asc" }, { createdAt: "desc" }],
       include: { categoryRef: true },
     }),
     getActiveCategories(),
     getSiteSettings(),
   ]);
 
+  // Two-stage ranking (server-side, authoritative)
+  const rankResults = computeRankings(
+    records.map((g) => ({
+      id: g.id,
+      rankWeight: (g as Record<string, unknown>).rankWeight as number ?? 0,
+      playerCount: g.playerCount,
+      totalBets: g.totalBets,
+      totalWins: g.totalWins,
+      targetRtp: g.targetRtp,
+      prevRank: (g as Record<string, unknown>).prevRank as number ?? 0,
+    }))
+  );
+  const rankMap = new Map(rankResults.map((r) => [r.id, r]));
+
+  // Sort by computed rank — do NOT re-sort on frontend
+  records.sort(
+    (a, b) => (rankMap.get(a.id)?.rank ?? 999) - (rankMap.get(b.id)?.rank ?? 999)
+  );
+
   const labelByName = new Map(categories.map((c) => [c.name, c.label]));
-  const games = records.map((r) => ({
-    ...serializeGame(r),
-    categoryLabel: r.categoryRef?.label ?? labelByName.get(r.category) ?? r.category,
-  }));
+  const games = records.map((r) => {
+    const ranked = rankMap.get(r.id);
+    return {
+      ...serializeGame(r),
+      categoryLabel: r.categoryRef?.label ?? labelByName.get(r.category) ?? r.category,
+      rtp: ranked?.currentRtp ?? r.rtp,
+      rank: ranked?.rank ?? r.rank,
+      delta: ranked?.delta ?? 0,
+    };
+  });
 
   return (
     <Dashboard

@@ -3,11 +3,12 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { deriveStatus, serializeGame, CATEGORY_VALUES } from "@/lib/game-utils";
+import { computeRankings } from "@/lib/ranking";
 import type { Category } from "@/types";
 
 const VALID_CATEGORIES: Category[] = CATEGORY_VALUES;
 
-// GET /api/games?category=SLOT  → 获取所有（激活的）游戏，按 rank 排序
+// GET /api/games?category=SLOT  → 获取所有（激活的）游戏，按综合算分排序
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -16,16 +17,47 @@ export async function GET(req: NextRequest) {
 
     const where: Record<string, unknown> = {};
     if (!includeInactive) where.isActive = true;
-    if (category && VALID_CATEGORIES.includes(category as Category)) {
-      where.category = category;
-    }
 
-    const games = await prisma.game.findMany({
-      where,
-      orderBy: [{ rank: "asc" }, { createdAt: "desc" }],
+    // Fetch all active games (no orderBy — ranking handles sort)
+    const records = await prisma.game.findMany({ where });
+
+    // Compute two-stage ranking across ALL games
+    const rankResults = computeRankings(
+      records.map((g) => ({
+        id: g.id,
+        rankWeight: (g as Record<string, unknown>).rankWeight as number ?? 0,
+        playerCount: g.playerCount,
+        totalBets: g.totalBets,
+        totalWins: g.totalWins,
+        targetRtp: g.targetRtp,
+        prevRank: (g as Record<string, unknown>).prevRank as number ?? 0,
+      }))
+    );
+    const rankMap = new Map(rankResults.map((r) => [r.id, r]));
+
+    // Sort records by computed rank
+    records.sort(
+      (a, b) => (rankMap.get(a.id)?.rank ?? 999) - (rankMap.get(b.id)?.rank ?? 999)
+    );
+
+    // Apply category filter AFTER ranking (preserving global rank order)
+    const filtered =
+      category && VALID_CATEGORIES.includes(category as Category)
+        ? records.filter((g) => g.category === category)
+        : records;
+
+    return NextResponse.json({
+      ok: true,
+      data: filtered.map((g) => {
+        const r = rankMap.get(g.id);
+        return {
+          ...serializeGame(g),
+          rtp: r?.currentRtp ?? g.rtp,   // computed RTP = totalWins/totalBets
+          rank: r?.rank ?? g.rank,
+          delta: r?.delta ?? 0,
+        };
+      }),
     });
-
-    return NextResponse.json({ ok: true, data: games.map(serializeGame) });
   } catch (err) {
     console.error("GET /api/games error:", err);
     return NextResponse.json({ ok: false, error: "获取游戏列表失败" }, { status: 500 });
@@ -46,7 +78,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "游戏名称不能为空" }, { status: 400 });
     }
 
-    // 分类校验：以数据库分类为准（支持自定义分类），回退内置白名单
     const requested = String(body.category ?? "").trim().toUpperCase();
     const catRow =
       (requested && (await prisma.category.findUnique({ where: { name: requested } }))) || null;
@@ -59,9 +90,9 @@ export async function POST(req: NextRequest) {
     const rtp = Number(body.rtp ?? 0);
     const targetRtp = Number(body.targetRtp ?? 96.5);
 
-    // rank 默认排到最后
     const maxRank = await prisma.game.aggregate({ _max: { rank: true } });
-    const rank = body.rank != null ? Number(body.rank) : (maxRank._max.rank ?? 0) + 1;
+    const rank = (maxRank._max.rank ?? 0) + 1;
+    const rankWeight = Math.max(0, Number(body.rankWeight ?? 0));
 
     const game = await prisma.game.create({
       data: {
@@ -77,13 +108,14 @@ export async function POST(req: NextRequest) {
         totalWins: Number(body.totalWins ?? 0),
         trend: JSON.stringify(Array.isArray(body.trend) ? body.trend : []),
         rank,
+        rankWeight,
         isActive: body.isActive ?? true,
         description: body.description || null,
         detailUrl: body.detailUrl || null,
         seoTitle: body.seoTitle || null,
         seoDescription: body.seoDescription || null,
         seoKeywords: body.seoKeywords || null,
-      },
+      } as Record<string, unknown>,
     });
 
     return NextResponse.json({ ok: true, data: serializeGame(game) }, { status: 201 });

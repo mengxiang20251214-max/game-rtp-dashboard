@@ -55,6 +55,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (body.totalWins != null) data.totalWins = Number(body.totalWins);
     if (Array.isArray(body.trend)) data.trend = JSON.stringify(body.trend);
     if (body.rank != null) data.rank = Number(body.rank);
+    if (body.rankWeight != null) data.rankWeight = Math.max(0, Number(body.rankWeight));
     if (body.isActive != null) data.isActive = Boolean(body.isActive);
     if (body.description !== undefined) data.description = body.description || null;
     if (body.detailUrl !== undefined) data.detailUrl = body.detailUrl || null;

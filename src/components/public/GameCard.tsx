@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import type { Game } from "@/types";
 import {
@@ -10,18 +10,58 @@ import {
   formatPlayers,
   formatRtp,
   BLUR_DATA_URL,
-  getHotBadge,
 } from "@/lib/game-utils";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-// RTP 值 85–102 范围映射 0–100%
 const RTP_MIN = 85;
 const RTP_MAX = 102;
 function rtpPct(v: number) {
   return Math.max(0, Math.min(100, ((v - RTP_MIN) / (RTP_MAX - RTP_MIN)) * 100));
 }
 
+// ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
+function useLiveMultiplier(): number {
+  const [mult, setMult] = useState(0); // 0→1 count-up, then jitter around 1
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const rafRef   = useRef<number>();
+
+  // Phase 1: ease-out count-up 0→1 over 1.2s
+  useEffect(() => {
+    let start: number | null = null;
+    const duration = 1200;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const t = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setMult(eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // Phase 2: micro-jitter (±0.3%) every 2–4s, starts after count-up
+  useEffect(() => {
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+
+    const tick = () => {
+      setMult(1 + (Math.random() - 0.5) * 0.006);
+      timerRef.current = setTimeout(tick, 2000 + Math.random() * 2000);
+    };
+    timerRef.current = setTimeout(tick, 1600);
+    return () => clearTimeout(timerRef.current);
+  }, []);
+
+  return mult;
+}
+
+// ── DataRow ──────────────────────────────────────────────────────
 interface DataRowProps {
   label: string;
   value: string;
@@ -32,10 +72,7 @@ interface DataRowProps {
 
 function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
   const fillStyle = isWeak
-    ? {
-        background: "linear-gradient(90deg, #1a4040, #2d6b65)",
-        boxShadow: "none",
-      }
+    ? { background: "linear-gradient(90deg, #1a4040, #2d6b65)", boxShadow: "none" }
     : isGold
     ? {
         background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)",
@@ -62,10 +99,7 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
           {value}
         </span>
       </div>
-      <div
-        className="h-[5px] w-full overflow-hidden rounded-full"
-        style={{ background: "#152036" }}
-      >
+      <div className="h-[5px] w-full overflow-hidden rounded-full" style={{ background: "#152036" }}>
         <motion.div
           className="h-full rounded-full"
           style={fillStyle}
@@ -78,6 +112,33 @@ function DataRow({ label, value, pct, isGold, isWeak }: DataRowProps) {
   );
 }
 
+// ── 涨跌箭头 ─────────────────────────────────────────────────────
+function DeltaBadge({ delta, rank }: { delta: number; rank: number }) {
+  if (delta > 0) {
+    return (
+      <span className="font-mono text-[10px] tabular-nums" style={{ color: "#22c55e" }}>
+        ▲{delta}
+      </span>
+    );
+  }
+  if (delta < 0) {
+    return (
+      <span className="font-mono text-[10px] tabular-nums" style={{ color: "#ef4444" }}>
+        ▼{Math.abs(delta)}
+      </span>
+    );
+  }
+  if (rank === 1) {
+    return (
+      <span className="font-mono text-[9px] uppercase tracking-widest" style={{ color: "#f2c14e" }}>
+        HOT
+      </span>
+    );
+  }
+  return null;
+}
+
+// ── Main GameCard ─────────────────────────────────────────────────
 interface GameCardProps {
   game: Game;
   isFeature?: boolean;
@@ -85,15 +146,25 @@ interface GameCardProps {
 
 export default function GameCard({ game, isFeature = false }: GameCardProps) {
   const [imgError, setImgError] = useState(false);
-  const tStats = useTranslations("stats");
+  const tStats  = useTranslations("stats");
   const tCommon = useTranslations("common");
-  const hotBadge = getHotBadge(game.playerCount);
-  const isGold = isFeature && Boolean(hotBadge);
-  const hasLink = Boolean(game.detailUrl);
+
+  // rank=1 is always HOT gold card
+  const isGold   = isFeature;
+  const hasLink  = Boolean(game.detailUrl);
+  const mult     = useLiveMultiplier();
+
+  // Live-animated display values
+  const shownPlayers = Math.max(0, Math.round(game.playerCount * mult));
+  const shownBets    = Math.max(0, Math.round(game.totalBets * mult));
+  const shownRtp     = Math.max(0, Math.round(game.rtp * Math.min(mult, 1) * 100) / 100);
+
+  const delta = game.delta ?? 0;
+  const rank  = game.rank  ?? 0;
 
   return (
     <article
-      className={`glass-card ${isGold ? "glass-card--gold" : ""} group flex flex-col overflow-hidden`}
+      className={`glass-card ${isGold ? "glass-card--gold" : ""} group relative flex flex-col overflow-hidden`}
       style={
         isGold
           ? {
@@ -116,13 +187,24 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
 
       <div className="flex flex-col gap-3 p-3 sm:gap-4 sm:p-[22px]">
 
+        {/* ── 排名行 ── */}
+        <div className="flex items-center justify-between">
+          <span
+            className="font-mono text-[10px] tabular-nums"
+            style={{ color: isGold ? "rgba(242,193,78,0.65)" : "rgba(174,184,208,0.45)" }}
+          >
+            #{rank}
+          </span>
+          <DeltaBadge delta={delta} rank={rank} />
+        </div>
+
         {/* ── 图标 + 标题 ── */}
         <div className="flex gap-3">
           {/* 游戏图标方块 */}
           <div
             className="relative shrink-0 overflow-hidden"
             style={{
-              width:  "60px",
+              width: "60px",
               height: "60px",
               borderRadius: "12px",
               boxShadow: isGold
@@ -141,8 +223,7 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
                 blurDataURL={BLUR_DATA_URL}
                 loading="lazy"
                 unoptimized={
-                  game.image.startsWith("data:") ||
-                  game.image.includes("picsum.photos")
+                  game.image.startsWith("data:") || game.image.includes("picsum.photos")
                 }
                 className="object-cover"
                 onError={() => setImgError(true)}
@@ -164,21 +245,18 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
 
           {/* 标题区 */}
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-            {/* 分类眉标 */}
             <span
               className="font-mono text-[9px] sm:text-[10px] uppercase"
               style={{ letterSpacing: "0.20em", color: "#37b6ff" }}
             >
               {game.categoryLabel || game.category}
             </span>
-            {/* 游戏名 */}
             <h3
               className="line-clamp-2 font-serif text-[13px] sm:text-[15px] font-bold leading-tight"
               style={
                 isGold
                   ? {
-                      background:
-                        "linear-gradient(135deg, #f8e3a3, #f2c14e, #c8982f)",
+                      background: "linear-gradient(135deg, #f8e3a3, #f2c14e, #c8982f)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -188,13 +266,11 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
             >
               {game.name}
             </h3>
-            {/* HOT 徽章（仅黄金卡） */}
             {isGold && (
               <span
                 className="inline-flex items-center self-start gap-1 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #f8e3a3, #f2c14e, #c8982f)",
+                  background: "linear-gradient(135deg, #f8e3a3, #f2c14e, #c8982f)",
                   color: "#1a0c00",
                   letterSpacing: "0.12em",
                 }}
@@ -209,8 +285,8 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
         <div className="flex flex-col gap-2.5 sm:gap-3">
           <DataRow
             label={tStats("currentRtp")}
-            value={formatRtp(game.rtp)}
-            pct={rtpPct(game.rtp)}
+            value={formatRtp(shownRtp)}
+            pct={rtpPct(shownRtp)}
             isGold={isGold}
           />
           <DataRow
@@ -221,15 +297,15 @@ export default function GameCard({ game, isFeature = false }: GameCardProps) {
           />
           <DataRow
             label={tStats("players")}
-            value={formatPlayers(game.playerCount)}
-            pct={Math.min(100, (game.playerCount / 20000) * 100)}
+            value={formatPlayers(shownPlayers)}
+            pct={Math.min(100, (shownPlayers / 20000) * 100)}
             isGold={isGold}
             isWeak={game.playerCount < 50}
           />
           <DataRow
             label={tStats("totalBets")}
-            value={formatNumber(game.totalBets)}
-            pct={Math.min(100, (game.totalBets / 500000) * 100)}
+            value={formatNumber(shownBets)}
+            pct={Math.min(100, (shownBets / 500000) * 100)}
             isGold={isGold}
             isWeak={game.totalBets < 5000}
           />

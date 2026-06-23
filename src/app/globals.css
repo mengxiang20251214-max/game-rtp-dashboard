@@ -83,3 +83,16 @@ body {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* 中奖飘条 marquee */
+@keyframes marquee {
+  0%   { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}

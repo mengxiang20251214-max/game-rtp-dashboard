@@ -14,7 +14,7 @@ type FormState = {
   playerCount: string;
   totalBets: string;
   totalWins: string;
-  rank: string;
+  rankWeight: string;
   isActive: boolean;
   description: string;
   detailUrl: string;
@@ -33,7 +33,7 @@ function toFormState(game?: Game): FormState {
     playerCount: game ? String(game.playerCount) : "0",
     totalBets: game ? String(game.totalBets) : "0",
     totalWins: game ? String(game.totalWins) : "0",
-    rank: game ? String(game.rank) : "0",
+    rankWeight: game ? String(game.rankWeight ?? 0) : "0",
     isActive: game?.isActive ?? true,
     description: game?.description ?? "",
     detailUrl: game?.detailUrl ?? "",
@@ -106,7 +106,7 @@ export default function GameForm({
       playerCount: Number(form.playerCount) || 0,
       totalBets: Number(form.totalBets) || 0,
       totalWins: Number(form.totalWins) || 0,
-      rank: Number(form.rank) || 0,
+      rankWeight: Math.max(0, Number(form.rankWeight) || 0),
       isActive: form.isActive,
       description: form.description.trim() || null,
       detailUrl: form.detailUrl.trim() || null,
@@ -301,10 +301,14 @@ export default function GameForm({
           <label className={labelCls}>{t("rank")}</label>
           <input
             type="number"
+            min="0"
             className={inputCls}
-            value={form.rank}
-            onChange={(e) => update("rank", e.target.value)}
+            value={form.rankWeight}
+            onChange={(e) => update("rankWeight", e.target.value)}
           />
+          <p className="mt-1 text-[10px] text-content-secondary/60">
+            0 = 自动排序（综合得分）；1/2/3… = 强制置顶（数字越小越靠前）
+          </p>
         </div>
 
         <div>

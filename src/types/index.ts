@@ -18,13 +18,15 @@ export interface Game {
   totalWins: number;
   trend: number[];
   rank: number;
+  rankWeight: number;   // 越小越靠前，0=自动
+  delta: number;        // prevRank − rank (>0=上升, <0=下降, 0=不变/新)
   isActive: boolean;
   description: string | null;
   detailUrl: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoKeywords: string | null;
-  categoryLabel?: string; // 来自 Category.label（前台展示用，运行时附加）
+  categoryLabel?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,6 +43,7 @@ export interface GameInput {
   totalWins?: number;
   trend?: number[];
   rank?: number;
+  rankWeight?: number;
   isActive?: boolean;
   description?: string | null;
   detailUrl?: string | null;

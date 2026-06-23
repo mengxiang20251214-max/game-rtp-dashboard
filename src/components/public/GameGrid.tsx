@@ -45,11 +45,8 @@ export default function GameGrid({ games, sectionTitle }: GameGridProps) {
     );
   }
 
-  // 找出 playerCount 最高的 index，作为 isFeature（黄金卡）
-  const featureIdx = games.reduce(
-    (best, g, i) => (g.playerCount > games[best].playerCount ? i : best),
-    0
-  );
+  // rank=1（列表首位）始终为 HOT 黄金卡；排序由后端保证，前端不重排
+  const featureIdx = 0;
 
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
