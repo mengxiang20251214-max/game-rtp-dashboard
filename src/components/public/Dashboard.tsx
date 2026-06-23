@@ -79,7 +79,7 @@ export default function Dashboard({
           logo={logo}
         />
         {/* 分类筛选 */}
-        <div className="border-b border-white/10 px-3 py-2 sm:px-6 sm:py-3">
+        <div className="border-b border-sky-200/50 px-3 py-2 sm:px-6 sm:py-3">
           <div className="mx-auto max-w-7xl">
             <CategoryFilter
               active={active}
@@ -97,7 +97,7 @@ export default function Dashboard({
         <GameGrid games={filtered} />
       </main>
 
-      <footer className="border-t border-white/10 py-6 text-center text-xs text-content-secondary">
+      <footer className="border-t border-sky-200/50 py-6 text-center text-xs text-content-secondary">
         {copyright} · {new Date().getFullYear()}
       </footer>
     </div>

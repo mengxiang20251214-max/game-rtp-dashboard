@@ -11,17 +11,18 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: "#0d0b1e",
-          secondary: "#160f30",
-          card: "#1c1640",
+          primary: "#bde0f7",   // 天空蓝
+          secondary: "#d0eaf8", // 浅天蓝
+          card: "#ffffff",      // 白色卡片
         },
         neon: {
-          blue: "#00f0ff",
+          blue: "#0ea5e9",    // sky-500 — 白底可读
           purple: "#8b5cf6",
           pink: "#ec4899",
           gold: "#f59e0b",
           orange: "#f97316",
           green: "#22c55e",
+          teal: "#0d9488",    // 分类选中色
         },
         rtp: {
           success: "#22c55e",
@@ -29,10 +30,10 @@ const config: Config = {
           danger: "#ef4444",
         },
         content: {
-          primary: "#f0eeff",
-          secondary: "#a89fc0",
+          primary: "#1e1b4b",   // 深靛蓝文字
+          secondary: "#64748b", // 板岩灰次要文字
         },
-        "border-glow": "#f59e0b",
+        "border-glow": "#0d9488",
       },
       fontFamily: {
         display: ["var(--font-orbitron)", "Orbitron", "sans-serif"],
@@ -41,16 +42,17 @@ const config: Config = {
         mono: ["var(--font-space-mono)", "Space Mono", "monospace"],
       },
       boxShadow: {
-        "neon-blue": "0 0 5px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.35)",
+        "neon-blue":   "0 0 5px rgba(14,165,233,0.6), 0 0 20px rgba(14,165,233,0.30)",
         "neon-purple": "0 0 5px #8b5cf6, 0 0 20px rgba(139, 92, 246, 0.35)",
-        "neon-pink": "0 0 5px #ec4899, 0 0 20px rgba(236, 72, 153, 0.35)",
-        "neon-gold": "0 0 8px #f59e0b, 0 0 24px rgba(245, 158, 11, 0.4)",
-        "neon-green": "0 0 8px #22c55e, 0 0 20px rgba(34, 197, 94, 0.35)",
-        card: "0 8px 30px rgba(0, 0, 0, 0.6)",
+        "neon-pink":   "0 0 5px #ec4899, 0 0 20px rgba(236, 72, 153, 0.35)",
+        "neon-gold":   "0 0 8px #f59e0b, 0 0 24px rgba(245, 158, 11, 0.40)",
+        "neon-green":  "0 0 8px #22c55e, 0 0 20px rgba(34, 197, 94, 0.35)",
+        "neon-teal":   "0 0 8px #0d9488, 0 0 20px rgba(13, 148, 136, 0.40)",
+        card: "0 4px 24px rgba(100,160,220,0.14), 0 1px 6px rgba(0,0,0,0.05)",
       },
       backgroundImage: {
         "grid-glow":
-          "radial-gradient(circle at 50% 0%, rgba(0,240,255,0.08), transparent 60%)",
+          "radial-gradient(circle at 50% 0%, rgba(14,165,233,0.08), transparent 60%)",
       },
       keyframes: {
         "pulse-glow": {

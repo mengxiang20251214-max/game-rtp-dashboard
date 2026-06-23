@@ -31,21 +31,18 @@ export default function CategoryFilter({ active, categories, counts, onChange }:
             className={[
               "relative flex shrink-0 items-center gap-1.5 rounded-full border",
               "px-3 py-1.5 sm:px-5 sm:py-2",
-              "font-mono text-[10px] sm:text-xs font-bold uppercase transition-all",
+              "font-mono text-[10px] sm:text-xs font-bold uppercase transition-all duration-200",
               isActive
-                ? "border-neon-gold text-neon-gold shadow-neon-gold"
-                : "border-white/15 text-content-secondary hover:border-neon-gold/40 hover:text-content-primary",
+                ? "border-teal-500 text-white shadow-[0_2px_12px_rgba(13,148,136,0.35)]"
+                : "border-white/70 bg-white/55 text-slate-600 hover:border-teal-400/70 hover:text-teal-700 hover:bg-white/80",
             ].join(" ")}
-            style={
-              isActive
-                ? { letterSpacing: "0.14em", filter: "drop-shadow(0 0 5px rgba(245,158,11,0.5))" }
-                : { letterSpacing: "0.14em" }
-            }
+            style={{ letterSpacing: "0.13em" }}
           >
+            {/* 选中态背景（layoutId 动画滑动） */}
             {isActive && (
               <motion.span
                 layoutId="category-active-bg"
-                className="absolute inset-0 -z-10 rounded-full bg-neon-gold/10"
+                className="absolute inset-0 -z-10 rounded-full bg-teal-500"
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
@@ -54,7 +51,9 @@ export default function CategoryFilter({ active, categories, counts, onChange }:
             <span
               className={[
                 "rounded-full px-1 py-0.5 text-[8px] tabular-nums",
-                isActive ? "bg-neon-gold/20 text-neon-gold" : "bg-white/5 text-content-secondary",
+                isActive
+                  ? "bg-white/20 text-white"
+                  : "bg-sky-100 text-slate-500",
               ].join(" ")}
             >
               {counts[opt.value] ?? 0}

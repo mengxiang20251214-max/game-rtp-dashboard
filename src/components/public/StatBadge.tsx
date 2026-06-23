@@ -6,10 +6,10 @@ interface StatBadgeProps {
 }
 
 const accentMap: Record<NonNullable<StatBadgeProps["accent"]>, string> = {
-  blue: "text-neon-blue",
-  purple: "text-neon-purple",
-  pink: "text-neon-pink",
-  default: "text-content-primary",
+  blue:    "text-sky-500",
+  purple:  "text-violet-500",
+  pink:    "text-pink-500",
+  default: "text-slate-700",
 };
 
 export default function StatBadge({
@@ -20,12 +20,12 @@ export default function StatBadge({
 }: StatBadgeProps) {
   return (
     <div
-      className={`flex flex-col rounded-lg bg-black/30 ring-1 ring-white/5 ${
+      className={`flex flex-col rounded-lg bg-sky-50 ring-1 ring-sky-100 ${
         compact ? "px-2 py-1.5" : "px-3 py-2"
       }`}
     >
       <span
-        className={`uppercase tracking-wider text-content-secondary ${
+        className={`uppercase tracking-wider text-slate-400 ${
           compact ? "text-[8px]" : "text-[10px]"
         }`}
       >

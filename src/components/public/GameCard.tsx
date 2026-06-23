@@ -38,7 +38,7 @@ export default function GameCard({ game }: { game: Game }) {
       variants={cardVariants}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -5, scale: 1.02 }}
-      className="card-glow group flex flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-bg-card"
+      className="card-glow group flex flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-sky-100 bg-white shadow-card"
     >
       {/* ── 图片区：游戏图片作为主视觉 ── */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -58,8 +58,8 @@ export default function GameCard({ game }: { game: Game }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #1c1640 0%, #2d1f5e 100%)" }}>
-            <span className="font-display text-3xl sm:text-5xl text-neon-gold/30">X168</span>
+            style={{ background: "linear-gradient(135deg, #bde0f7 0%, #93c5fd 100%)" }}>
+            <span className="font-display text-3xl sm:text-5xl text-white/40">X168</span>
           </div>
         )}
 
@@ -145,7 +145,7 @@ export default function GameCard({ game }: { game: Game }) {
           <button
             type="button"
             disabled
-            className="w-full cursor-not-allowed rounded-lg border border-white/10 bg-white/5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wide text-content-secondary/40 sm:py-2.5 sm:text-sm"
+            className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 py-1.5 font-display text-[10px] font-bold uppercase tracking-wide text-gray-400 sm:py-2.5 sm:text-sm"
           >
             {tCommon("viewDetails")}
           </button>

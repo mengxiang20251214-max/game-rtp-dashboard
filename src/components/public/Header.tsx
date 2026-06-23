@@ -16,14 +16,14 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
   const t = useTranslations("header");
 
   return (
-    <header className="border-b border-white/10">
+    <header className="border-b border-sky-200/60">
       <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6">
 
         {/* 刷新按钮 — 绝对定位右侧 */}
         {(onRefresh || lastUpdated) && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:right-6">
             {lastUpdated && (
-              <span className="hidden text-[10px] tracking-wide text-content-secondary sm:inline">
+              <span className="hidden text-[10px] tracking-wide text-slate-400 sm:inline">
                 {t("lastUpdated", { time: lastUpdated })}
               </span>
             )}
@@ -32,7 +32,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
                 type="button"
                 onClick={onRefresh}
                 disabled={refreshing}
-                className="flex items-center gap-1.5 rounded-lg border border-neon-gold/30 bg-neon-gold/10 px-3 py-2 text-xs text-neon-gold transition-all hover:bg-neon-gold/20 hover:shadow-neon-gold disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 px-3 py-2 text-xs text-teal-600 transition-all hover:bg-teal-500/20 hover:shadow-neon-teal disabled:opacity-60"
               >
                 <svg
                   width="13" height="13" viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
         {/* 居中内容 */}
         <div className="flex flex-col items-center gap-1">
 
-          {/* X168 — 金色渐变衬线 */}
+          {/* X168 — 金色渐变衬线（浅蓝背景上的金色非常醒目） */}
           <motion.h1
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              filter: "drop-shadow(0 0 10px rgba(245,158,11,0.65))",
+              filter: "drop-shadow(0 2px 8px rgba(245,158,11,0.45))",
               letterSpacing: "0.04em",
             }}
           >
@@ -76,7 +76,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-mono text-[10px] uppercase text-neon-gold/60"
+            className="font-mono text-[10px] uppercase text-teal-600/70"
             style={{ letterSpacing: "0.20em" }}
           >
             AI · ANALISIS · PERMAINAN · SLOT
@@ -87,7 +87,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="font-mono text-[9px] uppercase text-content-secondary/40"
+            className="font-mono text-[9px] uppercase text-slate-400"
             style={{ letterSpacing: "0.18em" }}
           >
             VER 1.0.0

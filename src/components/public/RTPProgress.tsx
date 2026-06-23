@@ -33,7 +33,7 @@ export default function RTPProgress({ rtp, targetRtp, status }: RTPProgressProps
         </span>
       </div>
 
-      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-black/40 ring-1 ring-white/5">
+      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-sky-100 ring-1 ring-sky-200">
         <motion.div
           className="absolute left-0 top-0 h-full rounded-full"
           style={{
