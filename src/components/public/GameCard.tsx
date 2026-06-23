@@ -49,7 +49,8 @@ export default function GameCard({ game }: { game: Game }) {
             src={game.image}
             alt={game.name}
             fill
-            sizes="(max-width: 640px) 50vw, 50vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 50vw, 640px"
+            quality={90}
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
             loading="lazy"
