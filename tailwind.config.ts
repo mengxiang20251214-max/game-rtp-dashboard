@@ -57,11 +57,16 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
         float: "float 4s ease-in-out infinite",
         shimmer: "shimmer 2s infinite",
+        fadeIn: "fadeIn 0.4s ease-out",
       },
     },
   },

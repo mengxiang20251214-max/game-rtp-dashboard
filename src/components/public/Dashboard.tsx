@@ -3,6 +3,8 @@
 import { useMemo, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import type { CategoryItem, Game } from "@/types";
+import { useLoading } from "@/hooks/useLoading";
+import LoadingScreen from "./LoadingScreen";
 import Header from "./Header";
 import CategoryFilter from "./CategoryFilter";
 import GameGrid from "./GameGrid";
@@ -25,6 +27,7 @@ export default function Dashboard({
   logo,
 }: DashboardProps) {
   const t = useTranslations("home");
+  const { ready } = useLoading();
   const [games, setGames] = useState<Game[]>(initialGames);
   const [active, setActive] = useState<string>("ALL");
   const [refreshing, setRefreshing] = useState(false);
@@ -60,8 +63,10 @@ export default function Dashboard({
     }
   }, []);
 
+  if (!ready) return <LoadingScreen />;
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-[fadeIn_0.4s_ease-out]">
       <Header
         onRefresh={handleRefresh}
         refreshing={refreshing}
