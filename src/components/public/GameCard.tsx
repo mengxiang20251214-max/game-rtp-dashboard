@@ -103,8 +103,10 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   // 热度由后端打的 heatTier 决定（视觉强度严格跟随）；rank=1 兜底为 blazing
   const heat: HeatTier =
     game.heatTier ?? (isFeature ? "blazing" : "normal");
-  const isGold = heat === "blazing";
-  const isHot  = heat === "hot";
+  // 金色焦点全页仅一处：排名第 1 的卡。即使后端把多款标为 blazing，
+  // 也只让榜首吃金皮肤，其余 blazing 退回品牌蓝（纯展示层规则，不动数据）。
+  const isGold = (game.rank ?? 0) === 1;
+  const isHot  = !isGold && (heat === "hot" || heat === "blazing");
   const isCold = heat === "cold";
   const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
 
