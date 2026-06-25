@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type { CategoryItem, Game } from "@/types";
 import { SORT_MODES, normalizeSort, type SortMode } from "@/lib/ranking";
 import { formatIDR, formatNum } from "@/lib/game-utils";
-import { walkMetrics, walkOnline } from "@/lib/stable-metrics";
+import { walkMetrics, walkOnline, type MetricTier } from "@/lib/stable-metrics";
 import { useLoading } from "@/hooks/useLoading";
 import LoadingScreen from "./LoadingScreen";
 import Header from "./Header";
@@ -17,15 +17,30 @@ const SORT_STORAGE_KEY = "x168-sort-mode";
 // 让数据"活起来但不穿帮"：每次加载/刷新对每款游戏走一小步（walkMetrics），
 // currentRtp 随之重算；并以 ~18% 概率让「自动区」相邻两款（综合分接近）换一次位，
 // 换位用 delta ▲/▼ 体现。置顶区顺序永不变。
+// 把游戏热度映射到指标走步分层：
+//   blazing(榜首/featured) → hot；hot → popular；
+//   高玩家+高投注（即使 heatTier=normal）→ popular；cold → cold；其余 normal。
+function metricTierOf(g: Game): MetricTier {
+  if (g.heatTier === "blazing") return "hot";
+  if (g.heatTier === "hot") return "popular";
+  if (g.playerCount >= 1500 && g.totalBets >= 1_000_000_000) return "popular";
+  if (g.heatTier === "cold") return "cold";
+  return "normal";
+}
+
 function livenGames(games: Game[]): Game[] {
-  // 1) 各项指标走一步（基于上次显示值累积）
+  // 1) 各项指标走一步（基于上次显示值累积，按热度分层）
   const walked = games.map((g) => {
-    const m = walkMetrics(g.id, {
-      players: g.playerCount,
-      totalBets: g.totalBets,
-      totalWins: g.totalWins,
-      targetRtp: g.targetRtp,
-    });
+    const m = walkMetrics(
+      g.id,
+      {
+        players: g.playerCount,
+        totalBets: g.totalBets,
+        totalWins: g.totalWins,
+        targetRtp: g.targetRtp,
+      },
+      metricTierOf(g)
+    );
     const rtp =
       m.totalBets > 0 ? Math.round((m.totalWins / m.totalBets) * 1000) / 10 : g.rtp;
     return { ...g, playerCount: m.players, totalBets: m.totalBets, totalWins: m.totalWins, rtp };

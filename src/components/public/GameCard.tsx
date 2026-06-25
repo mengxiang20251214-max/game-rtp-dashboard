@@ -123,10 +123,20 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   });
   const tone: Tone = isGold ? "gold" : "cyan";
 
+  // 吸引力分层（视觉强度）：rank1(金) > 高投注+高玩家(PUPULER) > 高RTP(RTP TINGGI) > 普通。
+  // isStrong：高玩家+高投注的「热门」卡，品牌蓝光效更强（额外 pulse + 更亮边框/光晕）。
+  const isStrong  = !isGold && displayStatus === "PUPULER";
+  const isHiRtp   = !isGold && displayStatus === "RTP_TINGGI";
+
   // 主数据强调色 + 进度条填充：金=榜首焦点；其余一律品牌蓝（不存在灰色主信息）。
   const accentColor = isGold ? "#f2c14e" : "#4DABE9";
+  // 高 RTP 卡的 RTP 数字更亮（更强发光）；高热门卡也略增强。
   const accentGlow  = isGold
     ? "0 0 12px rgba(242,193,78,0.5)"
+    : isHiRtp
+    ? "0 0 16px rgba(77,171,233,0.85)"
+    : isStrong
+    ? "0 0 14px rgba(77,171,233,0.7)"
     : "0 0 12px rgba(77,171,233,0.5)";
   const mainFill =
     tone === "gold"
@@ -144,10 +154,11 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   const delta = game.delta ?? 0;
   const rank  = game.rank  ?? 0;
 
+  // 强热门卡（PUPULER 或 hot 档）用更强的品牌蓝玻璃皮肤。
   const cardCls = isGold
     ? "glass-card--gold"
-    : isHot
-    ? "glass-card--hot"
+    : isStrong || isHot
+    ? "glass-card--strong"
     : "";
 
   return (
@@ -247,6 +258,11 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                     background: displayStatusColor(displayStatus).bg,
                     color: displayStatusColor(displayStatus).color,
                     letterSpacing: "0.10em",
+                    // 高 RTP / 高热门徽章更亮（品牌蓝发光）
+                    boxShadow:
+                      isHiRtp || isStrong
+                        ? "0 0 10px rgba(77,171,233,0.55)"
+                        : "none",
                   }}
                 >
                   {DISPLAY_STATUS_LABELS[displayStatus]}

@@ -93,6 +93,22 @@ body {
   box-shadow: 0 0 24px rgba(77,171,233, 0.14), 0 24px 60px rgba(0, 0, 0, 0.50);
 }
 
+/* 强热门卡（高玩家+高投注 / hot 档）：更强的品牌蓝边框 + 光晕 + 轻微呼吸光。 */
+.glass-card--strong {
+  border-color: rgba(77,171,233, 0.50);
+  box-shadow: 0 0 34px rgba(77,171,233, 0.22), 0 24px 60px rgba(0, 0, 0, 0.50);
+  animation: brand-pulse 3.2s ease-in-out infinite;
+}
+.glass-card--strong:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 56px rgba(77,171,233, 0.38), 0 30px 70px rgba(0, 0, 0, 0.60);
+  border-color: rgba(77,171,233, 0.62);
+}
+@keyframes brand-pulse {
+  0%, 100% { box-shadow: 0 0 28px rgba(77,171,233, 0.18), 0 24px 60px rgba(0, 0, 0, 0.50); }
+  50%      { box-shadow: 0 0 40px rgba(77,171,233, 0.30), 0 24px 60px rgba(0, 0, 0, 0.50); }
+}
+
 /* ── 图片文字阴影 ── */
 .game-title-shadow {
   text-shadow: 0 2px 8px rgba(0,0,0,0.90), 0 0 20px rgba(0,0,0,0.70);
@@ -107,10 +123,12 @@ body {
   animation: marquee 36s linear infinite;
 }
 
-/* ── 减少动画偏好 ── */
+/* ── 减少动画偏好：关闭所有自动动效（飘条/浮动/呼吸光/微跳） ── */
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
   .animate-marquee { animation: none; }
+  .animate-pulse-glow { animation: none; }
+  .glass-card--strong { animation: none; }
 }
 
 @keyframes fadeIn {
