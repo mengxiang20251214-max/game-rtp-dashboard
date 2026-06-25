@@ -32,7 +32,7 @@ pnpm dev              # 启动 http://localhost:3000
 ## 页面
 
 - `/` — 前台：分类筛选 + 响应式卡片网格 + Framer Motion 入场动画 + RTP 动态进度条
-- `/admin` — 后台（需登录）：概览统计 / 游戏列表 / 增删改 / 排名调整
+- `/admin` — 后台（需登录）：概览统计 / 游戏列表 / 增删改 / 排名调整 / 智能运营配置（见 [docs/smart-config.md](docs/smart-config.md)）
 - `/admin/login` — 后台登录（默认密码 `admin123`）
 
 ## API
@@ -45,6 +45,9 @@ pnpm dev              # 启动 http://localhost:3000
 | PUT | `/api/games/:id` | 更新游戏 | 是 |
 | DELETE | `/api/games/:id` | 删除游戏 | 是 |
 | PATCH | `/api/games/:id/rank` | 调整排名（`{direction:"up"\|"down"}` 或 `{rank}`） | 是 |
+| POST | `/api/admin/games/smart-config/preview` | 智能运营配置预览（dry-run，不写库） | 是 |
+| POST | `/api/admin/games/smart-config/apply` | 应用配置（先自动备份再批量写入） | 是 |
+| POST | `/api/admin/games/smart-config/rollback` | 回滚到上次备份（`{confirm:true}`） | 是 |
 
 ## 实现说明
 
