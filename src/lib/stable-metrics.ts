@@ -28,6 +28,23 @@ function step(prev: number, magMin: number, magMax: number, posBias: number): nu
   return Math.max(1, Math.round(prev * (1 + sign * mag)));
 }
 
+// 本地存值是否相对 server 真值「严重偏离」（量级差 > DRIFT_TOLERANCE 倍）。
+// 用于脏值自愈：偏离过大说明本地值过期/损坏，应丢弃改用 server 真值重新播种。
+const DRIFT_TOLERANCE = 50;
+function ratioOutOfRange(local: number, srv: number): boolean {
+  // server 有真值而本地几乎为 0，或两者比值超出 [1/tol, tol]，判为脏值
+  if (srv > 0 && local <= 0) return true;
+  if (srv <= 0) return false;
+  const r = local / srv;
+  return r > DRIFT_TOLERANCE || r < 1 / DRIFT_TOLERANCE;
+}
+function isStale(prev: MetricBase, server: MetricBase): boolean {
+  return (
+    ratioOutOfRange(prev.players, server.players) ||
+    ratioOutOfRange(prev.totalBets, server.totalBets)
+  );
+}
+
 /**
  * 在「上一次显示值」基础上为单款游戏走一步。
  * - players / totalBets：±0.3%~0.8%，60% 概率为正（缓慢累积）
@@ -45,7 +62,17 @@ export function walkMetrics(
   }
   try {
     const store = readStore();
-    const prev = store[id];
+    let prev = store[id];
+
+    // ── 脏值自愈 ──
+    // walkMetrics 平时只在本地存值上随机游走、不回看 server。但如果本地存的
+    // players / totalBets 与 server 真值量级严重偏离（>50 倍），说明本地值是
+    // 过期/损坏的脏数据（例如早期播种过 players=1、totalBets=1，就会永远困在 1
+    // 附近，导致前台显示 Pemain 1 / Rp 1 而后台是几千/几十亿）。此时丢弃本地值，
+    // 用 server 真值重新播种。正常随机游走（±0.3%~几个百分点）远在阈值内，不受影响。
+    if (prev && isStale(prev, server)) {
+      prev = undefined as unknown as MetricBase;
+    }
 
     let next: MetricBase;
     if (!prev) {
