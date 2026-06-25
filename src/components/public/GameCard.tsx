@@ -20,6 +20,10 @@ function rtpPct(v: number) {
   return Math.max(0, Math.min(100, ((v - RTP_MIN) / (RTP_MAX - RTP_MIN)) * 100));
 }
 
+// 进度条满刻度（与 seed-games 的数值量级一致：玩家上限 ~5000、投注上限 ~3.2 miliar）
+const PLAYERS_BAR_MAX = 5000;
+const BETS_BAR_MAX = 3_200_000_000;
+
 type Tone = "gold" | "cyan" | "cold";
 
 // ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
@@ -320,8 +324,8 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
         <div className="flex flex-col gap-2.5 sm:gap-3">
           <DataRow label={tStats("currentRtp")} value={formatPct(shownRtp)} pct={rtpPct(shownRtp)} tone={tone} />
           <DataRow label={tStats("targetRtp")} value={formatPct(game.targetRtp)} pct={rtpPct(game.targetRtp)} tone={tone} />
-          <DataRow label={tStats("players")} value={formatNum(shownPlayers)} pct={Math.min(100, (shownPlayers / 20000) * 100)} tone={tone} />
-          <DataRow label={tStats("totalBets")} value={formatIDR(shownBets)} pct={Math.min(100, (shownBets / 500000) * 100)} tone={tone} />
+          <DataRow label={tStats("players")} value={formatNum(shownPlayers)} pct={Math.min(100, (shownPlayers / PLAYERS_BAR_MAX) * 100)} tone={tone} />
+          <DataRow label={tStats("totalBets")} value={formatIDR(shownBets)} pct={Math.min(100, (shownBets / BETS_BAR_MAX) * 100)} tone={tone} />
         </div>
 
         {/* ── CTA 按钮 ── */}

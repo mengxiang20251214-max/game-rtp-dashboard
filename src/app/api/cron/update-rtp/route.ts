@@ -39,7 +39,9 @@ export async function GET(request: Request) {
       games.map((g) => {
         const playerCountFactor = 0.9  + Math.random() * 0.2;   // ±10%
         const betsFactor        = 0.95 + Math.random() * 0.1;   // ±5%
-        const winFactor         = 0.88 + Math.random() * 0.11;  // 88–99% of bets
+        // 赢额 = 投注 × (目标RTP ± 0.7%)，让 currentRtp 始终围绕目标小幅波动，
+        // 不再 88–99% 大跳（与前台 RTP 展示保持一致、可信）
+        const winFactor         = (g.targetRtp + (Math.random() - 0.5) * 1.4) / 100;
 
         const basePlayers = g.initialPlayerCount || g.playerCount || 0;
         const baseBets    = g.initialTotalBets   || g.totalBets   || 0;

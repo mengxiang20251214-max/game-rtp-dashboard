@@ -96,9 +96,10 @@ function hash(str) {
   return (h >>> 0) / 4294967295;
 }
 
-// 数值区间（印尼盾场景）
-const PLAYERS_TOP = 13200, PLAYERS_MIN = 320, COLD_PLAYERS_MAX = 48;
-const BETS_TOP = 5_200_000_000, BETS_MIN = 6_500_000;
+// 数值区间（印尼盾场景；吸引但不夸张，与前台进度条满刻度一致）
+// 玩家数：热门 ~4200 递减到冷门 <50；投注：热门 ~Rp 2.8 miliar 递减到 ~Rp 3 juta
+const PLAYERS_TOP = 4200, PLAYERS_MIN = 240, COLD_PLAYERS_MAX = 45;
+const BETS_TOP = 2_800_000_000, BETS_MIN = 3_000_000;
 const lerp = (a, b, t) => a + (b - a) * t;
 const curve = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 const jit = (v, seed, pct = 0.06) => Math.round(v * (1 + (hash(seed) - 0.5) * 2 * pct));
