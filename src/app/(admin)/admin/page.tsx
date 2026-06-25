@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { serializeGame, formatNumber, formatRtp } from "@/lib/game-utils";
+import SmartConfigPanel from "@/components/admin/SmartConfigPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,21 @@ export default async function AdminHomePage() {
   const t = await getTranslations("admin.overview");
   const records = await prisma.game.findMany();
   const games = records.map(serializeGame);
+
+  // 智能运营配置：最近一次备份元信息（用于「恢复上次备份」按钮可用态）
+  const lastBackup = await prisma.configBackup.findFirst({
+    where: { kind: "smart-config" },
+    orderBy: { createdAt: "desc" },
+  });
+  const initialBackup = lastBackup
+    ? {
+        hasBackup: true,
+        backupId: lastBackup.id,
+        createdAt: lastBackup.createdAt.toISOString(),
+        gameCount: lastBackup.gameCount,
+        operator: lastBackup.operator,
+      }
+    : { hasBackup: false };
 
   const total = games.length;
   const active = games.filter((g) => g.isActive).length;
@@ -66,6 +82,9 @@ export default async function AdminHomePage() {
           {t("goToGames")}
         </Link>
       </div>
+
+      {/* 智能运营配置（一键生成真实感模拟运营数据） */}
+      <SmartConfigPanel initialBackup={initialBackup} />
     </div>
   );
 }

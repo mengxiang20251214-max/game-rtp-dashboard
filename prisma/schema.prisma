@@ -12,23 +12,23 @@ datasource db {
 //   category: "SLOT" | "TABLE" | "LIVE" | "POKER" | "CASUAL"
 //   status:   "NORMAL" | "WARNING" | "CRITICAL"
 model Game {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  category    String   @default("SLOT")
+  id          String  @id @default(cuid())
+  name        String  @unique
+  category    String  @default("SLOT")
   image       String?
-  rtp         Float    @default(0)
-  targetRtp   Float    @default(96.5)
-  status      String   @default("NORMAL")
-  playerCount Int      @default(0)
-  totalBets   Float    @default(0)
-  totalWins   Float    @default(0)
-  trend       String   @default("[]") // JSON 编码的 number[]，由 parseTrend 解析
-  rank        Int      @default(0)
-  isActive    Boolean  @default(true)
+  rtp         Float   @default(0)
+  targetRtp   Float   @default(96.5)
+  status      String  @default("NORMAL")
+  playerCount Int     @default(0)
+  totalBets   Float   @default(0)
+  totalWins   Float   @default(0)
+  trend       String  @default("[]") // JSON 编码的 number[]，由 parseTrend 解析
+  rank        Int     @default(0)
+  isActive    Boolean @default(true)
   description String?
 
   // 详情跳转链接（前台「查看详情」按钮目标）
-  detailUrl      String?
+  detailUrl String?
 
   // SEO 字段（每个游戏可自定义）
   seoTitle       String?
@@ -40,12 +40,12 @@ model Game {
   categoryRef Category? @relation(fields: [categoryId], references: [id])
 
   // 排名控制 V2：开关式（运营不手填数字）
-  pinned      Boolean @default(false)  // 是否置顶
-  pinOrder    Int     @default(0)      // 置顶区内顺序（拖拽/上下移动写入，越小越前）
-  featured    Boolean @default(false)  // 是否给 HOT 金色焦点
+  pinned     Boolean @default(false) // 是否置顶
+  pinOrder   Int     @default(0) // 置顶区内顺序（拖拽/上下移动写入，越小越前）
+  featured   Boolean @default(false) // 是否给 HOT 金色焦点
   // 兼容旧字段：rankWeight 与 pinned/pinOrder 自动同步（pinned ? pinOrder : 0）
-  rankWeight  Int   @default(0)
-  prevRank    Int   @default(0)  // 上次计算排名，用于 delta
+  rankWeight Int     @default(0)
+  prevRank   Int     @default(0) // 上次计算排名，用于 delta
 
   // 初始值（每日 00:00 重置时回写）
   initialRank        Int   @default(0)
@@ -83,6 +83,22 @@ model SiteSetting {
   value     String // 文本，或 image 类型的 base64 data URL
   type      String   @default("text") // text | image
   updatedAt DateTime @updatedAt
+}
+
+// 智能运营配置 — 应用前的自动备份快照（用于回滚）
+// 新增原因：现有表均无法支撑「带历史的备份」——
+//   · SiteSetting.key 为 @unique，无法存多条时间序列快照，也无干净的「取最近一条」查询；
+//   · SeoConfig / Category 语义不符，复用会污染其用途。
+// 故新增专用 model；不改动任何现有 Game 展示字段结构，仅整段 JSON 快照存储。
+model ConfigBackup {
+  id        String   @id @default(cuid())
+  kind      String   @default("smart-config") // 备份来源标识
+  gameCount Int      @default(0)
+  operator  String? // 后台操作者（admin session name）
+  snapshot  String // JSON：游戏展示字段快照数组
+  createdAt DateTime @default(now())
+
+  @@index([kind, createdAt])
 }
 
 // 页面级 SEO 配置（按 key 标识，如 "home"）
