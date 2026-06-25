@@ -34,8 +34,16 @@
   },
   "status": {
     "NORMAL": "Normal",
-    "WARNING": "Peringatan",
-    "CRITICAL": "Kritis"
+    "WARNING": "Normal",
+    "CRITICAL": "Normal"
+  },
+  "displayStatus": {
+    "HOT": "HOT",
+    "PUPULER": "PUPULER",
+    "RTP_TINGGI": "RTP TINGGI",
+    "TRENDING": "TRENDING",
+    "NEW": "NEW",
+    "NORMAL": "NORMAL"
   },
   "stats": {
     "currentRtp": "RTP Saat Ini",
@@ -125,7 +133,7 @@
       "addGame": "+ Tambah Game",
       "totalGames": "Total Game",
       "active": "Aktif",
-      "warning": "Kritis / Peringatan",
+      "warning": "Unggulan (HOT)",
       "totalPlayers": "Total Pemain",
       "avgRtp": "RTP Rata-rata",
       "totalBets": "Total Taruhan",

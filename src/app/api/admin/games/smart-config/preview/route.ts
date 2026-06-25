@@ -50,6 +50,7 @@ export async function POST() {
 
     const results = generateSmartConfig(games);
     const summary = summarize(games, results);
+    // 表格仅展示前 10 个变化，但实际应用会更新全部游戏
     const changes = diffChanges(games, results, 10);
 
     return NextResponse.json({
@@ -57,6 +58,9 @@ export async function POST() {
       data: {
         dryRun: true,
         note: "真实感模拟运营配置（非真实第三方平台数据）。此为预览，未写入数据库。",
+        // 摘要基于全部游戏；下表只展示前 10 个变化，实际应用会更新全部 willUpdateCount 个游戏
+        willUpdateCount: results.length,
+        previewChangesShown: changes.length,
         ...summary,
         changes,
       },

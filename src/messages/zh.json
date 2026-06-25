@@ -34,8 +34,16 @@
   },
   "status": {
     "NORMAL": "正常",
-    "WARNING": "预警",
-    "CRITICAL": "异常"
+    "WARNING": "正常",
+    "CRITICAL": "正常"
+  },
+  "displayStatus": {
+    "HOT": "HOT",
+    "PUPULER": "PUPULER",
+    "RTP_TINGGI": "RTP TINGGI",
+    "TRENDING": "TRENDING",
+    "NEW": "NEW",
+    "NORMAL": "NORMAL"
   },
   "stats": {
     "currentRtp": "当前 RTP",
@@ -125,7 +133,7 @@
       "addGame": "+ 添加游戏",
       "totalGames": "游戏总数",
       "active": "激活中",
-      "warning": "异常 / 预警",
+      "warning": "HOT 焦点",
       "totalPlayers": "总玩家数",
       "avgRtp": "平均 RTP",
       "totalBets": "总投注额",

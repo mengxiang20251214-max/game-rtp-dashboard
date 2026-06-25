@@ -10,6 +10,9 @@ import {
   formatNum,
   formatPct,
   BLUR_DATA_URL,
+  getDisplayStatus,
+  displayStatusColor,
+  DISPLAY_STATUS_LABELS,
 } from "@/lib/game-utils";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -20,7 +23,7 @@ function rtpPct(v: number) {
   return Math.max(0, Math.min(100, ((v - RTP_MIN) / (RTP_MAX - RTP_MIN)) * 100));
 }
 
-type Tone = "gold" | "cyan" | "cold";
+type Tone = "gold" | "cyan";
 
 // ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
 // resetKey 变化时（如切换排序模式）重新触发 count-up
@@ -100,25 +103,33 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   const tStats  = useTranslations("stats");
   const tCommon = useTranslations("common");
 
-  // 热度由后端打的 heatTier 决定（视觉强度严格跟随）；rank=1 兜底为 blazing
+  // 热度由后端打的 heatTier 决定（仅用于「更醒目」的加成，绝不弱化主信息）；
+  // rank=1 兜底为 blazing。
   const heat: HeatTier =
     game.heatTier ?? (isFeature ? "blazing" : "normal");
   // 金色焦点全页仅一处：排名第 1 的卡。即使后端把多款标为 blazing，
   // 也只让榜首吃金皮肤，其余 blazing 退回品牌蓝（纯展示层规则，不动数据）。
   const isGold = (game.rank ?? 0) === 1;
+  // 高热度（hot/blazing 但非榜首）：额外发光更醒目；不是「降级」。
   const isHot  = !isGold && (heat === "hot" || heat === "blazing");
-  const isCold = heat === "cold";
-  const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
+  // 面向用户的正向运营标签（HOT / PUPULER / RTP TINGGI / TRENDING / NEW / NORMAL）。
+  const displayStatus = getDisplayStatus({
+    rank: game.rank ?? 0,
+    playerCount: game.playerCount,
+    totalBets: game.totalBets,
+    rtp: game.rtp,
+    isNew: game.isNew,
+    heatTier: heat,
+  });
+  const tone: Tone = isGold ? "gold" : "cyan";
 
-  // 主数据强调色 + 进度条填充（金=焦点卡，青=普通，灰=冷门）
-  const accentColor = isGold ? "#f2c14e" : isCold ? "#aeb8d0" : "#4DABE9";
+  // 主数据强调色 + 进度条填充：金=榜首焦点；其余一律品牌蓝（不存在灰色主信息）。
+  const accentColor = isGold ? "#f2c14e" : "#4DABE9";
   const accentGlow  = isGold
     ? "0 0 12px rgba(242,193,78,0.5)"
-    : isCold ? "none" : "0 0 12px rgba(77,171,233,0.5)";
+    : "0 0 12px rgba(77,171,233,0.5)";
   const mainFill =
-    tone === "cold"
-      ? { background: "linear-gradient(90deg, #2a3142, #3d4761)", boxShadow: "none" }
-      : tone === "gold"
+    tone === "gold"
       ? { background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)", boxShadow: "0 0 12px rgba(242,193,78,0.45)" }
       : { background: "linear-gradient(90deg, #176b96, #4DABE9, #8fd4ff)", boxShadow: "0 0 12px rgba(77,171,233,0.45)" };
 
@@ -137,8 +148,6 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
     ? "glass-card--gold"
     : isHot
     ? "glass-card--hot"
-    : isCold
-    ? "glass-card--cold"
     : "";
 
   return (
@@ -154,14 +163,12 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
           : undefined
       }
     >
-      {/* 顶部高光线（cold 无高光） */}
+      {/* 顶部高光线（金=金色，其余=品牌蓝） */}
       <div
         className="h-[2px] w-full shrink-0"
         style={{
           background: isGold
             ? "linear-gradient(90deg, transparent, rgba(242,193,78,0.75), transparent)"
-            : isCold
-            ? "transparent"
             : "linear-gradient(90deg, transparent, rgba(77,171,233,0.75), transparent)",
         }}
       />
@@ -189,8 +196,6 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
               borderRadius: "12px",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
-                : isCold
-                ? "none"
                 : "0 0 18px rgba(77,171,233,0.24)",
             }}
           >
@@ -229,21 +234,22 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             <div className="flex items-center gap-1.5">
               <span
                 className="font-mono text-[9px] sm:text-[10px] uppercase"
-                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#4DABE9" }}
+                style={{ letterSpacing: "0.20em", color: "#4DABE9" }}
               >
                 {game.categoryLabel || game.category}
               </span>
-              {/* 热门青标签（仅 hot 档） */}
-              {isHot && (
+              {/* 正向运营标签（非榜首；榜首在下方显示 ★ HOT）。
+                  NORMAL 不显示徽章，避免噪音；其余一律品牌蓝（HOT 留给榜首）。 */}
+              {!isGold && displayStatus !== "NORMAL" && (
                 <span
                   className="rounded-full px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase"
                   style={{
-                    background: "rgba(77,171,233,0.14)",
-                    color: "#4DABE9",
+                    background: displayStatusColor(displayStatus).bg,
+                    color: displayStatusColor(displayStatus).color,
                     letterSpacing: "0.10em",
                   }}
                 >
-                  Populer
+                  {DISPLAY_STATUS_LABELS[displayStatus]}
                 </span>
               )}
             </div>
@@ -257,7 +263,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
                     }
-                  : { color: isCold ? "#aeb8d0" : "#eef1f8" }
+                  : { color: "#eef1f8" }
               }
             >
               {game.name}
@@ -336,7 +342,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 {tStats("players")}
               </span>
             </div>
-            <div className="font-mono text-[14px] font-bold tabular-nums" style={{ color: isCold ? "#aeb8d0" : "#eef1f8" }}>
+            <div className="font-mono text-[14px] font-bold tabular-nums" style={{ color: "#eef1f8" }}>
               {formatNum(shownPlayers)}
             </div>
           </div>
@@ -349,7 +355,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 {tStats("totalBets")}
               </span>
             </div>
-            <div className="font-mono text-[12px] sm:text-[13px] font-bold tabular-nums" style={{ color: isCold ? "#aeb8d0" : "#eef1f8" }}>
+            <div className="font-mono text-[12px] sm:text-[13px] font-bold tabular-nums" style={{ color: "#eef1f8" }}>
               {formatIDR(shownBets)}
             </div>
           </div>
@@ -365,15 +371,11 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             style={{
               background: isGold
                 ? "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)"
-                : isCold
-                ? "linear-gradient(90deg, #2a3142, #3d4761)"
                 : "linear-gradient(90deg, #176b96, #4DABE9, #8fd4ff)",
-              color: isCold ? "#aeb8d0" : "#04060c",
+              color: "#04060c",
               letterSpacing: "0.14em",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
-                : isCold
-                ? "none"
                 : "0 0 18px rgba(77,171,233,0.28)",
             }}
             onMouseEnter={(e) => {

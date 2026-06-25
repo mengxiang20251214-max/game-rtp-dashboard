@@ -105,6 +105,8 @@ export async function POST() {
 
     const txResult = await prisma.$transaction(ops);
     const backup = txResult[0] as { id: string; createdAt: Date };
+    // ops[0] 是备份 create，其余为游戏 update —— 实际更新数量 = ops 总数 − 1
+    const updatedCount = ops.length - 1;
 
     const summary = summarize(games, results);
 
@@ -115,6 +117,9 @@ export async function POST() {
         backupId: backup.id,
         backupAt: backup.createdAt.toISOString(),
         operator,
+        // 全量处理：读全部 → 备份全部 → 更新全部（totalGames 来自 summary，与此一致）
+        backupCount: records.length,
+        updatedCount,
         note: "已写入「真实感模拟运营配置」（非真实第三方平台数据）。应用前已自动备份。",
         ...summary,
       },

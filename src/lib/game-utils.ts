@@ -40,66 +40,90 @@ export const CATEGORY_VALUES: Category[] = ["SLOT", "TABLE", "LIVE", "POKER", "C
 
 export const STATUS_LABELS: Record<Status, string> = {
   NORMAL: "正常",
-  WARNING: "预警",
-  CRITICAL: "异常",
+  WARNING: "正常",
+  CRITICAL: "正常",
 };
 
-/** 根据当前 RTP 与目标 RTP 的偏差推导状态（内部/后台使用） */
-export function deriveStatus(rtp: number, targetRtp: number): Status {
-  const diff = rtp - targetRtp;
-  if (diff <= -2) return "CRITICAL";
-  if (diff <= -1) return "WARNING";
+/**
+ * 写库用的 status —— 这是面向用户的热门游戏运营展示，不是风控后台，
+ * 因此**永不**产出 WARNING / CRITICAL 这类负面状态，统一为 NORMAL。
+ * （schema 的 status 字段保留以兼容，但语义已不再表达「预警/异常」。）
+ * 面向用户的正向标签（HOT/PUPULER/RTP TINGGI/TRENDING/NEW/NORMAL）
+ * 由 getDisplayStatus() 按热度指标实时计算，见下。
+ */
+export function deriveStatus(_rtp: number, _targetRtp: number): Status {
+  void _rtp; void _targetRtp;
   return "NORMAL";
 }
 
 // ─────────────────────────────────────────────
-//  面向用户的友好状态与徽章（前台展示，固定印尼语）
+//  正向运营展示标签（前台 + 后台统一）
+//  逻辑：玩家越多 / 投注越大 / RTP 越高 / 排名越靠前 = 越热门越推荐
 // ─────────────────────────────────────────────
 
-export interface UserStatus {
-  label: string;
-  color: string;
-  bg: string;
-  icon: string;
+export type DisplayStatus =
+  | "HOT"
+  | "PUPULER"
+  | "RTP_TINGGI"
+  | "TRENDING"
+  | "NEW"
+  | "NORMAL";
+
+/** 正向标签的展示文案（全大写，运营风格） */
+export const DISPLAY_STATUS_LABELS: Record<DisplayStatus, string> = {
+  HOT: "HOT",
+  PUPULER: "PUPULER",
+  RTP_TINGGI: "RTP TINGGI",
+  TRENDING: "TRENDING",
+  NEW: "NEW",
+  NORMAL: "NORMAL",
+};
+
+/** 正向标签配色（仅 HOT=金；其余品牌蓝；NORMAL 中性但不灰主信息） */
+export function displayStatusColor(s: DisplayStatus): { color: string; bg: string } {
+  if (s === "HOT") return { color: "#f2c14e", bg: "rgba(242,193,78,0.14)" };
+  if (s === "NORMAL") return { color: "#8b96b4", bg: "rgba(139,150,180,0.12)" };
+  // PUPULER / RTP_TINGGI / TRENDING / NEW 一律品牌蓝
+  return { color: "#4DABE9", bg: "rgba(77,171,233,0.13)" };
 }
 
-/** 面向玩家的友好状态（印尼语） */
-export function getUserStatus(rtp: number, targetRtp: number): UserStatus {
-  const diff = rtp - targetRtp;
-  if (diff >= -0.5) {
-    return { label: "Sangat Baik", color: "text-green-400", bg: "bg-green-500/20", icon: "🟢" };
-  } else if (diff >= -1.5) {
-    return { label: "Baik", color: "text-yellow-400", bg: "bg-yellow-500/20", icon: "🟡" };
-  } else {
-    return { label: "Normal", color: "text-orange-400", bg: "bg-orange-500/20", icon: "🟠" };
-  }
+export interface DisplayStatusInput {
+  rank: number;
+  playerCount: number;
+  totalBets: number;
+  rtp: number;
+  isNew?: boolean;
+  heatTier?: string; // 'blazing' | 'hot' | 'normal' | 'cold'
 }
 
-/** 热门标识（按玩家数） */
-export function getHotBadge(
-  playerCount: number
-): { icon: string; label: string } | null {
-  if (playerCount > 10000) return { icon: "🔥", label: "Populer" };
-  if (playerCount > 5000) return { icon: "📈", label: "Tren" };
-  return null;
+/**
+ * 计算面向用户的正向运营标签。
+ * 优先级（参考需求建议逻辑）：
+ *   rank===1 → HOT
+ *   高玩家 & 高投注 → PUPULER
+ *   RTP ≥ 96 → RTP TINGGI
+ *   新游 → NEW
+ *   趋势/热度较高 → TRENDING
+ *   其余 → NORMAL（不显示任何负面/预警）
+ */
+export function getDisplayStatus(g: DisplayStatusInput): DisplayStatus {
+  if (g.rank === 1) return "HOT";
+  const playersHigh = g.playerCount >= 1500;
+  const betHigh = g.totalBets >= 1_000_000_000; // ≥ 1B IDR
+  if (playersHigh && betHigh) return "PUPULER";
+  if (g.rtp >= 96) return "RTP_TINGGI";
+  if (g.isNew) return "NEW";
+  if (g.heatTier === "hot" || g.heatTier === "blazing") return "TRENDING";
+  return "NORMAL";
 }
 
-/** 高返还标识（按 RTP） */
-export function getHighRtpBadge(rtp: number): { icon: string; label: string } | null {
-  if (rtp > 98) return { icon: "⭐", label: "RTP Tinggi" };
-  return null;
-}
-
-/** RTP 进度条/文字颜色（基于状态） */
-export function rtpColor(status: Status): string {
-  switch (status) {
-    case "CRITICAL":
-      return "#ef4444";
-    case "WARNING":
-      return "#f59e0b";
-    default:
-      return "#22c55e";
-  }
+/**
+ * RTP 文字/进度条颜色 —— 面向用户的运营展示，统一品牌蓝。
+ * 不再用红/橙做预警；保留入参签名以兼容旧调用。
+ */
+export function rtpColor(_status?: Status): string {
+  void _status;
+  return "#4DABE9"; // 品牌蓝
 }
 
 /** 进度条填充比例（0-100），以 targetRtp 为满刻度参考，限制在合理区间 */

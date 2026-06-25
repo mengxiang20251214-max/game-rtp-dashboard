@@ -34,8 +34,16 @@
   },
   "status": {
     "NORMAL": "Normal",
-    "WARNING": "Warning",
-    "CRITICAL": "Critical"
+    "WARNING": "Normal",
+    "CRITICAL": "Normal"
+  },
+  "displayStatus": {
+    "HOT": "HOT",
+    "PUPULER": "PUPULER",
+    "RTP_TINGGI": "RTP TINGGI",
+    "TRENDING": "TRENDING",
+    "NEW": "NEW",
+    "NORMAL": "NORMAL"
   },
   "stats": {
     "currentRtp": "Current RTP",
@@ -125,7 +133,7 @@
       "addGame": "+ Add Game",
       "totalGames": "Total Games",
       "active": "Active",
-      "warning": "Critical / Warning",
+      "warning": "Featured (HOT)",
       "totalPlayers": "Total Players",
       "avgRtp": "Average RTP",
       "totalBets": "Total Bets",

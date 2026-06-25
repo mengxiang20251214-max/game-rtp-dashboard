@@ -28,7 +28,8 @@ export default async function AdminHomePage() {
 
   const total = games.length;
   const active = games.filter((g) => g.isActive).length;
-  const warning = games.filter((g) => g.status !== "NORMAL").length;
+  // 正向运营指标：HOT 焦点游戏数量（不再统计「异常/预警」）。
+  const featured = games.filter((g) => g.featured).length;
   const players = games.reduce((s, g) => s + g.playerCount, 0);
   const avgRtp =
     total > 0 ? games.reduce((s, g) => s + g.rtp, 0) / total : 0;
@@ -37,7 +38,7 @@ export default async function AdminHomePage() {
   const stats = [
     { label: t("totalGames"), value: String(total), accent: "text-neon-blue" },
     { label: t("active"), value: String(active), accent: "text-rtp-success" },
-    { label: t("warning"), value: String(warning), accent: "text-rtp-warning" },
+    { label: t("warning"), value: String(featured), accent: "text-neon-gold" },
     { label: t("totalPlayers"), value: formatNumber(players), accent: "text-neon-pink" },
     { label: t("avgRtp"), value: formatRtp(avgRtp), accent: "text-neon-purple" },
     { label: t("totalBets"), value: formatNumber(totalBets), accent: "text-content-primary" },

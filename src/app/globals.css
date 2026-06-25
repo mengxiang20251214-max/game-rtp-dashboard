@@ -87,19 +87,10 @@ body {
   border-color: rgba(242, 193, 78, 0.50);
 }
 
-/* ── 热度分级（视觉强度跟随热度，越热越亮） ── */
+/* ── 热度加成（越热越醒目；普通卡保持品牌蓝，绝不弱化/灰化主信息） ── */
 .glass-card--hot {
   border-color: rgba(77,171,233, 0.34);
   box-shadow: 0 0 24px rgba(77,171,233, 0.14), 0 24px 60px rgba(0, 0, 0, 0.50);
-}
-.glass-card--cold {
-  filter: saturate(0.6);
-  opacity: 0.9;
-}
-.glass-card--cold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.50);
-  border-color: rgba(174, 184, 208, 0.20);
 }
 
 /* ── 图片文字阴影 ── */

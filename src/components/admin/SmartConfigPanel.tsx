@@ -14,6 +14,8 @@ interface PreviewData {
   dryRun: boolean;
   note: string;
   totalGames: number;
+  willUpdateCount: number;
+  previewChangesShown: number;
   categoryCounts: Record<string, number>;
   statusCounts: { hot: number; popular: number; new: number };
   rtpRange: { min: number; max: number; avg: number };
@@ -57,8 +59,9 @@ export default function SmartConfigPanel({ initialBackup }: { initialBackup: Bac
     try {
       const json = await call("/api/admin/games/smart-config/preview");
       if (!json.ok) { setError(json.error || "生成预览失败"); return; }
-      setPreview(json.data as PreviewData);
-      setMsg("预览已生成（未写入数据库）。");
+      const d = json.data as PreviewData;
+      setPreview(d);
+      setMsg(`预览已生成（未写入数据库）。下表仅展示前 ${d.previewChangesShown} 个变化，实际应用会更新全部 ${d.willUpdateCount} 个游戏。`);
     } catch {
       setError("网络错误，生成预览失败");
     } finally {
@@ -76,7 +79,7 @@ export default function SmartConfigPanel({ initialBackup }: { initialBackup: Bac
       const json = await call("/api/admin/games/smart-config/apply");
       if (!json.ok) { setError(json.error || "应用失败"); return; }
       const d = json.data;
-      setMsg(`已应用并自动备份（backupId: ${d.backupId}）。共更新 ${d.totalGames} 个游戏。`);
+      setMsg(`已应用智能配置：更新 ${d.updatedCount} 个游戏，已自动备份（备份 ${d.backupCount} 个）。`);
       setPreview(null);
       // 刷新备份元信息 + 后台数据
       await refreshBackup();
@@ -97,7 +100,7 @@ export default function SmartConfigPanel({ initialBackup }: { initialBackup: Bac
     try {
       const json = await call("/api/admin/games/smart-config/rollback", { confirm: true });
       if (!json.ok) { setError(json.error || "回滚失败"); return; }
-      setMsg(`已恢复上次备份，共恢复 ${json.data.restoredCount} 个游戏。`);
+      setMsg(`已恢复上次备份：恢复 ${json.data.restoredCount} 个游戏。`);
       setPreview(null);
       router.refresh();
     } catch {
@@ -126,10 +129,14 @@ export default function SmartConfigPanel({ initialBackup }: { initialBackup: Bac
         </span>
       </div>
       <p className="mb-4 text-xs leading-relaxed text-content-secondary">
-        根据当前游戏自动生成<strong className="text-content-primary">真实感模拟运营配置</strong>
+        根据当前<strong className="text-content-primary">全部游戏</strong>自动生成
+        <strong className="text-content-primary">真实感模拟运营配置</strong>
         （RTP / 人数 / 投注 / HOT / PUPULER / NEW）。
         不会修改游戏名称、图片、厂商、分类或接口结构。
-        <span className="text-content-weak"> 数据为模拟运营配置，非真实第三方平台数据。</span>
+        <span className="block mt-1 text-content-weak">
+          预览仅展示前 10 个变化，<strong className="text-content-secondary">实际应用会更新全部游戏</strong>。
+          数据为模拟运营配置，非真实第三方平台数据。
+        </span>
       </p>
 
       {/* 操作按钮 */}
@@ -178,6 +185,9 @@ export default function SmartConfigPanel({ initialBackup }: { initialBackup: Bac
         <div className="mt-5 space-y-4">
           <div className="rounded-lg border border-neon-blue/20 bg-neon-blue/[0.04] px-3 py-2 text-[11px] text-content-secondary">
             {preview.note}
+            <span className="mt-1 block text-content-primary">
+              下表仅展示前 {preview.previewChangesShown} 个变化，实际应用会更新全部 {preview.willUpdateCount} 个游戏。
+            </span>
           </div>
 
           {/* 统计卡 */}

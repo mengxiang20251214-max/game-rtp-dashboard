@@ -5,12 +5,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Game } from "@/types";
-import { rtpColor, formatRtp, formatPlayers } from "@/lib/game-utils";
+import {
+  rtpColor,
+  formatRtp,
+  formatPlayers,
+  getDisplayStatus,
+  displayStatusColor,
+  DISPLAY_STATUS_LABELS,
+} from "@/lib/game-utils";
 
 export default function GameTable({ initialGames }: { initialGames: Game[] }) {
   const router = useRouter();
   const t = useTranslations("admin.table");
-  const tStatus = useTranslations("status");
   const tCommon = useTranslations("common");
   const [games, setGames] = useState<Game[]>(initialGames);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -82,7 +88,16 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
         </thead>
         <tbody>
           {games.map((g) => {
-            const color = rtpColor(g.status);
+            const color = rtpColor(); // 品牌蓝（不再用红/橙预警）
+            const ds = getDisplayStatus({
+              rank: g.rank,
+              playerCount: g.playerCount,
+              totalBets: g.totalBets,
+              rtp: g.rtp,
+              isNew: g.isNew,
+              heatTier: g.heatTier,
+            });
+            const dsColor = displayStatusColor(ds);
             const busy = busyId === g.id;
             return (
               <tr
@@ -139,14 +154,14 @@ export default function GameTable({ initialGames }: { initialGames: Game[] }) {
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className="inline-flex items-center gap-1.5 text-xs"
-                    style={{ color }}
+                    className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
+                    style={{ color: dsColor.color, background: dsColor.bg }}
                   >
                     <span
                       className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: color }}
+                      style={{ background: dsColor.color }}
                     />
-                    {tStatus(g.status)}
+                    {DISPLAY_STATUS_LABELS[ds]}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-content-secondary">
