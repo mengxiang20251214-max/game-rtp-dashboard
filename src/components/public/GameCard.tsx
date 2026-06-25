@@ -66,7 +66,7 @@ function useLiveMultiplier(resetKey?: unknown): number {
 function DeltaBadge({ delta, isNew }: { delta: number; isNew: boolean }) {
   if (isNew) {
     return (
-      <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: "#3fd0c9" }}>
+      <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: "#4DABE9" }}>
         NEW
       </span>
     );
@@ -109,16 +109,16 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
 
   // 主数据强调色 + 进度条填充（金=焦点卡，青=普通，灰=冷门）
-  const accentColor = isGold ? "#f2c14e" : isCold ? "#aeb8d0" : "#3fd0c9";
+  const accentColor = isGold ? "#f2c14e" : isCold ? "#aeb8d0" : "#4DABE9";
   const accentGlow  = isGold
     ? "0 0 12px rgba(242,193,78,0.5)"
-    : isCold ? "none" : "0 0 12px rgba(63,208,201,0.5)";
+    : isCold ? "none" : "0 0 12px rgba(77,171,233,0.5)";
   const mainFill =
     tone === "cold"
       ? { background: "linear-gradient(90deg, #2a3142, #3d4761)", boxShadow: "none" }
       : tone === "gold"
       ? { background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)", boxShadow: "0 0 12px rgba(242,193,78,0.45)" }
-      : { background: "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)", boxShadow: "0 0 12px rgba(63,208,201,0.45)" };
+      : { background: "linear-gradient(90deg, #176b96, #4DABE9, #8fd4ff)", boxShadow: "0 0 12px rgba(77,171,233,0.45)" };
 
   const hasLink  = Boolean(game.detailUrl);
   const mult     = useLiveMultiplier(resetKey);
@@ -160,7 +160,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             ? "linear-gradient(90deg, transparent, rgba(242,193,78,0.75), transparent)"
             : isCold
             ? "transparent"
-            : "linear-gradient(90deg, transparent, rgba(63,208,201,0.75), transparent)",
+            : "linear-gradient(90deg, transparent, rgba(77,171,233,0.75), transparent)",
         }}
       />
 
@@ -189,7 +189,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 ? "0 0 18px rgba(242,193,78,0.28)"
                 : isCold
                 ? "none"
-                : "0 0 18px rgba(63,208,201,0.24)",
+                : "0 0 18px rgba(77,171,233,0.24)",
             }}
           >
             {game.image && !imgError ? (
@@ -215,7 +215,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
               >
                 <span
                   className="font-mono text-[10px] font-bold"
-                  style={{ color: "rgba(63,208,201,0.35)" }}
+                  style={{ color: "rgba(77,171,233,0.35)" }}
                 >
                   X168
                 </span>
@@ -227,7 +227,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             <div className="flex items-center gap-1.5">
               <span
                 className="font-mono text-[9px] sm:text-[10px] uppercase"
-                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#3fd0c9" }}
+                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#4DABE9" }}
               >
                 {game.categoryLabel || game.category}
               </span>
@@ -236,8 +236,8 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 <span
                   className="rounded-full px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase"
                   style={{
-                    background: "rgba(63,208,201,0.14)",
-                    color: "#3fd0c9",
+                    background: "rgba(77,171,233,0.14)",
+                    color: "#4DABE9",
                     letterSpacing: "0.10em",
                   }}
                 >
@@ -312,7 +312,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
           <div className="h-[4px] w-full overflow-hidden rounded-full" style={{ background: "#152036" }}>
             <motion.div
               className="h-full rounded-full"
-              style={{ background: "rgba(63,208,201,0.28)" }}
+              style={{ background: "rgba(77,171,233,0.28)" }}
               initial={{ width: 0 }}
               animate={{ width: `${rtpPct(game.targetRtp)}%` }}
               transition={{ duration: 0.9, ease: EASE }}
@@ -365,14 +365,14 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 ? "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)"
                 : isCold
                 ? "linear-gradient(90deg, #2a3142, #3d4761)"
-                : "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)",
+                : "linear-gradient(90deg, #176b96, #4DABE9, #8fd4ff)",
               color: isCold ? "#aeb8d0" : "#04060c",
               letterSpacing: "0.14em",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
                 : isCold
                 ? "none"
-                : "0 0 18px rgba(63,208,201,0.28)",
+                : "0 0 18px rgba(77,171,233,0.28)",
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.08)";

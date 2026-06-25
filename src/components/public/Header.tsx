@@ -37,16 +37,16 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
                 disabled={refreshing}
                 className="flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-display text-xs font-semibold uppercase transition-all disabled:opacity-50"
                 style={{
-                  borderColor: "rgba(63,208,201,0.40)",
-                  background: "rgba(63,208,201,0.08)",
-                  color: "#3fd0c9",
+                  borderColor: "rgba(77,171,233,0.40)",
+                  background: "rgba(77,171,233,0.08)",
+                  color: "#4DABE9",
                   letterSpacing: "0.10em",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(63,208,201,0.15)";
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(77,171,233,0.15)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(63,208,201,0.08)";
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(77,171,233,0.08)";
                 }}
               >
                 <svg
@@ -81,9 +81,9 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
               style={{
                 width: "42px",
                 height: "42px",
-                background: "linear-gradient(150deg, #3fd0c9 0%, #114f49 100%)",
+                background: "linear-gradient(150deg, #4DABE9 0%, #176b96 100%)",
                 boxShadow:
-                  "0 0 22px rgba(63,208,201,0.45), inset 0 1px 0 rgba(255,255,255,0.20)",
+                  "0 0 22px rgba(77,171,233,0.45), inset 0 1px 0 rgba(255,255,255,0.20)",
               }}
             >
               <span
@@ -99,7 +99,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
               className="font-serif font-bold leading-none"
               style={{ fontSize: "32px", letterSpacing: "-0.01em", color: "#eef1f8" }}
             >
-              X<span style={{ color: "#3fd0c9" }}>168</span>
+              X<span style={{ color: "#4DABE9" }}>168</span>
             </h1>
           </motion.div>
 
@@ -111,7 +111,7 @@ export default function Header({ onRefresh, refreshing, lastUpdated }: HeaderPro
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.18 }}
           >
-            <span style={{ color: "#3fd0c9" }}>AI</span>
+            <span style={{ color: "#4DABE9" }}>AI</span>
             <span style={{ color: "#5d6b91" }}>·</span>
             <span style={{ color: "#8b96b4" }}>ANALISIS PERMAINAN SLOT</span>
             <span style={{ color: "#5d6b91" }}>·</span>

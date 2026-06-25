@@ -85,10 +85,10 @@ function SortSwitcher({
             style={
               isActive
                 ? {
-                    border: "1px solid rgba(63,208,201,0.55)",
-                    background: "rgba(63,208,201,0.12)",
-                    color: "#3fd0c9",
-                    boxShadow: "0 0 16px rgba(63,208,201,0.18)",
+                    border: "1px solid rgba(77,171,233,0.55)",
+                    background: "rgba(77,171,233,0.12)",
+                    color: "#4DABE9",
+                    boxShadow: "0 0 16px rgba(77,171,233,0.18)",
                   }
                 : {
                     border: "1px solid rgba(174,184,208,0.14)",
@@ -148,9 +148,9 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         onClick={onRetry}
         className="rounded-full px-5 py-2 font-display text-[12px] font-semibold transition-all"
         style={{
-          border: "1px solid rgba(63,208,201,0.55)",
-          background: "rgba(63,208,201,0.12)",
-          color: "#3fd0c9",
+          border: "1px solid rgba(77,171,233,0.55)",
+          background: "rgba(77,171,233,0.12)",
+          color: "#4DABE9",
         }}
       >
         {t("retry")}
@@ -197,7 +197,7 @@ function WinnerTicker({ games }: { games: Game[] }) {
                 Pemain{" "}
                 <span style={{ color: "#d3dae9" }}>{m.player}</span>
                 {" "}baru saja menang{" "}
-                <span style={{ color: "#3fd0c9", fontWeight: 700 }}>{m.amount}</span>
+                <span style={{ color: "#4DABE9", fontWeight: 700 }}>{m.amount}</span>
                 {" "}di{" "}
                 <span style={{ color: "#d3dae9", textDecoration: "underline", textUnderlineOffset: "2px" }}>{m.game}</span>
               </span>

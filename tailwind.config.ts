@@ -15,11 +15,11 @@ const config: Config = {
           secondary: "#0c1726",
           card:      "#0d1320", // 搭配 /66 → 玻璃效果
         },
-        // 主色 — 青 Teal
+        // 主色 — 品牌蓝 Brand Blue
         aurora: {
-          DEFAULT: "#3fd0c9",
-          dark:    "#279a91",
-          light:   "#62ded7",
+          DEFAULT: "#4DABE9",
+          dark:    "#176b96",
+          light:   "#8fd4ff",
         },
         // 焦点色 — 金色（全页最多一处，HOT 卡专用）
         gold: {
@@ -39,7 +39,7 @@ const config: Config = {
         // 边框辅助（配合 /14 /55 透明度修饰符）
         border: {
           subtle: "#aeb8d0",
-          aurora: "#3fd0c9",
+          aurora: "#4DABE9",
         },
         // 兼容旧 admin 引用的 neon token（保持不删，避免 admin 样式损坏）
         neon: {
@@ -65,10 +65,10 @@ const config: Config = {
       },
       boxShadow: {
         card:         "0 24px 60px rgba(0,0,0,0.50)",
-        "card-hover": "0 0 50px rgba(63,208,201,0.40), 0 30px 70px rgba(0,0,0,0.60)",
+        "card-hover": "0 0 50px rgba(77,171,233,0.40), 0 30px 70px rgba(0,0,0,0.60)",
         "card-gold":  "0 0 50px rgba(242,193,78,0.35), 0 30px 70px rgba(0,0,0,0.60)",
-        aurora:       "0 0 12px rgba(63,208,201,0.45)",
-        "aurora-sm":  "0 0 8px  rgba(63,208,201,0.35)",
+        aurora:       "0 0 12px rgba(77,171,233,0.45)",
+        "aurora-sm":  "0 0 8px  rgba(77,171,233,0.35)",
         gold:         "0 0 12px rgba(242,193,78,0.42)",
         // 保持 admin 兼容
         "neon-blue":   "0 0 5px #37b6ff, 0 0 20px rgba(55,182,255,0.35)",
@@ -79,7 +79,7 @@ const config: Config = {
       },
       backgroundImage: {
         "aurora-line":
-          "linear-gradient(90deg, transparent, rgba(63,208,201,0.70), transparent)",
+          "linear-gradient(90deg, transparent, rgba(77,171,233,0.70), transparent)",
         "gold-line":
           "linear-gradient(90deg, transparent, rgba(242,193,78,0.70), transparent)",
       },

@@ -8,10 +8,10 @@
   --bg-secondary: #0c1726;
   --bg-card:      #0d1320;
   --void:         #04060c;
-  /* 主色 — 青 Teal */
-  --acc:          #3fd0c9;
-  --acc-soft:     rgba(63,208,201,0.12);
-  --acc-glow:     rgba(63,208,201,0.45);
+  /* 主色 — 品牌蓝 Brand Blue */
+  --acc:          #4DABE9;
+  --acc-soft:     rgba(77,171,233,0.12);
+  --acc-glow:     rgba(77,171,233,0.45);
   /* 焦点 — 金（全页仅一处：排名第1 HOT 卡） */
   --gold:         #f2c14e;
   --gold-glow:    rgba(242,193,78,0.42);
@@ -37,7 +37,7 @@ html, body {
   min-height: 100vh;
 }
 
-/* ── 近黑深空背景：星点底纹 + 顶部青光晕 + 深空径向 ── */
+/* ── 近黑深空背景：星点底纹 + 顶部品牌蓝光晕 + 深空径向 ── */
 body {
   background-color: #04060c;
   background-image:
@@ -45,7 +45,7 @@ body {
     radial-gradient(1px 1px at 130px 95px,     rgba(180,210,255,0.35), transparent),
     radial-gradient(1px 1px at 205px 165px,    rgba(255,255,255,0.30), transparent),
     radial-gradient(1px 1px at 80px 200px,     rgba(160,200,255,0.28), transparent),
-    radial-gradient(circle at 50% -8%,         rgba(63,208,201,0.12), transparent 55%),
+    radial-gradient(circle at 50% -8%,         rgba(77,171,233,0.12), transparent 55%),
     radial-gradient(150% 120% at 50% -10%, #0c1726 0%, #070b14 46%, #04060c 100%);
   background-size:
     240px 240px, 300px 300px, 260px 260px, 220px 220px, 100% 100%, 100% 100%;
@@ -56,10 +56,10 @@ body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: #04060c; }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(63, 208, 201, 0.30);
+  background: rgba(77,171,233, 0.30);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(63, 208, 201, 0.55); }
+::-webkit-scrollbar-thumb:hover { background: rgba(77,171,233, 0.55); }
 
 /* 隐藏滚动条（分类横滑） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
@@ -79,8 +79,8 @@ body {
 }
 .glass-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 50px rgba(63, 208, 201, 0.30), 0 30px 70px rgba(0, 0, 0, 0.60);
-  border-color: rgba(63, 208, 201, 0.55);
+  box-shadow: 0 0 50px rgba(77,171,233, 0.30), 0 30px 70px rgba(0, 0, 0, 0.60);
+  border-color: rgba(77,171,233, 0.55);
 }
 .glass-card--gold:hover {
   box-shadow: 0 0 50px rgba(242, 193, 78, 0.30), 0 30px 70px rgba(0, 0, 0, 0.60);
@@ -89,8 +89,8 @@ body {
 
 /* ── 热度分级（视觉强度跟随热度，越热越亮） ── */
 .glass-card--hot {
-  border-color: rgba(63, 208, 201, 0.34);
-  box-shadow: 0 0 24px rgba(63, 208, 201, 0.14), 0 24px 60px rgba(0, 0, 0, 0.50);
+  border-color: rgba(77,171,233, 0.34);
+  box-shadow: 0 0 24px rgba(77,171,233, 0.14), 0 24px 60px rgba(0, 0, 0, 0.50);
 }
 .glass-card--cold {
   filter: saturate(0.6);

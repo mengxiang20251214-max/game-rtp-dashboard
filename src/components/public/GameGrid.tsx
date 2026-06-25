@@ -35,7 +35,7 @@ export default function GameGrid({ games, sectionTitle, resetKey }: GameGridProp
       >
         <span
           className="font-mono text-4xl"
-          style={{ color: "rgba(63,208,201,0.25)" }}
+          style={{ color: "rgba(77,171,233,0.25)" }}
         >
           ∅
         </span>
