@@ -85,10 +85,10 @@ function SortSwitcher({
             style={
               isActive
                 ? {
-                    border: "1px solid rgba(55,182,255,0.55)",
-                    background: "rgba(55,182,255,0.12)",
-                    color: "#37b6ff",
-                    boxShadow: "0 0 16px rgba(55,182,255,0.18)",
+                    border: "1px solid rgba(63,208,201,0.55)",
+                    background: "rgba(63,208,201,0.12)",
+                    color: "#3fd0c9",
+                    boxShadow: "0 0 16px rgba(63,208,201,0.18)",
                   }
                 : {
                     border: "1px solid rgba(174,184,208,0.14)",
@@ -108,7 +108,7 @@ function SortSwitcher({
 // ── 卡片骨架屏（切换排序 / 刷新时占位，替代白屏） ──────────────────
 function GridSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-[28px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-[28px]">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
@@ -148,9 +148,9 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         onClick={onRetry}
         className="rounded-full px-5 py-2 font-display text-[12px] font-semibold transition-all"
         style={{
-          border: "1px solid rgba(55,182,255,0.55)",
-          background: "rgba(55,182,255,0.12)",
-          color: "#37b6ff",
+          border: "1px solid rgba(63,208,201,0.55)",
+          background: "rgba(63,208,201,0.12)",
+          color: "#3fd0c9",
         }}
       >
         {t("retry")}
@@ -197,9 +197,9 @@ function WinnerTicker({ games }: { games: Game[] }) {
                 Pemain{" "}
                 <span style={{ color: "#d3dae9" }}>{m.player}</span>
                 {" "}baru saja menang{" "}
-                <span style={{ color: "#f2c14e" }}>{m.amount}</span>
+                <span style={{ color: "#3fd0c9", fontWeight: 700 }}>{m.amount}</span>
                 {" "}di{" "}
-                <span style={{ color: "#37b6ff" }}>{m.game}</span>
+                <span style={{ color: "#d3dae9", textDecoration: "underline", textUnderlineOffset: "2px" }}>{m.game}</span>
               </span>
             </span>
           ))}
@@ -340,7 +340,7 @@ export default function Dashboard({
       {/* ── 固定置顶区 ── */}
       <div
         className="sticky top-0 z-50 backdrop-blur-[18px]"
-        style={{ background: "rgba(8,22,52,0.88)" }}
+        style={{ background: "rgba(5,8,16,0.88)" }}
       >
         <Header
           onRefresh={handleRefresh}

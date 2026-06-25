@@ -32,14 +32,14 @@ export default function CategoryFilter({ active, categories, counts, onChange }:
             style={{
               letterSpacing: "0.14em",
               borderColor: isActive
-                ? "rgba(55,182,255,0.55)"
+                ? "rgba(63,208,201,0.55)"
                 : "rgba(174,184,208,0.14)",
               background: isActive
-                ? "rgba(55,182,255,0.12)"
+                ? "rgba(63,208,201,0.12)"
                 : "transparent",
-              color: isActive ? "#37b6ff" : "#8b96b4",
+              color: isActive ? "#3fd0c9" : "#8b96b4",
               boxShadow: isActive
-                ? "0 0 16px rgba(55,182,255,0.18)"
+                ? "0 0 16px rgba(63,208,201,0.18)"
                 : "none",
             }}
           >
@@ -48,7 +48,7 @@ export default function CategoryFilter({ active, categories, counts, onChange }:
               <motion.span
                 layoutId="cat-dot"
                 className="h-1.5 w-1.5 shrink-0 rounded-full"
-                style={{ background: "#37b6ff", boxShadow: "0 0 6px rgba(55,182,255,0.80)" }}
+                style={{ background: "#3fd0c9", boxShadow: "0 0 6px rgba(63,208,201,0.80)" }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
@@ -56,8 +56,8 @@ export default function CategoryFilter({ active, categories, counts, onChange }:
             <span
               className="rounded-full px-1.5 py-0.5 text-[8px] tabular-nums"
               style={{
-                background: isActive ? "rgba(55,182,255,0.18)" : "rgba(174,184,208,0.08)",
-                color: isActive ? "#37b6ff" : "#5d6b91",
+                background: isActive ? "rgba(63,208,201,0.18)" : "rgba(174,184,208,0.08)",
+                color: isActive ? "#3fd0c9" : "#5d6b91",
               }}
             >
               {counts[opt.value] ?? 0}

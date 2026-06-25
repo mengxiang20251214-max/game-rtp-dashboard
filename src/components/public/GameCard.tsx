@@ -20,10 +20,6 @@ function rtpPct(v: number) {
   return Math.max(0, Math.min(100, ((v - RTP_MIN) / (RTP_MAX - RTP_MIN)) * 100));
 }
 
-// 进度条满刻度（与 seed-games 的数值量级一致：玩家上限 ~5000、投注上限 ~3.2 miliar）
-const PLAYERS_BAR_MAX = 5000;
-const BETS_BAR_MAX = 3_200_000_000;
-
 type Tone = "gold" | "cyan" | "cold";
 
 // ── 数字计入动效 + 持续微跳 ─────────────────────────────────────
@@ -66,64 +62,11 @@ function useLiveMultiplier(resetKey?: unknown): number {
   return mult;
 }
 
-// ── DataRow ──────────────────────────────────────────────────────
-interface DataRowProps {
-  label: string;
-  value: string;
-  pct: number;
-  tone: Tone;
-}
-
-function DataRow({ label, value, pct, tone }: DataRowProps) {
-  const fillStyle =
-    tone === "cold"
-      ? { background: "linear-gradient(90deg, #2a3142, #3d4761)", boxShadow: "none" }
-      : tone === "gold"
-      ? {
-          background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)",
-          boxShadow: "0 0 10px rgba(242,193,78,0.40)",
-        }
-      : {
-          background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
-          boxShadow: "0 0 10px rgba(55,182,255,0.40)",
-        };
-
-  const valueColor = tone === "cold" ? "#8b96b4" : tone === "gold" ? "#f2c14e" : "#37b6ff";
-
-  return (
-    <div>
-      <div className="mb-1.5 flex items-baseline justify-between gap-2">
-        <span
-          className="font-display text-[11px] sm:text-[12px] leading-none"
-          style={{ color: "#8b96b4" }}
-        >
-          {label}
-        </span>
-        <span
-          className="shrink-0 font-mono text-[12px] sm:text-[13px] leading-none tabular-nums"
-          style={{ color: valueColor }}
-        >
-          {value}
-        </span>
-      </div>
-      <div className="h-[5px] w-full overflow-hidden rounded-full" style={{ background: "#152036" }}>
-        <motion.div
-          className="h-full rounded-full"
-          style={fillStyle}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.9, ease: EASE }}
-        />
-      </div>
-    </div>
-  );
-}
-
 // ── 涨跌箭头 / 新游标记 ──────────────────────────────────────────
 function DeltaBadge({ delta, isNew }: { delta: number; isNew: boolean }) {
   if (isNew) {
     return (
-      <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: "#37b6ff" }}>
+      <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: "#3fd0c9" }}>
         NEW
       </span>
     );
@@ -165,6 +108,18 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
   const isCold = heat === "cold";
   const tone: Tone = isGold ? "gold" : isCold ? "cold" : "cyan";
 
+  // 主数据强调色 + 进度条填充（金=焦点卡，青=普通，灰=冷门）
+  const accentColor = isGold ? "#f2c14e" : isCold ? "#aeb8d0" : "#3fd0c9";
+  const accentGlow  = isGold
+    ? "0 0 12px rgba(242,193,78,0.5)"
+    : isCold ? "none" : "0 0 12px rgba(63,208,201,0.5)";
+  const mainFill =
+    tone === "cold"
+      ? { background: "linear-gradient(90deg, #2a3142, #3d4761)", boxShadow: "none" }
+      : tone === "gold"
+      ? { background: "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)", boxShadow: "0 0 12px rgba(242,193,78,0.45)" }
+      : { background: "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)", boxShadow: "0 0 12px rgba(63,208,201,0.45)" };
+
   const hasLink  = Boolean(game.detailUrl);
   const mult     = useLiveMultiplier(resetKey);
 
@@ -205,7 +160,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             ? "linear-gradient(90deg, transparent, rgba(242,193,78,0.75), transparent)"
             : isCold
             ? "transparent"
-            : "linear-gradient(90deg, transparent, rgba(55,182,255,0.75), transparent)",
+            : "linear-gradient(90deg, transparent, rgba(63,208,201,0.75), transparent)",
         }}
       />
 
@@ -234,7 +189,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 ? "0 0 18px rgba(242,193,78,0.28)"
                 : isCold
                 ? "none"
-                : "0 0 18px rgba(55,182,255,0.24)",
+                : "0 0 18px rgba(63,208,201,0.24)",
             }}
           >
             {game.image && !imgError ? (
@@ -260,7 +215,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
               >
                 <span
                   className="font-mono text-[10px] font-bold"
-                  style={{ color: "rgba(55,182,255,0.35)" }}
+                  style={{ color: "rgba(63,208,201,0.35)" }}
                 >
                   X168
                 </span>
@@ -272,7 +227,7 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
             <div className="flex items-center gap-1.5">
               <span
                 className="font-mono text-[9px] sm:text-[10px] uppercase"
-                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#37b6ff" }}
+                style={{ letterSpacing: "0.20em", color: isCold ? "#5d6b91" : "#3fd0c9" }}
               >
                 {game.categoryLabel || game.category}
               </span>
@@ -281,12 +236,12 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 <span
                   className="rounded-full px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase"
                   style={{
-                    background: "rgba(55,182,255,0.14)",
-                    color: "#37b6ff",
+                    background: "rgba(63,208,201,0.14)",
+                    color: "#3fd0c9",
                     letterSpacing: "0.10em",
                   }}
                 >
-                  🔥 Populer
+                  Populer
                 </span>
               )}
             </div>
@@ -320,12 +275,82 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
           </div>
         </div>
 
-        {/* ── 4 条数据行 ── */}
-        <div className="flex flex-col gap-2.5 sm:gap-3">
-          <DataRow label={tStats("currentRtp")} value={formatPct(shownRtp)} pct={rtpPct(shownRtp)} tone={tone} />
-          <DataRow label={tStats("targetRtp")} value={formatPct(game.targetRtp)} pct={rtpPct(game.targetRtp)} tone={tone} />
-          <DataRow label={tStats("players")} value={formatNum(shownPlayers)} pct={Math.min(100, (shownPlayers / PLAYERS_BAR_MAX) * 100)} tone={tone} />
-          <DataRow label={tStats("totalBets")} value={formatIDR(shownBets)} pct={Math.min(100, (shownBets / BETS_BAR_MAX) * 100)} tone={tone} />
+        {/* ── RTP Saat Ini（主数据，做大） ── */}
+        <div>
+          <div className="mb-1.5 flex items-baseline justify-between gap-2">
+            <span className="font-display text-[11px] sm:text-[12px] leading-none" style={{ color: "#8b96b4" }}>
+              {tStats("currentRtp")}
+            </span>
+            <span
+              className="shrink-0 font-mono font-bold leading-none tabular-nums"
+              style={{ fontSize: "20px", color: accentColor, textShadow: accentGlow }}
+            >
+              {formatPct(shownRtp)}
+            </span>
+          </div>
+          <div className="h-[7px] w-full overflow-hidden rounded-full" style={{ background: "#152036" }}>
+            <motion.div
+              className="h-full rounded-full"
+              style={mainFill}
+              initial={{ width: 0 }}
+              animate={{ width: `${rtpPct(shownRtp)}%` }}
+              transition={{ duration: 0.9, ease: EASE }}
+            />
+          </div>
+        </div>
+
+        {/* ── RTP Target（弱参照，细暗） ── */}
+        <div className="-mt-1">
+          <div className="mb-1 flex items-baseline justify-between gap-2">
+            <span className="font-display text-[10px] leading-none" style={{ color: "#5d6b91" }}>
+              {tStats("targetRtp")}
+            </span>
+            <span className="shrink-0 font-mono text-[12px] leading-none tabular-nums" style={{ color: "#8b96b4" }}>
+              {formatPct(game.targetRtp)}
+            </span>
+          </div>
+          <div className="h-[4px] w-full overflow-hidden rounded-full" style={{ background: "#152036" }}>
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: "rgba(63,208,201,0.28)" }}
+              initial={{ width: 0 }}
+              animate={{ width: `${rtpPct(game.targetRtp)}%` }}
+              transition={{ duration: 0.9, ease: EASE }}
+            />
+          </div>
+        </div>
+
+        {/* ── 分隔细线 ── */}
+        <div className="h-px w-full" style={{ background: "rgba(174,184,208,0.14)" }} />
+
+        {/* ── 底部 stat 两格：Pemain · Total Taruhan ── */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-xl px-3 py-2.5" style={{ background: "rgba(13,19,32,0.40)" }}>
+            <div className="mb-1 flex items-center gap-1.5">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8b96b4" strokeWidth="2">
+                <circle cx="12" cy="8" r="4" /><path d="M4 21v-1a7 7 0 0 1 14 0v1" />
+              </svg>
+              <span className="font-display text-[10px] uppercase" style={{ color: "#8b96b4", letterSpacing: "0.08em" }}>
+                {tStats("players")}
+              </span>
+            </div>
+            <div className="font-mono text-[14px] font-bold tabular-nums" style={{ color: isCold ? "#aeb8d0" : "#eef1f8" }}>
+              {formatNum(shownPlayers)}
+            </div>
+          </div>
+          <div className="rounded-xl px-3 py-2.5" style={{ background: "rgba(13,19,32,0.40)" }}>
+            <div className="mb-1 flex items-center gap-1.5">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8b96b4" strokeWidth="2">
+                <circle cx="9" cy="9" r="5" /><path d="M14.5 6.5a5 5 0 1 1 0 11" />
+              </svg>
+              <span className="font-display text-[10px] uppercase" style={{ color: "#8b96b4", letterSpacing: "0.08em" }}>
+                {tStats("totalBets")}
+              </span>
+            </div>
+            <div className="font-mono text-[12px] sm:text-[13px] font-bold tabular-nums" style={{ color: isCold ? "#aeb8d0" : "#eef1f8" }}>
+              {formatIDR(shownBets)}
+            </div>
+          </div>
         </div>
 
         {/* ── CTA 按钮 ── */}
@@ -340,14 +365,14 @@ export default function GameCard({ game, isFeature = false, resetKey }: GameCard
                 ? "linear-gradient(90deg, #c8982f, #f2c14e, #f8e3a3)"
                 : isCold
                 ? "linear-gradient(90deg, #2a3142, #3d4761)"
-                : "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
+                : "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)",
               color: isCold ? "#aeb8d0" : "#04060c",
               letterSpacing: "0.14em",
               boxShadow: isGold
                 ? "0 0 18px rgba(242,193,78,0.28)"
                 : isCold
                 ? "none"
-                : "0 0 18px rgba(55,182,255,0.28)",
+                : "0 0 18px rgba(63,208,201,0.28)",
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.08)";

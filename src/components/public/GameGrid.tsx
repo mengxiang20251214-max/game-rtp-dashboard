@@ -35,7 +35,7 @@ export default function GameGrid({ games, sectionTitle, resetKey }: GameGridProp
       >
         <span
           className="font-mono text-4xl"
-          style={{ color: "rgba(55,182,255,0.25)" }}
+          style={{ color: "rgba(63,208,201,0.25)" }}
         >
           ∅
         </span>
@@ -82,7 +82,7 @@ export default function GameGrid({ games, sectionTitle, resetKey }: GameGridProp
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-2 gap-3 sm:gap-[28px]"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-[28px]"
       >
         <AnimatePresence mode="popLayout">
           {games.map((game, i) => (

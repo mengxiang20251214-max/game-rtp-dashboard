@@ -3,17 +3,28 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary:   #0c2348;   /* Olympus 深底 */
-  --bg-secondary: #143a72;   /* Olympus 中层 */
+  /* 背景（近黑深空） */
+  --bg-primary:   #04060c;
+  --bg-secondary: #0c1726;
   --bg-card:      #0d1320;
-  --acc:          #37b6ff;   /* 电光蓝 */
+  --void:         #04060c;
+  /* 主色 — 青 Teal */
+  --acc:          #3fd0c9;
+  --acc-soft:     rgba(63,208,201,0.12);
+  --acc-glow:     rgba(63,208,201,0.45);
+  /* 焦点 — 金（全页仅一处：排名第1 HOT 卡） */
   --gold:         #f2c14e;
+  --gold-glow:    rgba(242,193,78,0.42);
+  /* 信息蓝（仅 NEW 徽章/链接） */
+  --azure:        #4ea8ff;
+  /* 文字阶梯 */
   --text-primary: #d3dae9;
   --text-em:      #eef1f8;
   --text-sec:     #8b96b4;
   --text-weak:    #5d6b91;
   --track:        #152036;
   --border:       rgba(174, 184, 208, 0.14);
+  --ease:         cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * { box-sizing: border-box; }
@@ -21,33 +32,40 @@
 html, body {
   padding: 0;
   margin: 0;
-  background-color: var(--bg-primary);
+  background-color: var(--void);
   color: var(--text-primary);
   min-height: 100vh;
 }
 
-/* ── Olympus 天穹背景：上亮下深 ── */
+/* ── 近黑深空背景：星点底纹 + 顶部青光晕 + 深空径向 ── */
 body {
+  background-color: #04060c;
   background-image:
-    radial-gradient(closest-side at 50% 0%, rgba(55,182,255,0.20), transparent),
-    radial-gradient(140% 120% at 50% -8%, #2f8fd6 0%, #1f5fa8 30%, #143a72 60%, #0c2348 100%);
+    radial-gradient(1.2px 1.2px at 25px 35px,  rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 130px 95px,     rgba(180,210,255,0.35), transparent),
+    radial-gradient(1px 1px at 205px 165px,    rgba(255,255,255,0.30), transparent),
+    radial-gradient(1px 1px at 80px 200px,     rgba(160,200,255,0.28), transparent),
+    radial-gradient(circle at 50% -8%,         rgba(63,208,201,0.12), transparent 55%),
+    radial-gradient(150% 120% at 50% -10%, #0c1726 0%, #070b14 46%, #04060c 100%);
+  background-size:
+    240px 240px, 300px 300px, 260px 260px, 220px 220px, 100% 100%, 100% 100%;
   background-attachment: fixed;
 }
 
 /* ── 自定义滚动条 ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: #0c2348; }
+::-webkit-scrollbar-track  { background: #04060c; }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(55, 182, 255, 0.30);
+  background: rgba(63, 208, 201, 0.30);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(55, 182, 255, 0.55); }
+::-webkit-scrollbar-thumb:hover { background: rgba(63, 208, 201, 0.55); }
 
 /* 隐藏滚动条（分类横滑） */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── 玻璃卡片基底（漂浮于亮蓝天空） ── */
+/* ── 玻璃卡片基底 ── */
 .glass-card {
   background: rgba(13, 19, 32, 0.66);
   backdrop-filter: blur(16px);
@@ -55,34 +73,32 @@ body {
   border: 1px solid rgba(174, 184, 208, 0.14);
   border-radius: 20px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.50);
-  transition: transform 200ms cubic-bezier(0.16,1,0.3,1),
-              box-shadow 200ms cubic-bezier(0.16,1,0.3,1),
-              border-color 200ms cubic-bezier(0.16,1,0.3,1);
+  transition: transform 200ms var(--ease),
+              box-shadow 200ms var(--ease),
+              border-color 200ms var(--ease);
 }
 .glass-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 50px rgba(55,182,255,0.45), 0 30px 70px rgba(0,0,0,0.60);
-  border-color: rgba(55, 182, 255, 0.55);
+  box-shadow: 0 0 50px rgba(63, 208, 201, 0.30), 0 30px 70px rgba(0, 0, 0, 0.60);
+  border-color: rgba(63, 208, 201, 0.55);
 }
 .glass-card--gold:hover {
-  box-shadow: 0 0 50px rgba(242,193,78,0.32), 0 30px 70px rgba(0,0,0,0.60);
+  box-shadow: 0 0 50px rgba(242, 193, 78, 0.30), 0 30px 70px rgba(0, 0, 0, 0.60);
   border-color: rgba(242, 193, 78, 0.50);
 }
 
-/* ── 热度分级（视觉强度严格跟随热度，越热越亮） ── */
-/* hot：青色发光描边（静止态即有光） */
+/* ── 热度分级（视觉强度跟随热度，越热越亮） ── */
 .glass-card--hot {
-  border-color: rgba(55, 182, 255, 0.34);
-  box-shadow: 0 0 24px rgba(55,182,255,0.14), 0 24px 60px rgba(0,0,0,0.50);
+  border-color: rgba(63, 208, 201, 0.34);
+  box-shadow: 0 0 24px rgba(63, 208, 201, 0.14), 0 24px 60px rgba(0, 0, 0, 0.50);
 }
-/* cold：降饱和、不发光（绝不给冷门特殊高亮） */
 .glass-card--cold {
   filter: saturate(0.6);
   opacity: 0.9;
 }
 .glass-card--cold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.50);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.50);
   border-color: rgba(174, 184, 208, 0.20);
 }
 
@@ -91,25 +107,22 @@ body {
   text-shadow: 0 2px 8px rgba(0,0,0,0.90), 0 0 20px rgba(0,0,0,0.70);
 }
 
+/* ── 中奖飘条 marquee ── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+
 /* ── 减少动画偏好 ── */
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
+  .animate-marquee { animation: none; }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
-}
-
-/* 中奖飘条 marquee */
-@keyframes marquee {
-  0%   { transform: translateX(0) }
-  100% { transform: translateX(-50%) }
-}
-.animate-marquee {
-  animation: marquee 36s linear infinite;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee { animation: none; }
 }

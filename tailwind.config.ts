@@ -9,17 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // 背景层（Olympus 天穹深底色）
+        // 背景层（近黑深空）
         bg: {
-          primary:   "#0c2348",
-          secondary: "#143a72",
+          primary:   "#04060c",
+          secondary: "#0c1726",
           card:      "#0d1320", // 搭配 /66 → 玻璃效果
         },
-        // 主色 — 电光蓝 Electric Azure
+        // 主色 — 青 Teal
         aurora: {
-          DEFAULT: "#37b6ff",
-          dark:    "#1f7fe0",
-          light:   "#7fd6ff",
+          DEFAULT: "#3fd0c9",
+          dark:    "#279a91",
+          light:   "#62ded7",
         },
         // 焦点色 — 金色（全页最多一处，HOT 卡专用）
         gold: {
@@ -39,7 +39,7 @@ const config: Config = {
         // 边框辅助（配合 /14 /55 透明度修饰符）
         border: {
           subtle: "#aeb8d0",
-          aurora: "#37b6ff",
+          aurora: "#3fd0c9",
         },
         // 兼容旧 admin 引用的 neon token（保持不删，避免 admin 样式损坏）
         neon: {
@@ -65,10 +65,10 @@ const config: Config = {
       },
       boxShadow: {
         card:         "0 24px 60px rgba(0,0,0,0.50)",
-        "card-hover": "0 0 50px rgba(55,182,255,0.40), 0 30px 70px rgba(0,0,0,0.60)",
+        "card-hover": "0 0 50px rgba(63,208,201,0.40), 0 30px 70px rgba(0,0,0,0.60)",
         "card-gold":  "0 0 50px rgba(242,193,78,0.35), 0 30px 70px rgba(0,0,0,0.60)",
-        aurora:       "0 0 12px rgba(55,182,255,0.45)",
-        "aurora-sm":  "0 0 8px  rgba(55,182,255,0.35)",
+        aurora:       "0 0 12px rgba(63,208,201,0.45)",
+        "aurora-sm":  "0 0 8px  rgba(63,208,201,0.35)",
         gold:         "0 0 12px rgba(242,193,78,0.42)",
         // 保持 admin 兼容
         "neon-blue":   "0 0 5px #37b6ff, 0 0 20px rgba(55,182,255,0.35)",
@@ -79,7 +79,7 @@ const config: Config = {
       },
       backgroundImage: {
         "aurora-line":
-          "linear-gradient(90deg, transparent, rgba(55,182,255,0.70), transparent)",
+          "linear-gradient(90deg, transparent, rgba(63,208,201,0.70), transparent)",
         "gold-line":
           "linear-gradient(90deg, transparent, rgba(242,193,78,0.70), transparent)",
       },

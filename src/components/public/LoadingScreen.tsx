@@ -26,8 +26,8 @@ export default function LoadingScreen() {
       className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
       style={{
         background: [
-          "radial-gradient(closest-side at 50% 0%, rgba(55,182,255,0.22), transparent)",
-          "radial-gradient(140% 120% at 50% -8%, #2f8fd6 0%, #1f5fa8 30%, #143a72 60%, #0c2348 100%)",
+          "radial-gradient(circle at 50% -8%, rgba(63,208,201,0.14), transparent 55%)",
+          "radial-gradient(150% 120% at 50% -10%, #0c1726 0%, #070b14 46%, #04060c 100%)",
         ].join(", "),
       }}
     >
@@ -39,7 +39,7 @@ export default function LoadingScreen() {
           style={{
             width: "500px",
             height: "260px",
-            background: "radial-gradient(ellipse, rgba(55,182,255,0.22) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(63,208,201,0.22) 0%, transparent 70%)",
             filter: "blur(24px)",
           }}
         />
@@ -69,8 +69,8 @@ export default function LoadingScreen() {
           style={{
             width: "64px",
             height: "64px",
-            background: "linear-gradient(150deg, #37b6ff 0%, #15448f 100%)",
-            boxShadow: "0 0 30px rgba(55,182,255,0.55), inset 0 1px 0 rgba(255,255,255,0.24)",
+            background: "linear-gradient(150deg, #3fd0c9 0%, #114f49 100%)",
+            boxShadow: "0 0 30px rgba(63,208,201,0.55), inset 0 1px 0 rgba(255,255,255,0.24)",
           }}
         >
           <span
@@ -86,7 +86,7 @@ export default function LoadingScreen() {
             className="font-serif font-bold leading-none"
             style={{ fontSize: "42px", letterSpacing: "-0.01em", color: "#eef1f8" }}
           >
-            X<span style={{ color: "#37b6ff" }}>168</span>
+            X<span style={{ color: "#3fd0c9" }}>168</span>
           </h1>
           <p
             className="font-mono uppercase"
@@ -108,8 +108,8 @@ export default function LoadingScreen() {
             className="h-full rounded-full transition-all duration-150 ease-out"
             style={{
               width: `${progress}%`,
-              background: "linear-gradient(90deg, #1f7fe0, #37b6ff, #7fd6ff)",
-              boxShadow: "0 0 12px rgba(55,182,255,0.70)",
+              background: "linear-gradient(90deg, #279a91, #3fd0c9, #62ded7)",
+              boxShadow: "0 0 12px rgba(63,208,201,0.70)",
             }}
           />
         </div>
@@ -122,7 +122,7 @@ export default function LoadingScreen() {
           </span>
           <span
             className="font-mono tabular-nums text-[11px]"
-            style={{ color: "#37b6ff" }}
+            style={{ color: "#3fd0c9" }}
           >
             {progress}%
           </span>
@@ -138,7 +138,7 @@ export default function LoadingScreen() {
             style={{
               width: "6px",
               height: "6px",
-              background: "rgba(55,182,255,0.70)",
+              background: "rgba(63,208,201,0.70)",
               animationDelay: `${i * 220}ms`,
             }}
           />
