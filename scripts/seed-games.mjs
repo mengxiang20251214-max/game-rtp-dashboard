@@ -17,6 +17,7 @@ import { join } from "node:path";
 
 const prisma = new PrismaClient();
 const DRY = process.env.DRY_RUN === "1";
+const PRUNE = process.env.PRUNE === "1"; // 删除这 54 款之外的所有游戏（只保留这 54 款）
 const IMAGES_DIR =
   process.env.IMAGES_DIR || join(homedir(), "Desktop", "游戏插图", "AllImages");
 
@@ -161,7 +162,13 @@ async function main() {
       `rtp=${p.rtp}/${p.targetRtp}${p.featured ? "  ⭐FEATURED" : ""}`
     );
   }
-  if (DRY) { console.log("\n预览结束。去掉 DRY_RUN=1 再运行即可写入。"); return; }
+  if (DRY) {
+    console.log(
+      `\n预览结束（${PRUNE ? "PRUNE=1：将删除这 54 款之外的所有游戏" : "未加 PRUNE，不删除其它游戏"}）。` +
+      `\n去掉 DRY_RUN=1 再运行即可写入。`
+    );
+    return;
+  }
 
   // 3) 分类 name→id（让前台分类标签更干净）
   const cats = await prisma.category.findMany();
@@ -194,16 +201,37 @@ async function main() {
       created++;
     }
   }
-  // 5) 保证全站只有一张金色 HOT 卡：清掉本批之外其它游戏的 featured
+  // 5) 处理本批之外的其它游戏
   const names = plan.map((p) => p.name);
-  const cleared = await prisma.game.updateMany({
-    where: { featured: true, name: { notIn: names } },
-    data: { featured: false },
+  const others = await prisma.game.findMany({
+    where: { name: { notIn: names } },
+    select: { id: true, name: true },
   });
+
+  let pruned = 0;
+  if (others.length > 0) {
+    if (PRUNE) {
+      // 只保留这 54 款：删除其余全部游戏
+      console.log(`\n将删除以下 ${others.length} 款多余游戏：`);
+      console.log("  " + others.map((g) => g.name).join(", "));
+      const del = await prisma.game.deleteMany({ where: { name: { notIn: names } } });
+      pruned = del.count;
+    } else {
+      // 未开启 PRUNE：至少保证全站只有一张金卡
+      await prisma.game.updateMany({
+        where: { featured: true, name: { notIn: names } },
+        data: { featured: false },
+      });
+      console.log(
+        `\n⚠ 检测到另有 ${others.length} 款不在本批的游戏，未删除` +
+        `（如需只保留这 54 款，请加 PRUNE=1 重新运行）。`
+      );
+    }
+  }
 
   console.log(
     `\n✅ 完成：新增 ${created}，更新 ${updated}` +
-    (cleared.count ? `，另清除 ${cleared.count} 个旧 featured` : "") +
+    (pruned ? `，删除 ${pruned}` : "") +
     `。打开前台刷新即可看到封面、热度分布与金色 HOT 卡。`
   );
 }
